@@ -1,2 +1,3 @@
 # smartqasa-blueprints
-A collection of automation blueprints
+
+A collection of Home Assistant Blueprints
