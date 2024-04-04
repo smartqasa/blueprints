@@ -1,0 +1,62 @@
+blueprint:
+  name: Lutron Pico 2 Button - Light/Switch
+  description: |
+    This automation allows for the control of one or more light or switch entities by a Lutron 2 Button Pico (PJ2-2B-GXX-X01).
+
+  domain: automation
+
+  input:
+    pico_remote:
+      name: Pico Remote
+      description: "Select the pico remote to configure:"
+      selector:
+        device:
+          filter:
+            model: PJ2-2B-GXX-X01 (Pico2Button)
+    entity:
+      name: Entity(ies)
+      description: "Light or switch entity to control."
+      selector:
+        entity:
+          filter:
+            domain:
+              - light
+              - switch
+          multiple: true
+
+trigger:
+  - platform: device
+    device_id: !input pico_remote
+    domain: lutron_caseta
+    type: press
+    subtype: "on"
+    id: on_pressed
+
+  - platform: device
+    device_id: !input pico_remote
+    domain: lutron_caseta
+    type: press
+    subtype: "off"
+    id: off_pressed
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: on_pressed
+        sequence:
+          - service: homeassistant.turn_on
+            target:
+              entity_id: !input entity
+      - conditions:
+          - condition: trigger
+            id: off_pressed
+        sequence:
+          - service: homeassistant.turn_off
+            target:
+              entity_id: !input entity
+    default: []
+
+mode: single

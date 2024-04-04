@@ -1,0 +1,223 @@
+blueprint:
+  name: Sensor Activated Lights
+  description: |
+    This automation allows for the control of the state and brightness of one or more light entites based upon (a) the state of one or more sensor entities and (b) the phase of the location.
+
+    Note: If any duration is set to zero('0'), then the light will not turn on during that phase.
+
+  domain: automation
+  input:
+    sensor:
+      name: Sensor(s)
+      description: The sensor(s) that will trigger this automation.
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+          multiple: true
+    light:
+      name: Light(s)
+      description: The light entity(ies) which will be controlled by this automation.
+      selector:
+        entity:
+          filter:
+            domain: light
+          multiple: true
+    duration_morning:
+      name: Morning - Duration
+      description: "The duration in minutes for which the lights will remain on after no further motion has been detected."
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 240
+          unit_of_measurement: minutes
+    brightness_morning:
+      name: Morning - Brightness
+      description: The level of brightness to set the lights.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    duration_day:
+      name: Day - Duration
+      description: "The duration in minutes for which the lights will remain on after no further motion has been detected."
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 240
+          unit_of_measurement: minutes
+    brightness_day:
+      name: Day - Brightness
+      description: The level of brightness to set the lights.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    duration_evening:
+      name: Evening - Duration
+      description: "The duration in minutes for which the lights will remain on after no further motion has been detected."
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 240
+          unit_of_measurement: minutes
+    brightness_evening:
+      name: Evening - Brightness
+      description: The level of brightness to set the lights.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    duration_night:
+      name: Night - Duration
+      description: "The duration in minutes for which the lights will remain on after no further motion has been detected."
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 240
+          unit_of_measurement: minutes
+    brightness_night:
+      name: Night - Brightness
+      description: The level of brightness to set the lights.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+
+variables:
+  duration_morning: !input duration_morning
+  duration_day: !input duration_day
+  duration_evening: !input duration_evening
+  duration_night: !input duration_night
+
+  brightness_morning: !input brightness_morning
+  brightness_day: !input brightness_day
+  brightness_evening: !input brightness_evening
+  brightness_night: !input brightness_night
+
+trigger:
+  platform: state
+  entity_id: !input sensor
+  from: "off"
+  to: "on"
+
+condition: []
+
+action:
+  - choose:
+      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and duration_morning > 0 }}"
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ brightness_morning > 0}}"
+            then:
+              - service: light.turn_on
+                data:
+                  transition: 1
+                  brightness_pct: !input brightness_morning
+                target:
+                  entity_id: !input light
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input sensor
+                from: "on"
+                to: "off"
+                for:
+                  minutes: !input duration_morning
+      - conditions: "{{ is_state('input_select.location_phase', 'Day') and duration_day > 0 }}"
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ brightness_day > 0}}"
+            then:
+              - service: light.turn_on
+                data:
+                  transition: 1
+                  brightness_pct: !input brightness_day
+                target:
+                  entity_id: !input light
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input sensor
+                from: "on"
+                to: "off"
+                for:
+                  minutes: !input duration_day
+      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and duration_evening > 0 }}"
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ brightness_evening > 0}}"
+            then:
+              - service: light.turn_on
+                data:
+                  transition: 1
+                  brightness_pct: !input brightness_evening
+                target:
+                  entity_id: !input light
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input sensor
+                from: "on"
+                to: "off"
+                for:
+                  minutes: !input duration_evening
+      - conditions: "{{ is_state('input_select.location_phase', 'Night') and duration_night > 0 }}"
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ brightness_night > 0}}"
+            then:
+              - service: light.turn_on
+                data:
+                  transition: 1
+                  brightness_pct: !input brightness_night
+                target:
+                  entity_id: !input light
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input sensor
+                from: "on"
+                to: "off"
+                for:
+                  minutes: !input duration_night
+
+  - choose:
+      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and duration_morning > 0 }}"
+        sequence:
+          - service: light.turn_off
+            data: {}
+            target:
+              entity_id: !input light
+      - conditions: "{{ is_state('input_select.location_phase', 'Day') and duration_day > 0 }}"
+        sequence:
+          - service: light.turn_off
+            data: {}
+            target:
+              entity_id: !input light
+      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and duration_evening > 0 }}"
+        sequence:
+          - service: light.turn_off
+            data: {}
+            target:
+              entity_id: !input light
+      - conditions: "{{ is_state('input_select.location_phase', 'Night') and duration_night > 0 }}"
+        sequence:
+          - service: light.turn_off
+            data: {}
+            target:
+              entity_id: !input light
+
+mode: restart

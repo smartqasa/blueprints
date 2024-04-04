@@ -1,0 +1,97 @@
+blueprint:
+  name: Automation Disabler - Pico
+
+  description: |
+    This automation will disable another automation upon the physical actuation of a light switch device.
+
+    - Pressing the On, Raise, or Lower buttons will cause the automation to be disabled for the specified time. After the time expires the automation is re-enabled and the switch is turned off.
+
+    - Pressing the Off button, will cause the automation to be immediately re-enabled.
+
+  domain: automation
+
+  input:
+    pico:
+      name: Light Pico
+      description: The Lutron Pico Remote which, when pressed, will cause the automation to be controlled.
+      selector:
+        device:
+          filter:
+            model: PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
+    automation:
+      name: Automation
+      description: The automation that will be controlled.
+      selector:
+        entity:
+          filter:
+            domain: automation
+    time:
+      name: Time
+      description: The number of minutes for which the automation(s) will be disabled.
+      default: 60
+      selector:
+        number:
+          min: 0
+          max: 1440
+          unit_of_measurement: minutes
+
+trigger:
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "on"
+    id: "disable"
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "raise"
+    id: "disable"
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "stop"
+    id: "disable"
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "lower"
+    id: "disable"
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "off"
+    id: "enable"
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: disable
+        sequence:
+          - service: automation.turn_off
+            data: {}
+            target:
+              entity_id: !input automation
+          - delay:
+              minutes: !input time
+          - service: automation.turn_on
+            data: {}
+            target:
+              entity_id: !input automation
+      - conditions:
+          - condition: trigger
+            id: enable
+        sequence:
+          - service: automation.turn_on
+            data: {}
+            target:
+              entity_id: !input automation
+
+mode: restart

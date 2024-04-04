@@ -1,0 +1,93 @@
+blueprint:
+  name: Lutron Pico 4 Button - Scene Controller
+  description: Specify actions when pico buttons are pressed/released.
+  domain: automation
+  input:
+    pico:
+      name: Pico Four-Button Scene Remote
+      description: Select the pico four-button scene remote to configure.
+      selector:
+        device:
+          filter:
+            model: PJ2-4B-GXX-X31 (Pico4ButtonScene)
+    button_1:
+      name: Button 1 Pressed
+      default: []
+      selector:
+        action: {}
+    button_2:
+      name: Button 2 Pressed
+      default: []
+      selector:
+        action: {}
+    button_3:
+      name: Button 3 Pressed
+      default: []
+      selector:
+        action: {}
+    button_4:
+      name: Button 4 Pressed
+      default: []
+      selector:
+        action: {}
+
+variables:
+  button_1: !input button_1
+  button_2: !input button_2
+  button_3: !input button_3
+  button_4: !input button_4
+
+trigger:
+  - platform: device
+    device_id: !input "pico"
+    domain: lutron_caseta
+    type: press
+    subtype: button_1
+    id: button_1
+  - platform: device
+    device_id: !input "pico"
+    domain: lutron_caseta
+    type: press
+    subtype: button_2
+    id: button_2
+  - platform: device
+    device_id: !input "pico"
+    domain: lutron_caseta
+    type: press
+    subtype: button_3
+    id: button_3
+  - platform: device
+    device_id: !input "pico"
+    domain: lutron_caseta
+    type: press
+    subtype: "off"
+    id: button_4
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: button_1
+          - condition: template
+            value_template: "{{ button_1 != none }}"
+        sequence: !input button_1
+      - conditions:
+          - condition: trigger
+            id: button_2
+          - condition: template
+            value_template: "{{ button_2 != none }}"
+        sequence: !input button_2
+      - conditions:
+          - condition: trigger
+            id: button_3
+          - condition: template
+            value_template: "{{ button_3 != none }}"
+        sequence: !input button_3
+      - conditions:
+          - condition: trigger
+            id: button_4
+          - condition: template
+            value_template: "{{ button_4 != none }}"
+        sequence: !input button_4
+
+mode: restart

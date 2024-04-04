@@ -1,0 +1,375 @@
+blueprint:
+  name: Time Activated Actions
+  description: Time Activated Actions
+  domain: automation
+
+  input:
+    phase:
+      name: Phase
+      description: The phase that will trigger this automation.
+      selector:
+        select:
+          options:
+            - Morning
+            - Day
+            - Evening
+            - Night
+
+    modes:
+      name: Modes
+      description: The modes during which this automation will execute.
+      selector:
+        select:
+          options:
+            - Home
+            - Away
+            - Guest
+            - Entertain
+            - Vacation
+          multiple: true
+      default:
+        - Home
+        - Away
+        - Vacation
+
+    scenes:
+      name: Scene(s)
+      description: The scene(s) that will be activated.
+      selector:
+        entity:
+          filter:
+            domain: scene
+          multiple: true
+      default:
+
+    scripts:
+      name: Script(s)
+      description: The scene(s) that will be activated.
+      selector:
+        entity:
+          filter:
+            domain: script
+          multiple: true
+      default:
+
+    lights_on:
+      name: Lights On
+      description: The light entities that will be turned on.
+      selector:
+        entity:
+          filter:
+            domain: light
+          multiple: true
+      default:
+    lights_level:
+      name: Light Brightness
+      description: The level of brightness to set the lights when they are turned on.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    lights_kelvin:
+      name: Light Temperature
+      description: The color temperature (in Kelvin) to set the lights when they are turned on.
+      default: 2800
+      selector:
+        number:
+          min: 2000
+          max: 6535
+          unit_of_measurement: "kelvin"
+    lights_off:
+      name: Lights Off
+      description: The light entities that will be turned off.
+      selector:
+        entity:
+          filter:
+            domain: light
+          multiple: true
+      default:
+
+    fans_on:
+      name: Fans On
+      description: The fan entities that will be turned on.
+      selector:
+        entity:
+          filter:
+            domain: fan
+          multiple: true
+      default:
+    fans_level:
+      name: Fan Speed
+      description: The level of speed to set the fans when they are turned on.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+    fans_off:
+      name: Fans Off
+      description: The fan entities that will be turned off.
+      selector:
+        entity:
+          filter:
+            domain: fan
+          multiple: true
+      default:
+
+    shades_open:
+      name: Shades Open
+      description: The shade entities that will be opened.
+      selector:
+        entity:
+          filter:
+            domain: cover
+          multiple: true
+      default:
+    shades_position:
+      name: Shades Position
+      description: The position to set the shadess when they are opened on.
+      selector:
+        number:
+          min: 0
+          max: 100
+          unit_of_measurement: "%"
+      default: 100
+    shades_close:
+      name: Shades Close
+      description: The shade entities that will be closed.
+      selector:
+        entity:
+          filter:
+            domain: cover
+          multiple: true
+      default:
+
+    switches_on:
+      name: Switches On
+      description: The switch entities that will be turned on.
+      selector:
+        entity:
+          filter:
+            domain: switch
+          multiple: true
+      default:
+    switches_off:
+      name: Switches Off
+      description: The switch entities that will be turned off.
+      selector:
+        entity:
+          filter:
+            domain: switch
+          multiple: true
+      default:
+
+    garages:
+      name: Garage Doors
+      description: The garage door entities that will be closed.
+      selector:
+        entity:
+          filter:
+            domain: cover
+          multiple: true
+      default:
+
+    locks:
+      name: Door Locks
+      description: The locks entities that will be locked.
+      selector:
+        entity:
+          filter:
+            domain: lock
+          multiple: true
+      default:
+
+    media_players:
+      name: TVs
+      description: The TVs entities that will be turned off.
+      selector:
+        entity:
+          filter:
+            domain: media_player
+          multiple: true
+      default:
+
+    actions:
+      name: General Actions
+      description: The actions to execute.
+      selector:
+        action:
+      default:
+
+variables:
+  scenes: !input scenes
+  scripts: !input scripts
+  lights_on: !input lights_on
+  lights_off: !input lights_off
+  fans_on: !input fans_on
+  fans_off: !input fans_off
+  shades_open: !input shades_open
+  shades_close: !input shades_close
+  shades_position: !input shades_position
+  switches_on: !input switches_on
+  switches_off: !input switches_off
+  garages: !input garages
+  locks: !input locks
+  media_players: !input media_players
+  actions: !input actions
+
+trigger:
+  - platform: state
+    entity_id:
+      - input_button.location_phase
+
+condition:
+  - condition: state
+    entity_id: input_select.location_phase
+    state: !input phase
+
+action:
+  # Scenes
+  - if:
+      - condition: template
+        value_template: "{{ scenes != None }}"
+    then:
+      - service: scene.turn_on
+        data:
+          transition: 1
+        target:
+          entity_id: "{{ expand(scenes) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Scripts
+  - if:
+      - condition: template
+        value_template: "{{ scripts != None }}"
+    then:
+      - service: script.turn_on
+        target:
+          entity_id: "{{ expand(scripts) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Lights
+  - if:
+      - condition: template
+        value_template: "{{ lights_on != None }}"
+    then:
+      - service: light.turn_on
+        data:
+          transition: 1
+          brightness_pct: !input lights_level
+          kelvin: !input lights_kelvin
+        target:
+          entity_id: "{{ expand(lights_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+  - if:
+      - condition: template
+        value_template: "{{ lights_off != None }}"
+    then:
+      - service: light.turn_off
+        target:
+          entity_id: "{{ expand(lights_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Fans
+  - if:
+      - condition: template
+        value_template: "{{ fans_on != None }}"
+    then:
+      - service: fan.turn_on
+        data:
+          percentage: !input fans_level
+        target:
+          entity_id: "{{ expand(fans_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+  - if:
+      - condition: template
+        value_template: "{{ fans_off != None }}"
+    then:
+      - service: fan.turn_off
+        target:
+          entity_id: "{{ expand(fans_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Switches
+  - if:
+      - condition: template
+        value_template: "{{ switches_on != None }}"
+    then:
+      - service: switch.turn_on
+        target:
+          entity_id: "{{ expand(switches_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+  - if:
+      - condition: template
+        value_template: "{{ switches_off != None }}"
+    then:
+      - service: switch.turn_off
+        target:
+          entity_id: "{{ expand(switches_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Garage Doors
+  - if:
+      - condition: template
+        value_template: "{{ garages != None }}"
+    then:
+      - service: cover.close_cover
+        target:
+          entity_id: "{{ expand(garages) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Door Locks
+  - if:
+      - condition: template
+        value_template: "{{ locks != None }}"
+    then:
+      - service: lock.lock
+        target:
+          entity_id: "{{ expand(locks) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Media Players
+  - if:
+      - condition: template
+        value_template: "{{ media_players != None }}"
+    then:
+      - service: media_player.turn_off
+        target:
+          entity_id: "{{ expand(media_players) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+  # Actions
+  - if:
+      - condition: template
+        value_template: "{{ actions != None }}"
+    then: !input actions
+
+  # Shades
+  - if:
+      - condition: template
+        value_template: "{{ shades_open != None }}"
+    then:
+      - service: cover.set_cover_position
+        data:
+          position: "{{ shades_position }}"
+        target:
+          entity_id: "{{ expand(shades_open) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+      - delay: 00:00:35
+      - service: cover.stop_cover
+        target:
+          entity_id: "{{ expand(shades_open) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+  - if:
+      - condition: template
+        value_template: "{{ shades_close != None }}"
+    then:
+      - service: cover.close_cover
+        target:
+          entity_id: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+        continue_on_error: true
+
+mode: single

@@ -1,0 +1,187 @@
+blueprint:
+  name: Lutron Pico 5 Button - Fan Entity Control
+  description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with one or more fan entities. It is designed to simulate the operation of a standard Lutron Caseta fan controller including the press and hold functionality for the raise/lower buttons. It allows for the assignment of any action to the middle button."
+  domain: automation
+  input:
+    pico:
+      name: Pico Device
+      description: "Pico remote to associate with entity."
+      selector:
+        device:
+          filter:
+            model: PJ2-3BRL-GXX-F01 (Pico3ButtonRaiseLower)
+    entity:
+      name: Fan Entity
+      description: "Fan entity to control."
+      selector:
+        entity:
+          filter:
+            domain: fan
+    speeds:
+      name: Speeds
+      description: "The number of speed settings the fan entity supports."
+      selector:
+        select:
+          options:
+            - "4"
+            - "6"
+    on_speed:
+      name: On Speed
+      description: "The speed percentage at which the fan will be set when the on button is pressed."
+      selector:
+        number:
+          min: 15
+          max: 100
+      default: 100
+    middle_button_action:
+      name: Middle (Favorite) Button Action - Optional
+      description: "Action(s) to execute when MIDDLE button is pressed."
+      selector:
+        action: {}
+      default:
+
+  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
+
+variables:
+  speeds: !input speeds
+  middle_button_action: !input middle_button_action
+
+trigger:
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "on"
+    id: on_pressed
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "raise"
+    id: up_pressed
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: release
+    subtype: "raise"
+    id: up_released
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "stop"
+    id: stop_pressed
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "lower"
+    id: down_pressed
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: release
+    subtype: "lower"
+    id: down_released
+  - platform: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "off"
+    id: off_pressed
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: on_pressed
+        sequence:
+          - service: fan.turn_on
+            data:
+              percentage: !input on_speed
+            target:
+              entity_id: !input entity
+      - conditions:
+          - condition: trigger
+            id: up_pressed
+        sequence:
+          - repeat:
+              sequence:
+                - service: fan.increase_speed
+                  data:
+                    percentage_step: "{{ (100 / speeds | int) | round }}"
+                  target:
+                    entity_id: !input entity
+                - delay:
+                    milliseconds: 500
+              until:
+                - condition: state
+                  entity_id: !input entity
+                  attribute: percentage
+                  state: "100"
+      - conditions:
+          - condition: trigger
+            id: up_released
+        sequence:
+          - delay:
+              milliseconds: 100
+      - conditions:
+          - condition: trigger
+            id: stop_pressed
+        sequence:
+          - choose:
+              - conditions: "{{ middle_button_action != none }}"
+                sequence: !input middle_button_action
+            default:
+              - if:
+                  - condition: state
+                    entity_id: !input entity
+                    attribute: direction
+                    state: reverse
+                then:
+                  - service: fan.set_direction
+                    data:
+                      direction: forward
+                    target:
+                      entity_id: !input entity
+                else:
+                  - service: fan.set_direction
+                    data:
+                      direction: reverse
+                    target:
+                      entity_id: !input entity
+      - conditions:
+          - condition: trigger
+            id: down_pressed
+        sequence:
+          - repeat:
+              sequence:
+                - service: fan.decrease_speed
+                  data:
+                    percentage_step: "{{ (100 / speeds | int) | round }}"
+                  target:
+                    entity_id: !input entity
+                - delay:
+                    milliseconds: 500
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: percentage
+                  below: 1
+      - conditions:
+          - condition: trigger
+            id: down_released
+        sequence:
+          - delay:
+              milliseconds: 100
+      - conditions:
+          - condition: trigger
+            id: off_pressed
+        sequence:
+          - service: fan.turn_off
+            target:
+              entity_id: !input entity
+
+mode: restart
