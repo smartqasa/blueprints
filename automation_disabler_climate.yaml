@@ -1,5 +1,5 @@
 blueprint:
-  name: Automation Disabler - Climate
+  name: Automation Disabler - Climate X
   description: |
     This automation will disable another automation upon the physical actuation of a light switch device.
 
