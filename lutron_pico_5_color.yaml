@@ -1,5 +1,5 @@
 blueprint:
-    name: Lutron Pico 5 Button - Light Entity Control
+    name: Lutron Pico 5 Button - Color Light Control
     description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with a light entity. It is designed to simulate the operation of a standard Lutron Caseta wall dimmer including the press and hold functionality for the raise/lower buttons. It allows for the control over the brightness step percentage and transition speed and the assignment of any action to the middle button."
     source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
 
@@ -13,7 +13,7 @@ blueprint:
                 device:
                     filter:
                         model: PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
-        entity:
+        light_entity:
             name: Light Entity(ies)
             description: "Light entity to control."
             selector:
@@ -21,12 +21,13 @@ blueprint:
                     filter:
                         domain: light
                     multiple: true
-        middle_button_action:
-            name: Middle (Favorite) Button Override
-            description: "Action(s) to execute when MIDDLE button is pressed. If left blank, action will default to setting the light entity to a brightness 80% and color temperature 2700."
+        phase_entity:
+            name: Phase Entity
+            description: "Phase entity to store last phase."
             selector:
-                action: {}
-            default:
+                entity:
+                    filter:
+                        domain: input_number
 
 trigger:
     - trigger: device
@@ -81,10 +82,10 @@ action:
                   id: on_pressed
             sequence:
                 - action: light.turn_on
+                  target:
+                      entity_id: !input light_entity
                   data:
                       brightness_pct: 100
-                  target:
-                      entity_id: !input entity
 
           - conditions:
                 - condition: trigger
@@ -96,13 +97,12 @@ action:
                             data:
                                 brightness_step_pct: 20
                             target:
-                                entity_id: !input entity
-                            continue_on_error: true
+                                entity_id: !input light_entity
                           - delay:
                                 milliseconds: 750
                       until:
                           - condition: state
-                            entity_id: !input entity
+                            entity_id: !input light_entity
                             attribute: brightness
                             state: "100"
 
@@ -118,17 +118,31 @@ action:
                   id: stop_pressed
             sequence:
                 - variables:
-                      middle_button_action: !input middle_button_action
-                - choose:
-                      - conditions: "{{ middle_button_action != none }}"
-                        sequence: !input middle_button_action
-                  default:
-                      - action: light.turn_on
-                        target:
-                            entity_id: !input entity
-                        data:
-                            brightness_pct: 80
-                            kelvin: 2800
+                      phase_entity: !input phase_entity
+                      phases:
+                          0: { color_temp: 357 }
+                          1: { color_temp: 250 }
+                          2: { color_name: "red" }
+                          3: { color_name: "magenta" }
+                          4: { color_name: "blue" }
+                          5: { color_name: "cyan" }
+                          6: { color_name: "green" }
+                      entity_test: !input light_entity
+                      phase: >
+                          {% set phase_value = states(phase_entity) | int(default=0) %}
+                          {% set next_phase = phase_value + 1 %}
+                          {{ 0 if next_phase not in phases else next_phase }}
+                - action: light.turn_on
+                  target:
+                      entity_id: !input light_entity
+                  data: "{{ phases[phase] }}"
+                - action: input_number.set_value
+                  target:
+                      entity_id: !input phase_entity
+                  data:
+                      value: "{{ phase }}"
+                - delay:
+                      milliseconds: 500
 
           - conditions:
                 - condition: trigger
@@ -140,13 +154,12 @@ action:
                             data:
                                 brightness_step_pct: -20
                             target:
-                                entity_id: !input entity
-                            continue_on_error: true
+                                entity_id: !input light_entity
                           - delay:
                                 milliseconds: 750
                       until:
                           - condition: numeric_state
-                            entity_id: !input entity
+                            entity_id: !input light_entity
                             attribute: brightness
                             below: 1
 
@@ -163,6 +176,8 @@ action:
             sequence:
                 - action: light.turn_off
                   target:
-                      entity_id: !input entity
+                      entity_id: !input light_entity
 
 mode: restart
+max: 10
+max_exceeded: silent

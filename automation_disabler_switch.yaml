@@ -1,80 +1,80 @@
 blueprint:
-  name: Automation Disabler - Switch
-  description: |
-    This automation will disable another automation upon the physical actuation of a light switch device.
+    name: Automation Disabler - Switch
+    description: |
+        This automation will disable another automation upon the physical actuation of a light switch device. 
 
-    - Pressing the On, Raise, or Lower buttons will cause the automation to be disabled for the specified time. After the time expires the automation is re-enabled and the switch is turned off.
+        - Pressing the On, Raise, or Lower buttons will cause the automation to be disabled for the specified time. After the time expires the automation is re-enabled and the switch is turned off.
 
-    - Pressing the Off button, will cause the automation to be immediately re-enabled.
+        - Pressing the Off button, will cause the automation to be immediately re-enabled.
 
-  domain: automation
+    domain: automation
 
-  input:
-    light:
-      name: Light Switch(es)
-      description: The light entity(ies) which, when physically pressed, will cause the automation to be controlled.
-      selector:
-        entity:
-          filter:
-            domain: light
-          multiple: true
-    automation:
-      name: Automation(s)
-      description: The automation(s) that will be controlled.
-      selector:
-        entity:
-          filter:
-            domain: automation
-          multiple: true
-    time:
-      name: Time
-      description: The number of minutes for which the automation(s) will be disabled.
-      default: 60
-      selector:
-        number:
-          min: 0
-          max: 1440
-          unit_of_measurement: minutes
+    input:
+        light:
+            name: Light Switch(es)
+            description: The light entity(ies) which, when physically pressed, will cause the automation to be controlled.
+            selector:
+                entity:
+                    filter:
+                        domain: light
+                    multiple: true
+        automation:
+            name: Automation(s)
+            description: The automation(s) that will be controlled.
+            selector:
+                entity:
+                    filter:
+                        domain: automation
+                    multiple: true
+        time:
+            name: Time
+            description: The number of minutes for which the automation(s) will be disabled.
+            default: 60
+            selector:
+                number:
+                    min: 0
+                    max: 1440
+                    unit_of_measurement: minutes
 
 trigger:
-  - platform: state
-    entity_id: !input light
+    - trigger: state
+      entity_id: !input light
 
 condition:
-  - condition: template
-    value_template: >-
-      {{ trigger.to_state.context.parent_id == None and
-      trigger.to_state.context.user_id == None }}
+    - condition: template
+      value_template: >-
+          {{ trigger.to_state.context.parent_id == None and
+          trigger.to_state.context.user_id == None }}
 
 action:
-  - choose:
-      - conditions:
-          - condition: state
-            entity_id: !input light
-            state: "on"
-        sequence:
-          - service: automation.turn_off
-            data: {}
-            target:
-              entity_id: !input automation
-          - delay:
-              minutes: !input time
-          - service: automation.turn_on
-            data: {}
-            target:
-              entity_id: !input automation
-          - service: light.turn_off
-            data: {}
-            target:
-              entity_id: !input light
-      - conditions:
-          - condition: state
-            entity_id: !input light
-            state: "off"
-        sequence:
-          - service: automation.turn_on
-            data: {}
-            target:
-              entity_id: !input automation
+    - choose:
+          - conditions:
+                - condition: state
+                  entity_id: !input light
+                  state: "on"
+            sequence:
+                - action: automation.turn_off
+                  data: {}
+                  target:
+                      entity_id: !input automation
+                - delay:
+                      minutes: !input time
+                - action: automation.turn_on
+                  data: {}
+                  target:
+                      entity_id: !input automation
+                - action: light.turn_off
+                  data: {}
+                  target:
+                      entity_id: !input light
+          - conditions:
+                - condition: state
+                  entity_id: !input light
+                  state: "off"
+            sequence:
+                - action: automation.turn_on
+                  data: {}
+                  target:
+                      entity_id: !input automation
 
 mode: restart

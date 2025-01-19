@@ -1,225 +1,225 @@
 blueprint:
-  name: Sensor Activated Actions
-  description: |
-    This automation allows for the execution of a set of actions based upon (a) the state of one or more sensor entities and (b) the phase of the location.
-  domain: automation
-  input:
-    sensor:
-      name: Sensor
-      description: "Sensor that triggers the execution of any inital action(s)."
-      selector:
-        entity:
-          filter:
-            domain: binary_sensor
-    on_action_all:
-      name: All Phases - Sensor On Actions
-      description: Actions to execute when the sensor changes to the 'on' state.
-      default:
-      selector:
-        action:
-    delay_all:
-      name: All Phases - Duration
-      description: The time (in minutes) to wait before executing the Sensor Off Actions.
-      default: 0
-      selector:
-        number:
-          min: 0
-          max: 120
-          unit_of_measurement: minutes
-    off_action_all:
-      name: All Phases - Sensor Off Actions
-      description: The actions to execute when the sensor changes to the 'off' state.
-      default:
-      selector:
-        action:
+    name: Sensor Activated Actions
+    description: |
+        This automation allows for the execution of a set of actions based upon (a) the state of one or more sensor entities and (b) the phase of the location.
+    domain: automation
+    input:
+        sensor:
+            name: Sensor
+            description: "Sensor that triggers the execution of any inital action(s)."
+            selector:
+                entity:
+                    filter:
+                        domain: binary_sensor
+        on_action_all:
+            name: All Phases - Sensor On Actions
+            description: Actions to execute when the sensor changes to the 'on' state.
+            default:
+            selector:
+                action:
+        delay_all:
+            name: All Phases - Duration
+            description: The time (in minutes) to wait before executing the Sensor Off Actions.
+            default: 0
+            selector:
+                number:
+                    min: 0
+                    max: 120
+                    unit_of_measurement: minutes
+        off_action_all:
+            name: All Phases - Sensor Off Actions
+            description: The actions to execute when the sensor changes to the 'off' state.
+            default:
+            selector:
+                action:
 
-    on_action_morning:
-      name: Morning - Sensor On Actions
-      description: Actions to execute when the sensor changes to the 'on' state.
-      default:
-      selector:
-        action:
-    delay_morning:
-      name: Morning - Duration
-      description: The time (in minutes) to wait before executing the Sensor Off Actions.
-      default: 0
-      selector:
-        number:
-          min: 0
-          max: 120
-          unit_of_measurement: minutes
-    off_action_morning:
-      name: Morning - Sensor Off Actions
-      description: The actions to execute when the sensor changes to the 'off' state.
-      default:
-      selector:
-        action:
+        on_action_morning:
+            name: Morning - Sensor On Actions
+            description: Actions to execute when the sensor changes to the 'on' state.
+            default:
+            selector:
+                action:
+        delay_morning:
+            name: Morning - Duration
+            description: The time (in minutes) to wait before executing the Sensor Off Actions.
+            default: 0
+            selector:
+                number:
+                    min: 0
+                    max: 120
+                    unit_of_measurement: minutes
+        off_action_morning:
+            name: Morning - Sensor Off Actions
+            description: The actions to execute when the sensor changes to the 'off' state.
+            default:
+            selector:
+                action:
 
-    on_action_day:
-      name: Day - Sensor On Actions
-      description: Actions to execute when the sensor changes to the 'on' state.
-      default:
-      selector:
-        action:
-    delay_day:
-      name: Day - Sensor On Actions
-      description: The time (in minutes) to wait before executing the Sensor Off Actions.
-      default: 0
-      selector:
-        number:
-          min: 0
-          max: 120
-          unit_of_measurement: minutes
-    off_action_day:
-      name: Day - Sensor Off Actions
-      description: The actions to execute when the sensor changes to the 'off' state.
-      default:
-      selector:
-        action:
+        on_action_day:
+            name: Day - Sensor On Actions
+            description: Actions to execute when the sensor changes to the 'on' state.
+            default:
+            selector:
+                action:
+        delay_day:
+            name: Day - Sensor On Actions
+            description: The time (in minutes) to wait before executing the Sensor Off Actions.
+            default: 0
+            selector:
+                number:
+                    min: 0
+                    max: 120
+                    unit_of_measurement: minutes
+        off_action_day:
+            name: Day - Sensor Off Actions
+            description: The actions to execute when the sensor changes to the 'off' state.
+            default:
+            selector:
+                action:
 
-    on_action_evening:
-      name: Evening - Sensor On Actions
-      description: Actions to execute when the sensor changes to the 'on' state.
-      default:
-      selector:
-        action:
-    delay_evening:
-      name: Evening - Duration
-      description: The time (in minutes) to wait before executing the Sensor Off Actions.
-      default: 0
-      selector:
-        number:
-          min: 0
-          max: 120
-          unit_of_measurement: minutes
-    off_action_evening:
-      name: Evening - Sensor Off Actions
-      description: The actions to execute when the sensor changes to the 'off' state.
-      default:
-      selector:
-        action:
+        on_action_evening:
+            name: Evening - Sensor On Actions
+            description: Actions to execute when the sensor changes to the 'on' state.
+            default:
+            selector:
+                action:
+        delay_evening:
+            name: Evening - Duration
+            description: The time (in minutes) to wait before executing the Sensor Off Actions.
+            default: 0
+            selector:
+                number:
+                    min: 0
+                    max: 120
+                    unit_of_measurement: minutes
+        off_action_evening:
+            name: Evening - Sensor Off Actions
+            description: The actions to execute when the sensor changes to the 'off' state.
+            default:
+            selector:
+                action:
 
-    on_action_night:
-      name: Night - Sensor On Actions
-      description: Actions to execute when the sensor changes to the 'on' state.
-      default:
-      selector:
-        action:
-    delay_night:
-      name: Night - Duration
-      description: The time (in minutes) to wait before executing the Sensor Off Actions.
-      default: 0
-      selector:
-        number:
-          min: 0
-          max: 120
-          unit_of_measurement: minutes
-    off_action_night:
-      name: Night - Sensor Off Actions
-      description: The actions to execute when the sensor changes to the 'off' state.
-      default:
-      selector:
-        action:
+        on_action_night:
+            name: Night - Sensor On Actions
+            description: Actions to execute when the sensor changes to the 'on' state.
+            default:
+            selector:
+                action:
+        delay_night:
+            name: Night - Duration
+            description: The time (in minutes) to wait before executing the Sensor Off Actions.
+            default: 0
+            selector:
+                number:
+                    min: 0
+                    max: 120
+                    unit_of_measurement: minutes
+        off_action_night:
+            name: Night - Sensor Off Actions
+            description: The actions to execute when the sensor changes to the 'off' state.
+            default:
+            selector:
+                action:
 
 variables:
-  on_action_all: !input on_action_all
-  delay_all: !input delay_all
-  off_action_all: !input off_action_all
+    on_action_all: !input on_action_all
+    delay_all: !input delay_all
+    off_action_all: !input off_action_all
 
-  on_action_morning: !input on_action_morning
-  delay_morning: !input delay_morning
-  off_action_morning: !input off_action_morning
+    on_action_morning: !input on_action_morning
+    delay_morning: !input delay_morning
+    off_action_morning: !input off_action_morning
 
-  on_action_day: !input on_action_day
-  delay_day: !input delay_day
-  off_action_day: !input off_action_day
+    on_action_day: !input on_action_day
+    delay_day: !input delay_day
+    off_action_day: !input off_action_day
 
-  on_action_eveing: !input on_action_evening
-  delay_evening: !input delay_evening
-  off_action_evening: !input off_action_evening
+    on_action_eveing: !input on_action_evening
+    delay_evening: !input delay_evening
+    off_action_evening: !input off_action_evening
 
-  on_action_night: !input on_action_night
-  delay_night: !input delay_night
-  off_action_night: !input off_action_night
+    on_action_night: !input on_action_night
+    delay_night: !input delay_night
+    off_action_night: !input off_action_night
 
 trigger:
-  platform: state
-  entity_id: !input sensor
-  from: "off"
-  to: "on"
+    trigger: state
+    entity_id: !input sensor
+    from: "off"
+    to: "on"
 
 condition: []
 
 action:
-  - choose:
-      - conditions: "{{ on_action_all != none }}"
-        sequence: !input on_action_all
-      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and on_action_morning != none }}"
-        sequence: !input on_action_morning
-      - conditions: "{{ is_state('input_select.location_phase', 'Day') and on_action_day != none }}"
-        sequence: !input on_action_day
-      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and on_action_evening != none }}"
-        sequence: !input on_action_evening
-      - conditions: "{{ is_state('input_select.location_phase', 'Night') and on_action_night != none }}"
-        sequence: !input on_action_night
+    - choose:
+          - conditions: "{{ on_action_all != none }}"
+            sequence: !input on_action_all
+          - conditions: "{{ is_state('input_select.location_phase', 'Morning') and on_action_morning != none }}"
+            sequence: !input on_action_morning
+          - conditions: "{{ is_state('input_select.location_phase', 'Day') and on_action_day != none }}"
+            sequence: !input on_action_day
+          - conditions: "{{ is_state('input_select.location_phase', 'Evening') and on_action_evening != none }}"
+            sequence: !input on_action_evening
+          - conditions: "{{ is_state('input_select.location_phase', 'Night') and on_action_night != none }}"
+            sequence: !input on_action_night
 
-  - choose:
-      - conditions: "{{ on_action_all != none }}"
-        sequence:
-          - wait_for_trigger:
-              platform: state
-              entity_id: !input sensor
-              from: "on"
-              to: "off"
-              for:
-                minutes: !input delay_all
-      - conditions: "{{ is_state('input_select.location_phase', 'Morning') }}"
-        sequence:
-          - wait_for_trigger:
-              platform: state
-              entity_id: !input sensor
-              from: "on"
-              to: "off"
-              for:
-                minutes: !input delay_morning
-      - conditions: "{{ is_state('input_select.location_phase', 'Day') }}"
-        sequence:
-          - wait_for_trigger:
-              platform: state
-              entity_id: !input sensor
-              from: "on"
-              to: "off"
-              for:
-                minutes: !input delay_day
-      - conditions: "{{ is_state('input_select.location_phase', 'Evening') }}"
-        sequence:
-          - wait_for_trigger:
-              platform: state
-              entity_id: !input sensor
-              from: "on"
-              to: "off"
-              for:
-                minutes: !input delay_evening
-      - conditions: "{{ is_state('input_select.location_phase', 'Night') }}"
-        sequence:
-          - wait_for_trigger:
-              platform: state
-              entity_id: !input sensor
-              from: "on"
-              to: "off"
-              for:
-                minutes: !input delay_night
+    - choose:
+          - conditions: "{{ on_action_all != none }}"
+            sequence:
+                - wait_for_trigger:
+                      trigger: state
+                      entity_id: !input sensor
+                      from: "on"
+                      to: "off"
+                      for:
+                          minutes: !input delay_all
+          - conditions: "{{ is_state('input_select.location_phase', 'Morning') }}"
+            sequence:
+                - wait_for_trigger:
+                      trigger: state
+                      entity_id: !input sensor
+                      from: "on"
+                      to: "off"
+                      for:
+                          minutes: !input delay_morning
+          - conditions: "{{ is_state('input_select.location_phase', 'Day') }}"
+            sequence:
+                - wait_for_trigger:
+                      trigger: state
+                      entity_id: !input sensor
+                      from: "on"
+                      to: "off"
+                      for:
+                          minutes: !input delay_day
+          - conditions: "{{ is_state('input_select.location_phase', 'Evening') }}"
+            sequence:
+                - wait_for_trigger:
+                      trigger: state
+                      entity_id: !input sensor
+                      from: "on"
+                      to: "off"
+                      for:
+                          minutes: !input delay_evening
+          - conditions: "{{ is_state('input_select.location_phase', 'Night') }}"
+            sequence:
+                - wait_for_trigger:
+                      trigger: state
+                      entity_id: !input sensor
+                      from: "on"
+                      to: "off"
+                      for:
+                          minutes: !input delay_night
 
-  - choose:
-      - conditions: "{{ off_action_all != none }}"
-        sequence: !input off_action_all
-      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and off_action_morning != none }}"
-        sequence: !input off_action_morning
-      - conditions: "{{ is_state('input_select.location_phase', 'Day') and off_action_day != none }}"
-        sequence: !input off_action_day
-      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and off_action_evening != none }}"
-        sequence: !input off_action_evening
-      - conditions: "{{ is_state('input_select.location_phase', 'Night') and off_action_night != none }}"
-        sequence: !input off_action_night
+    - choose:
+          - conditions: "{{ off_action_all != none }}"
+            sequence: !input off_action_all
+          - conditions: "{{ is_state('input_select.location_phase', 'Morning') and off_action_morning != none }}"
+            sequence: !input off_action_morning
+          - conditions: "{{ is_state('input_select.location_phase', 'Day') and off_action_day != none }}"
+            sequence: !input off_action_day
+          - conditions: "{{ is_state('input_select.location_phase', 'Evening') and off_action_evening != none }}"
+            sequence: !input off_action_evening
+          - conditions: "{{ is_state('input_select.location_phase', 'Night') and off_action_night != none }}"
+            sequence: !input off_action_night
 
 mode: restart
