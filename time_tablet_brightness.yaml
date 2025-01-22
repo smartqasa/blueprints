@@ -1,170 +1,167 @@
 blueprint:
-    name: Tablet Brightness Control
-    description: |
-        This automation allows for the setting of screen brightness for one of more dashboard tablets based upon the location phase.
-    domain: automation
-    input:
-        dashboard:
-            name: Tablet Screen Brightness Entities
-            description: The screen brightness entity ids of the tablets that will be controlled.
-            selector:
-                entity:
-                    filter:
-                        domain: number
-                        integration: fully_kiosk
-                    multiple: true
-        dashboard_morning:
-            name: Morning - Dashboard Brightness
-            description: The level of brightness to set the tablet when displaying the dashboard.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
-        dashboard_day:
-            name: Day - Dashboard Brightness
-            description: The level of brightness to set the tablet when displaying the dashboard.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
-        dashboard_evening:
-            name: Evening - Dashboard Brightness
-            description: The level of brightness to set the tablet when displaying the dashboard.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
-        dashboard_night:
-            name: Night - Dashboard Brightness
-            description: The level of brightness to set the tablet when displaying the dashboard.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
+  name: Tablet Brightness Control
+  description: |
+    This automation allows for the setting of screen brightness for one of more dashboard tablets based upon the location phase.
+  domain: automation
+  input:
+    dashboard:
+      name: Tablet Screen Brightness Entities
+      description: The screen brightness entity ids of the tablets that will be controlled.
+      selector:
+        entity:
+          filter:
+            domain: number
+            integration: fully_kiosk
+          multiple: true
+    dashboard_morning:
+      name: Morning - Dashboard Brightness
+      description: The level of brightness to set the tablet when displaying the dashboard.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
+    dashboard_day:
+      name: Day - Dashboard Brightness
+      description: The level of brightness to set the tablet when displaying the dashboard.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
+    dashboard_evening:
+      name: Evening - Dashboard Brightness
+      description: The level of brightness to set the tablet when displaying the dashboard.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
+    dashboard_night:
+      name: Night - Dashboard Brightness
+      description: The level of brightness to set the tablet when displaying the dashboard.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
 
-        saver:
-            name: Tablets Screen Saver Entities
-            description: The screen saver brightness entity ids of the tablets that will be controlled.
-            selector:
-                entity:
-                    filter:
-                        domain: number
-                    multiple: true
-        saver_morning:
-            name: Morning - Saver Brightness
-            description: The level of brightness to set the tablet when displaying the screen saver.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
-        saver_day:
-            name: Day - Saver Brightness
-            description: The level of brightness to set the tablet when displaying the screen saver.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
-        saver_evening:
-            name: Evening - Saver Brightness
-            description: The level of brightness to set the tablet when displaying the screen saver.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
-        saver_night:
-            name: Night - Saver Brightness
-            description: The level of brightness to set the tablet when displaying the screen saver.
-            default: 255
-            selector:
-                number:
-                    min: 0
-                    max: 255
-                    unit_of_measurement: level
+    saver:
+      name: Tablets Screen Saver Entities
+      description: The screen saver brightness entity ids of the tablets that will be controlled.
+      selector:
+        entity:
+          filter:
+            domain: number
+          multiple: true
+    saver_morning:
+      name: Morning - Saver Brightness
+      description: The level of brightness to set the tablet when displaying the screen saver.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
+    saver_day:
+      name: Day - Saver Brightness
+      description: The level of brightness to set the tablet when displaying the screen saver.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
+    saver_evening:
+      name: Evening - Saver Brightness
+      description: The level of brightness to set the tablet when displaying the screen saver.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
+    saver_night:
+      name: Night - Saver Brightness
+      description: The level of brightness to set the tablet when displaying the screen saver.
+      default: 255
+      selector:
+        number:
+          min: 0
+          max: 255
+          unit_of_measurement: level
 
 trigger:
-    - trigger: state
-      entity_id: input_select.location_phase
-
-    - trigger: state
-      entity_id: input_button.tablet_brightness
+  - trigger: state
+    entity_id: input_button.location_phase
 
 condition: []
 
 action:
-    - choose:
-          - conditions:
-                - condition: state
-                  entity_id: input_select.location_phase
-                  state: Morning
-            sequence:
-                - action: number.set_value
-                  data:
-                      value: !input dashboard_morning
-                  target:
-                      entity_id: !input dashboard
-                - action: number.set_value
-                  data:
-                      value: !input saver_morning
-                  target:
-                      entity_id: !input saver
-          - conditions:
-                - condition: state
-                  entity_id: input_select.location_phase
-                  state: Day
-            sequence:
-                - action: number.set_value
-                  data:
-                      value: !input dashboard_day
-                  target:
-                      entity_id: !input dashboard
-                - action: number.set_value
-                  data:
-                      value: !input saver_day
-                  target:
-                      entity_id: !input saver
-          - conditions:
-                - condition: state
-                  entity_id: input_select.location_phase
-                  state: Evening
-            sequence:
-                - action: number.set_value
-                  data:
-                      value: !input dashboard_evening
-                  target:
-                      entity_id: !input dashboard
-                - action: number.set_value
-                  data:
-                      value: !input saver_evening
-                  target:
-                      entity_id: !input saver
-          - conditions:
-                - condition: state
-                  entity_id: input_select.location_phase
-                  state: Night
-            sequence:
-                - action: number.set_value
-                  data:
-                      value: !input dashboard_night
-                  target:
-                      entity_id: !input dashboard
-                - action: number.set_value
-                  data:
-                      value: !input saver_night
-                  target:
-                      entity_id: !input saver
+  - choose:
+      - conditions:
+          - condition: state
+            entity_id: input_select.location_phase
+            state: Morning
+        sequence:
+          - action: number.set_value
+            data:
+              value: !input dashboard_morning
+            target:
+              entity_id: !input dashboard
+          - action: number.set_value
+            data:
+              value: !input saver_morning
+            target:
+              entity_id: !input saver
+      - conditions:
+          - condition: state
+            entity_id: input_select.location_phase
+            state: Day
+        sequence:
+          - action: number.set_value
+            data:
+              value: !input dashboard_day
+            target:
+              entity_id: !input dashboard
+          - action: number.set_value
+            data:
+              value: !input saver_day
+            target:
+              entity_id: !input saver
+      - conditions:
+          - condition: state
+            entity_id: input_select.location_phase
+            state: Evening
+        sequence:
+          - action: number.set_value
+            data:
+              value: !input dashboard_evening
+            target:
+              entity_id: !input dashboard
+          - action: number.set_value
+            data:
+              value: !input saver_evening
+            target:
+              entity_id: !input saver
+      - conditions:
+          - condition: state
+            entity_id: input_select.location_phase
+            state: Night
+        sequence:
+          - action: number.set_value
+            data:
+              value: !input dashboard_night
+            target:
+              entity_id: !input dashboard
+          - action: number.set_value
+            data:
+              value: !input saver_night
+            target:
+              entity_id: !input saver
 
 mode: single
