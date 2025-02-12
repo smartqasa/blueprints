@@ -23,6 +23,9 @@ blueprint:
             domain: light
           multiple: true
 
+variables:
+  long_press_threshold: 0.4 # Adjust this for how long the hold duration should be
+
 trigger:
   - platform: device
     device_id: !input pico_remote
@@ -59,23 +62,31 @@ action:
           - condition: trigger
             id: on_pressed
         sequence:
-          - wait_for_trigger:
-              - platform: device
-                device_id: !input pico_remote
-                domain: lutron_caseta
-                type: release
-                subtype: "Button 0"
-            timeout: "0.4"
-            continue_on_timeout: true
+          - variables:
+              pressed_time: "{{ now().timestamp() }}" # Capture press time
+
+      # Handle OFF Button Pressed
+      - conditions:
+          - condition: trigger
+            id: off_pressed
+        sequence:
+          - variables:
+              pressed_time: "{{ now().timestamp() }}" # Capture press time
+
+      # Handle ON Button Released
+      - conditions:
+          - condition: trigger
+            id: on_released
+        sequence:
+          - variables:
+              duration: "{{ now().timestamp() - pressed_time }}" # Calculate press duration
           - choose:
-              # If released within 0.4s, toggle light
-              - conditions: "{{ wait.trigger is not none }}"
+              - conditions: "{{ duration < long_press_threshold }}" # Short press
                 sequence:
                   - service: light.toggle
                     target:
                       entity_id: !input entity
-              # If held, increase brightness
-              - conditions: []
+              - conditions: [] # Long press
                 sequence:
                   - repeat:
                       sequence:
@@ -90,28 +101,20 @@ action:
                         - condition: trigger
                           id: on_released
 
-      # Handle OFF Button Pressed
+      # Handle OFF Button Released
       - conditions:
           - condition: trigger
-            id: off_pressed
+            id: off_released
         sequence:
-          - wait_for_trigger:
-              - platform: device
-                device_id: !input pico_remote
-                domain: lutron_caseta
-                type: release
-                subtype: "Button 2"
-            timeout: "0.4"
-            continue_on_timeout: true
+          - variables:
+              duration: "{{ now().timestamp() - pressed_time }}" # Calculate press duration
           - choose:
-              # If released within 0.4s, toggle light
-              - conditions: "{{ wait.trigger is not none }}"
+              - conditions: "{{ duration < long_press_threshold }}" # Short press
                 sequence:
                   - service: light.toggle
                     target:
                       entity_id: !input entity
-              # If held, decrease brightness
-              - conditions: []
+              - conditions: [] # Long press
                 sequence:
                   - repeat:
                       sequence:
