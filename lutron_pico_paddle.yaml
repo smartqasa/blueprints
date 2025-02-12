@@ -65,11 +65,17 @@ action:
                 domain: lutron_caseta
                 type: release
                 subtype: "Button 0"
-            timeout: "0.4" # Adjust this timeout for press duration
+            timeout: "0.4"
             continue_on_timeout: true
           - choose:
-              # If timeout occurred, treat as long press (brightness increase)
-              - conditions: "{{ wait.trigger is none }}"
+              # If released within 0.4s, toggle light
+              - conditions: "{{ wait.trigger is not none }}"
+                sequence:
+                  - service: light.toggle
+                    target:
+                      entity_id: !input entity
+              # If held, increase brightness
+              - conditions: []
                 sequence:
                   - repeat:
                       sequence:
@@ -83,12 +89,6 @@ action:
                       until:
                         - condition: trigger
                           id: on_released
-              # Otherwise, treat as a short press (toggle on)
-              - conditions: []
-                sequence:
-                  - service: light.turn_on
-                    target:
-                      entity_id: !input entity
 
       # Handle OFF Button Pressed
       - conditions:
@@ -104,8 +104,14 @@ action:
             timeout: "0.4"
             continue_on_timeout: true
           - choose:
-              # If timeout occurred, treat as long press (brightness decrease)
-              - conditions: "{{ wait.trigger is none }}"
+              # If released within 0.4s, toggle light
+              - conditions: "{{ wait.trigger is not none }}"
+                sequence:
+                  - service: light.toggle
+                    target:
+                      entity_id: !input entity
+              # If held, decrease brightness
+              - conditions: []
                 sequence:
                   - repeat:
                       sequence:
@@ -119,11 +125,5 @@ action:
                       until:
                         - condition: trigger
                           id: off_released
-              # Otherwise, treat as a short press (toggle off)
-              - conditions: []
-                sequence:
-                  - service: light.turn_off
-                    target:
-                      entity_id: !input entity
 
 mode: restart
