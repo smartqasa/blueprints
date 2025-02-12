@@ -32,7 +32,7 @@ trigger:
     id: on_pressed
 
 variables:
-  press_duration: 0.5
+  press_duration: 0.25
   step_pct: 10
 
 action:
