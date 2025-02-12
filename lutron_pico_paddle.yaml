@@ -72,9 +72,12 @@ action:
                           subtype: Button 0
                       timeout: "{{ press_duration }}"
                       continue_on_timeout: true
+                    - if:
+                        - "{{ not wait.completed }}"
+                      then:
+                        - break
+
                   until:
-                    - condition: template
-                      value_template: "{{ not wait.completed }}"
                     - condition: numeric_state
                       entity_id: !input entity
                       attribute: brightness
