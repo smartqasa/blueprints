@@ -1,5 +1,5 @@
 blueprint:
-  name: Lutron Pico 2 Button - Light/Switch
+  name: Lutron Pico Paddle - Light/Switch
   description: |
     This automation allows for the control of one or more light or switch entities by a Lutron 2 Button Pico (PJ2-2B-GXX-X01).
 
@@ -12,7 +12,7 @@ blueprint:
       selector:
         device:
           filter:
-            model: PJ2-2B-GXX-X01 (Pico2Button)
+            model: PJ2-1P-GXX (PaddleSwitchPico)
     entity:
       name: Entity(ies)
       description: "Light or switch entity to control."
@@ -29,14 +29,14 @@ trigger:
     device_id: !input pico_remote
     domain: lutron_caseta
     type: press
-    subtype: "on"
+    subtype: "Button 0"
     id: on_pressed
 
   - trigger: device
     device_id: !input pico_remote
     domain: lutron_caseta
     type: press
-    subtype: "off"
+    subtype: "Button 2"
     id: off_pressed
 
 condition: []
