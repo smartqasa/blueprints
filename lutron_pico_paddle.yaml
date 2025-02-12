@@ -72,7 +72,7 @@ action:
                       timeout: "{{ press_duration }}"
                       continue_on_timeout: true
                     - if:
-                        - "{{ wait.completed }}"
+                        - "{{ not wait.completed }}"
                       then:
                         - stop:
                   until:
