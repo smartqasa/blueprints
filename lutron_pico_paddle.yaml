@@ -23,110 +23,101 @@ blueprint:
             domain: light
           multiple: true
 
-variables:
-  long_press_threshold: 0.4 # Adjust this for how long the hold duration should be
-
 trigger:
   - platform: device
     device_id: !input pico_remote
     domain: lutron_caseta
     type: press
-    subtype: "Button 0"
+    subtype: Button 0
     id: on_pressed
 
   - platform: device
     device_id: !input pico_remote
     domain: lutron_caseta
     type: release
-    subtype: "Button 0"
-    id: on_released
+    subtype: Button 0
+    id: on_releaseed
 
   - platform: device
     device_id: !input pico_remote
     domain: lutron_caseta
     type: press
-    subtype: "Button 2"
+    subtype: Button 2
     id: off_pressed
 
   - platform: device
     device_id: !input pico_remote
     domain: lutron_caseta
     type: release
-    subtype: "Button 2"
+    subtype: Button 2
     id: off_released
+
+variables:
+  cycle_delay: 750
+  step_pct: 20
 
 action:
   - choose:
-      # Handle ON Button Pressed
       - conditions:
           - condition: trigger
             id: on_pressed
         sequence:
-          - variables:
-              pressed_time: "{{ now().timestamp() }}" # Capture press time
+          - action: light.turn_on
+            target:
+              entity_id: !input entity
+          - delay:
+              milliseconds: "{{ cycle_delay }}"
+          - repeat:
+              sequence:
+                - action: light.turn_on
+                  data:
+                    brightness_step_pct: "{{step_pct}}"
+                  target:
+                    entity_id: !input entity
+                  continue_on_error: true
+                - delay:
+                    milliseconds: "{{ cycle_delay }}"
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  above: 254
+      - conditions:
+          - condition: trigger
+            id: up_released
+        sequence:
+          - delay:
+              milliseconds: 1
 
-      # Handle OFF Button Pressed
       - conditions:
           - condition: trigger
             id: off_pressed
         sequence:
-          - variables:
-              pressed_time: "{{ now().timestamp() }}" # Capture press time
-
-      # Handle ON Button Released
+          - action: light.turn_on
+            target:
+              entity_id: !input entity
+          - delay:
+              milliseconds: "{{ cycle_delay }}"
+          - repeat:
+              sequence:
+                - action: light.turn_on
+                  data:
+                    brightness_step_pct: "{{step_pct}}"
+                  target:
+                    entity_id: !input entity
+                  continue_on_error: true
+                - delay:
+                    milliseconds: "{{ cycle_delay }}"
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  above: 254
       - conditions:
           - condition: trigger
-            id: on_released
+            id: up_released
         sequence:
-          - variables:
-              duration: "{{ now().timestamp() - pressed_time }}" # Calculate press duration
-          - choose:
-              - conditions: "{{ duration < long_press_threshold }}" # Short press
-                sequence:
-                  - service: light.toggle
-                    target:
-                      entity_id: !input entity
-              - conditions: [] # Long press
-                sequence:
-                  - repeat:
-                      sequence:
-                        - service: light.turn_on
-                          target:
-                            entity_id: !input entity
-                          data:
-                            brightness_step_pct: 10
-                        - delay:
-                            milliseconds: 500
-                      until:
-                        - condition: trigger
-                          id: on_released
-
-      # Handle OFF Button Released
-      - conditions:
-          - condition: trigger
-            id: off_released
-        sequence:
-          - variables:
-              duration: "{{ now().timestamp() - pressed_time }}" # Calculate press duration
-          - choose:
-              - conditions: "{{ duration < long_press_threshold }}" # Short press
-                sequence:
-                  - service: light.toggle
-                    target:
-                      entity_id: !input entity
-              - conditions: [] # Long press
-                sequence:
-                  - repeat:
-                      sequence:
-                        - service: light.turn_on
-                          target:
-                            entity_id: !input entity
-                          data:
-                            brightness_step_pct: -10
-                        - delay:
-                            milliseconds: 500
-                      until:
-                        - condition: trigger
-                          id: off_released
+          - delay:
+              milliseconds: 1
 
 mode: restart

@@ -1,168 +1,170 @@
 blueprint:
-    name: Lutron Pico 5 Button - Light Entity Control
-    description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with a light entity. It is designed to simulate the operation of a standard Lutron Caseta wall dimmer including the press and hold functionality for the raise/lower buttons. It allows for the control over the brightness step percentage and transition speed and the assignment of any action to the middle button."
-    source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
+  name: Lutron Pico 5 Button - Light Entity Control
+  description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with a light entity. It is designed to simulate the operation of a standard Lutron Caseta wall dimmer including the press and hold functionality for the raise/lower buttons. It allows for the control over the brightness step percentage and transition speed and the assignment of any action to the middle button."
+  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
 
-    domain: automation
+  domain: automation
 
-    input:
-        pico:
-            name: Pico Device
-            description: "Pico remote to associate with light entity."
-            selector:
-                device:
-                    filter:
-                        model: PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
+  input:
+    pico:
+      name: Pico Device
+      description: "Pico remote to associate with light entity."
+      selector:
+        device:
+          filter:
+            model: PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
+    entity:
+      name: Light Entity(ies)
+      description: "Light entity to control."
+      selector:
         entity:
-            name: Light Entity(ies)
-            description: "Light entity to control."
-            selector:
-                entity:
-                    filter:
-                        domain: light
-                    multiple: true
-        middle_button_action:
-            name: Middle (Favorite) Button Override
-            description: "Action(s) to execute when MIDDLE button is pressed. If left blank, action will default to setting the light entity to a brightness 80% and color temperature 2700."
-            selector:
-                action: {}
-            default:
+          filter:
+            domain: light
+          multiple: true
+    middle_button_action:
+      name: Middle (Favorite) Button Override
+      description: "Action(s) to execute when MIDDLE button is pressed. If left blank, action will default to setting the light entity to a brightness 80% and color temperature 2700."
+      selector:
+        action: {}
+      default:
 
 trigger:
-    - trigger: device
-      device_id: !input pico
-      domain: lutron_caseta
-      type: press
-      subtype: "on"
-      id: on_pressed
-    - trigger: device
-      device_id: !input pico
-      domain: lutron_caseta
-      type: press
-      subtype: "raise"
-      id: up_pressed
-    - trigger: device
-      device_id: !input pico
-      domain: lutron_caseta
-      type: release
-      subtype: "raise"
-      id: up_released
-    - trigger: device
-      device_id: !input pico
-      domain: lutron_caseta
-      type: press
-      subtype: "stop"
-      id: stop_pressed
-    - trigger: device
-      device_id: !input pico
-      domain: lutron_caseta
-      type: press
-      subtype: "lower"
-      id: down_pressed
-    - trigger: device
-      device_id: !input pico
-      domain: lutron_caseta
-      type: release
-      subtype: "lower"
-      id: down_released
-    - trigger: device
-      device_id: !input pico
-      domain: lutron_caseta
-      type: press
-      subtype: "off"
-      id: off_pressed
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "on"
+    id: on_pressed
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "raise"
+    id: up_pressed
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: release
+    subtype: "raise"
+    id: up_released
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "stop"
+    id: stop_pressed
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "lower"
+    id: down_pressed
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: release
+    subtype: "lower"
+    id: down_released
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "off"
+    id: off_pressed
 
-condition: []
+variables:
+  cycle_delay: 750
+  step_pct: 20
 
 action:
-    - choose:
-          - conditions:
-                - condition: trigger
-                  id: on_pressed
-            sequence:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: on_pressed
+        sequence:
+          - action: light.turn_on
+            data:
+              brightness_pct: 100
+            target:
+              entity_id: !input entity
+
+      - conditions:
+          - condition: trigger
+            id: up_pressed
+        sequence:
+          - repeat:
+              sequence:
                 - action: light.turn_on
                   data:
-                      brightness_pct: 100
+                    brightness_step_pct: "{{ step_pct }}"
                   target:
-                      entity_id: !input entity
-
-          - conditions:
-                - condition: trigger
-                  id: up_pressed
-            sequence:
-                - repeat:
-                      sequence:
-                          - action: light.turn_on
-                            data:
-                                brightness_step_pct: 20
-                            target:
-                                entity_id: !input entity
-                            continue_on_error: true
-                          - delay:
-                                milliseconds: 750
-                      until:
-                          - condition: state
-                            entity_id: !input entity
-                            attribute: brightness
-                            state: "100"
-
-          - conditions:
-                - condition: trigger
-                  id: up_released
-            sequence:
+                    entity_id: !input entity
+                  continue_on_error: true
                 - delay:
-                      milliseconds: 1
+                    milliseconds: "{{ cycle_delay }}"
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  above: 254
 
-          - conditions:
-                - condition: trigger
-                  id: stop_pressed
-            sequence:
-                - variables:
-                      middle_button_action: !input middle_button_action
-                - choose:
-                      - conditions: "{{ middle_button_action != none }}"
-                        sequence: !input middle_button_action
-                  default:
-                      - action: light.turn_on
-                        target:
-                            entity_id: !input entity
-                        data:
-                            brightness_pct: 80
-                            kelvin: 2800
+      - conditions:
+          - condition: trigger
+            id: up_released
+        sequence:
+          - delay:
+              milliseconds: 1
 
-          - conditions:
-                - condition: trigger
-                  id: down_pressed
-            sequence:
-                - repeat:
-                      sequence:
-                          - action: light.turn_on
-                            data:
-                                brightness_step_pct: -20
-                            target:
-                                entity_id: !input entity
-                            continue_on_error: true
-                          - delay:
-                                milliseconds: 750
-                      until:
-                          - condition: numeric_state
-                            entity_id: !input entity
-                            attribute: brightness
-                            below: 1
+      - conditions:
+          - condition: trigger
+            id: stop_pressed
+        sequence:
+          - variables:
+              middle_button_action: !input middle_button_action
+          - choose:
+              - conditions: "{{ middle_button_action != none }}"
+                sequence: !input middle_button_action
+            default:
+              - action: light.turn_on
+                target:
+                  entity_id: !input entity
+                data:
+                  brightness_pct: 80
+                  kelvin: 2800
 
-          - conditions:
-                - condition: trigger
-                  id: down_released
-            sequence:
-                - delay:
-                      milliseconds: 1
-
-          - conditions:
-                - condition: trigger
-                  id: off_pressed
-            sequence:
-                - action: light.turn_off
+      - conditions:
+          - condition: trigger
+            id: down_pressed
+        sequence:
+          - repeat:
+              sequence:
+                - action: light.turn_on
+                  data:
+                    brightness_step_pct: "{{ -step_pct }}"
                   target:
-                      entity_id: !input entity
+                    entity_id: !input entity
+                  continue_on_error: true
+                - delay:
+                    milliseconds: "{{ cycle_delay }}"
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  below: 1
+
+      - conditions:
+          - condition: trigger
+            id: down_released
+        sequence:
+          - delay:
+              milliseconds: 1
+
+      - conditions:
+          - condition: trigger
+            id: off_pressed
+        sequence:
+          - action: light.turn_off
+            target:
+              entity_id: !input entity
 
 mode: restart
