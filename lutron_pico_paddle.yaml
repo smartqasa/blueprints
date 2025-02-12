@@ -32,9 +32,9 @@ trigger:
     id: on_pressed
 
 variables:
-  cycle_delay: 750
-  step_pct: 20
-  press_duration: 0.25
+  press_duration: 0.5
+  cycle_delay: 500
+  step_pct: 10
 
 action:
   - choose:
