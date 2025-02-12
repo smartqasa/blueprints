@@ -75,7 +75,7 @@ action:
                       continue_on_timeout: true
                   until:
                     - condition: template
-                      value: "{{ wait.completed }}"
+                      value_template: "{{ wait.completed }}"
                     - condition: numeric_state
                       entity_id: !input entity
                       attribute: brightness
