@@ -119,7 +119,7 @@ action:
                           device_id: !input pico_remote
                           domain: lutron_caseta
                           type: release
-                          subtype: Button 0
+                          subtype: Button 2
                       timeout: "{{ press_duration }}"
                       continue_on_timeout: true
                     - if:
