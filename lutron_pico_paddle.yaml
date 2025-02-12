@@ -64,7 +64,6 @@ action:
                       target:
                         entity_id: !input entity
                       continue_on_error: true
-
                     - wait_for_trigger:
                         - trigger: device
                           device_id: !input pico_remote
@@ -73,12 +72,9 @@ action:
                           subtype: Button 0
                       timeout: "{{ press_duration }}"
                       continue_on_timeout: true
-                    - if:
-                        - "{{ wait.completed }}"
-                      then:
-                        - break
-
                   until:
+                    - condition: template
+                      value_template: "{{ not wait.completed }}"
                     - condition: numeric_state
                       entity_id: !input entity
                       attribute: brightness
