@@ -48,9 +48,6 @@ action:
           - condition: trigger
             id: on_pressed
         sequence:
-          - action: light.turn_on
-            target:
-              entity_id: !input entity
           - wait_for_trigger:
               - trigger: device
                 device_id: !input pico_remote
@@ -60,8 +57,14 @@ action:
             timeout: "{{ press_duration }}"
             continue_on_timeout: true
           - if:
-              - "{{ wait.remaining == 0 }}"
+              - "{{ wait.remaining > 0 }}"
             then:
+              - action: light.turn_on
+                target:
+                  entity_id: !input entity
+                data:
+                  brightness: 255
+            else:
               - repeat:
                   sequence:
                     - action: light.turn_on
