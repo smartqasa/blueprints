@@ -32,7 +32,7 @@ trigger:
     id: on_pressed
 
 variables:
-  press_duration: 0.25
+  press_duration: 0.4
   step_pct: 10
 
 action:
@@ -53,7 +53,7 @@ action:
             timeout: "{{ press_duration }}"
             continue_on_timeout: true
           - if:
-              - "{{ wait.completed }}"
+              - "{{ wait.remaining is none }}"
             then:
               - repeat:
                   sequence:
@@ -71,11 +71,9 @@ action:
                           subtype: Button 0
                       timeout: "{{ press_duration }}"
                       continue_on_timeout: true
-                    - if:
-                        - "{{ not wait.completed }}"
-                      then:
-                        - stop:
                   until:
+                    - condition: template
+                      value_template: "{{ wait.remaining is none }}"
                     - condition: numeric_state
                       entity_id: !input entity
                       attribute: brightness
