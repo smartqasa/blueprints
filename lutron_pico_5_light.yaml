@@ -44,12 +44,6 @@ trigger:
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
-    type: release
-    subtype: "raise"
-    id: up_released
-  - trigger: device
-    device_id: !input pico
-    domain: lutron_caseta
     type: press
     subtype: "stop"
     id: stop_pressed
@@ -62,19 +56,13 @@ trigger:
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
-    type: release
-    subtype: "lower"
-    id: down_released
-  - trigger: device
-    device_id: !input pico
-    domain: lutron_caseta
     type: press
     subtype: "off"
     id: off_pressed
 
 variables:
-  cycle_delay: 750
-  step_pct: 20
+  press_duration: 0.3
+  step_pct: 10
 
 action:
   - choose:
@@ -100,20 +88,23 @@ action:
                   target:
                     entity_id: !input entity
                   continue_on_error: true
-                - delay:
-                    milliseconds: "{{ cycle_delay }}"
+                - wait_for_trigger:
+                    - trigger: device
+                      device_id: !input pico_remote
+                      domain: lutron_caseta
+                      type: release
+                      subtype: Button 0
+                  timeout: "{{ press_duration }}"
+                  continue_on_timeout: true
+                - if:
+                    - "{{ wait.remaining > 0 }}"
+                  then:
+                    - stop:
               until:
                 - condition: numeric_state
                   entity_id: !input entity
                   attribute: brightness
                   above: 254
-
-      - conditions:
-          - condition: trigger
-            id: up_released
-        sequence:
-          - delay:
-              milliseconds: 1
 
       - conditions:
           - condition: trigger
@@ -144,20 +135,23 @@ action:
                   target:
                     entity_id: !input entity
                   continue_on_error: true
-                - delay:
-                    milliseconds: "{{ cycle_delay }}"
+                - wait_for_trigger:
+                    - trigger: device
+                      device_id: !input pico_remote
+                      domain: lutron_caseta
+                      type: release
+                      subtype: Button 2
+                  timeout: "{{ press_duration }}"
+                  continue_on_timeout: true
+                - if:
+                    - "{{ wait.remaining > 0 }}"
+                  then:
+                    - stop:
               until:
                 - condition: numeric_state
                   entity_id: !input entity
                   attribute: brightness
                   below: 1
-
-      - conditions:
-          - condition: trigger
-            id: down_released
-        sequence:
-          - delay:
-              milliseconds: 1
 
       - conditions:
           - condition: trigger
