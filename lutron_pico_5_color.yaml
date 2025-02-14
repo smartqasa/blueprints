@@ -85,7 +85,7 @@ action:
               data:
                 brightness_step_pct: "{{ step_pct }}"
               target:
-                entity_id: !input entity
+                entity_id: !input light_entity
               continue_on_error: true
             - wait_for_trigger:
                 - trigger: device
@@ -101,7 +101,7 @@ action:
                 - stop:
           until:
             - condition: numeric_state
-              entity_id: !input entity
+              entity_id: !input light_entity
               attribute: brightness
               above: 254
 
@@ -146,7 +146,7 @@ action:
                   data:
                     brightness_step_pct: "{{ -step_pct }}"
                   target:
-                    entity_id: !input entity
+                    entity_id: !input light_entity
                   continue_on_error: true
                 - wait_for_trigger:
                     - trigger: device
@@ -162,7 +162,7 @@ action:
                     - stop:
               until:
                 - condition: numeric_state
-                  entity_id: !input entity
+                  entity_id: !input light_entity
                   attribute: brightness
                   below: 1
 
