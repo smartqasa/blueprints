@@ -79,31 +79,31 @@ action:
           - condition: trigger
             id: up_pressed
         sequence:
-      - repeat:
-          sequence:
-            - action: light.turn_on
-              data:
-                brightness_step_pct: "{{ step_pct }}"
-              target:
-                entity_id: !input light_entity
-              continue_on_error: true
-            - wait_for_trigger:
-                - trigger: device
-                  device_id: !input pico
-                  domain: lutron_caseta
-                  type: release
-                  subtype: raise
-              timeout: "{{ press_duration }}"
-              continue_on_timeout: true
-            - if:
-                - "{{ wait.remaining > 0 }}"
-              then:
-                - stop:
-          until:
-            - condition: numeric_state
-              entity_id: !input light_entity
-              attribute: brightness
-              above: 254
+          - repeat:
+              sequence:
+                - action: light.turn_on
+                  data:
+                    brightness_step_pct: "{{ step_pct }}"
+                  target:
+                    entity_id: !input light_entity
+                  continue_on_error: true
+                - wait_for_trigger:
+                    - trigger: device
+                      device_id: !input pico
+                      domain: lutron_caseta
+                      type: release
+                      subtype: raise
+                  timeout: "{{ press_duration }}"
+                  continue_on_timeout: true
+                - if:
+                    - "{{ wait.remaining > 0 }}"
+                  then:
+                    - stop:
+              until:
+                - condition: numeric_state
+                  entity_id: !input light_entity
+                  attribute: brightness
+                  above: 254
 
       - conditions:
           - condition: trigger
