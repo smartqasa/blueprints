@@ -93,7 +93,7 @@ action:
                       device_id: !input pico
                       domain: lutron_caseta
                       type: release
-                      subtype: Button 0
+                      subtype: raise
                   timeout: "{{ press_duration }}"
                   continue_on_timeout: true
                 - if:
@@ -140,7 +140,7 @@ action:
                       device_id: !input pico
                       domain: lutron_caseta
                       type: release
-                      subtype: Button 2
+                      subtype: lower
                   timeout: "{{ press_duration }}"
                   continue_on_timeout: true
                 - if:
