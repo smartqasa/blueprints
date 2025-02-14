@@ -7,7 +7,7 @@ blueprint:
   domain: automation
 
   input:
-    pico_remote:
+    pico:
       name: Pico Remote
       description: "Select the Pico remote to configure:"
       selector:
@@ -25,14 +25,14 @@ blueprint:
 
 trigger:
   - trigger: device
-    device_id: !input pico_remote
+    device_id: !input pico
     domain: lutron_caseta
     type: press
     subtype: Button 0
     id: on_pressed
 
   - trigger: device
-    device_id: !input pico_remote
+    device_id: !input pico
     domain: lutron_caseta
     type: press
     subtype: Button 2
@@ -50,7 +50,7 @@ action:
         sequence:
           - wait_for_trigger:
               - trigger: device
-                device_id: !input pico_remote
+                device_id: !input pico
                 domain: lutron_caseta
                 type: release
                 subtype: Button 0
@@ -75,7 +75,7 @@ action:
                       continue_on_error: true
                     - wait_for_trigger:
                         - trigger: device
-                          device_id: !input pico_remote
+                          device_id: !input pico
                           domain: lutron_caseta
                           type: release
                           subtype: Button 0
@@ -96,10 +96,10 @@ action:
         sequence:
           - wait_for_trigger:
               - trigger: device
-                device_id: !input pico_remote
+                device_id: !input pico
                 domain: lutron_caseta
                 type: release
-                subtype: Button 0
+                subtype: Button 2
             timeout: "{{ press_duration }}"
             continue_on_timeout: true
           - if:
@@ -119,7 +119,7 @@ action:
                       continue_on_error: true
                     - wait_for_trigger:
                         - trigger: device
-                          device_id: !input pico_remote
+                          device_id: !input pico
                           domain: lutron_caseta
                           type: release
                           subtype: Button 2

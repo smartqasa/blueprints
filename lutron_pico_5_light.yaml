@@ -33,31 +33,31 @@ trigger:
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "on"
+    subtype: on
     id: on_pressed
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "raise"
+    subtype: raise
     id: up_pressed
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "stop"
+    subtype: stop
     id: stop_pressed
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "lower"
+    subtype: lower
     id: down_pressed
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "off"
+    subtype: off
     id: off_pressed
 
 variables:
