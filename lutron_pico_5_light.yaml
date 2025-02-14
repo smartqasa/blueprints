@@ -90,7 +90,7 @@ action:
                   continue_on_error: true
                 - wait_for_trigger:
                     - trigger: device
-                      device_id: !input pico_remote
+                      device_id: !input pico
                       domain: lutron_caseta
                       type: release
                       subtype: Button 0
@@ -137,7 +137,7 @@ action:
                   continue_on_error: true
                 - wait_for_trigger:
                     - trigger: device
-                      device_id: !input pico_remote
+                      device_id: !input pico
                       domain: lutron_caseta
                       type: release
                       subtype: Button 2
