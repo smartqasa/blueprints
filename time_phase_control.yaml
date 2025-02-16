@@ -3,8 +3,8 @@ blueprint:
   description: Change the phase of the day based on time triggers, with minute offsets for sunrise and sunset.
   domain: automation
   input:
-    sunrise_offset:
-      name: Sunrise Offset
+    morning:
+      name: Morning
       description: "Offset for the sunrise time in minutes (e.g., '-30' for 30 minutes before sunrise, '15' for 15 minutes after)."
       default: 0
       selector:
@@ -12,14 +12,14 @@ blueprint:
           min: -999
           max: 999
           mode: box
-    day_time:
-      name: Day Time
+    day:
+      name: Day
       description: Time when it's considered day.
       default: "08:00:00"
       selector:
         time: {}
-    sunset_offset:
-      name: Sunset Offset
+    evening:
+      name: Evening
       description: "Offset for the sunset time in minutes (e.g., '-30' for 30 minutes before sunset, '15' for 15 minutes after)."
       default: 0
       selector:
@@ -27,8 +27,8 @@ blueprint:
           min: -999
           max: 999
           mode: box
-    night_time:
-      name: Night Time
+    night:
+      name: Night
       description: Time when it's considered night.
       default: "23:00:00"
       selector:
@@ -37,17 +37,17 @@ blueprint:
 trigger:
   - trigger: sun
     event: sunrise
-    offset: !input "sunrise_offset"
+    offset: !input morning
     id: morning
   - trigger: time
-    at: !input "day_time"
+    at: !input day
     id: day
   - trigger: sun
     event: sunset
-    offset: !input "sunset_offset"
+    offset: !input evening
     id: evening
   - trigger: time
-    at: !input "night_time"
+    at: !input night
     id: night
 
 action:
@@ -93,6 +93,7 @@ action:
               entity_id: input_select.location_phase
             data:
               option: Night
+
   - action: input_button.press
     target:
       entity_id: input_button.location_phase
