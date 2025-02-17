@@ -80,8 +80,8 @@ action:
           - condition: trigger
             id: up_pressed
         sequence:
-          - variable:
-              break: false
+          - variables:
+              stop_repeat: false
           - repeat:
               sequence:
                 - action: light.turn_on
@@ -98,14 +98,11 @@ action:
                       subtype: raise
                   timeout: "{{ press_duration }}"
                   continue_on_timeout: true
-                - if:
-                    - "{{ wait.remaining > 0 }}"
-                  then:
-                    - variable:
-                        break: true
+                - variables:
+                    stop_repeat: "{{ wait.remaining > 0 }}"
               until:
                 - consition: template
-                  value_template: "{{ break }}"
+                  value_template: "{{ stop_repeat }}"
                 - condition: numeric_state
                   entity_id: !input entity
                   attribute: brightness
@@ -132,8 +129,8 @@ action:
           - condition: trigger
             id: down_pressed
         sequence:
-          - variable:
-              break: false
+          - variables:
+              stop_repeat: false
           - repeat:
               sequence:
                 - action: light.turn_on
@@ -150,14 +147,11 @@ action:
                       subtype: lower
                   timeout: "{{ press_duration }}"
                   continue_on_timeout: true
-                - if:
-                    - "{{ wait.remaining > 0 }}"
-                  then:
-                    - variable:
-                        break: true
+                - variables:
+                    stop_repeat: "{{ wait.remaining > 0 }}"
               until:
                 - consition: template
-                  value_template: "{{ break }}"
+                  value_template: "{{ stop_repeat }}"
                 - condition: numeric_state
                   entity_id: !input entity
                   attribute: brightness
