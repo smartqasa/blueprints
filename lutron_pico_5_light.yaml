@@ -40,7 +40,7 @@ trigger:
     domain: lutron_caseta
     type: press
     subtype: raise
-    id: up_pressed
+    id: raise_pressed
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
@@ -52,7 +52,7 @@ trigger:
     domain: lutron_caseta
     type: press
     subtype: lower
-    id: down_pressed
+    id: lower_pressed
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
@@ -61,8 +61,8 @@ trigger:
     id: off_pressed
 
 variables:
-  press_duration: 0.4
-  step_pct: 10
+  press: 0.4
+  step: 10
 
 action:
   - choose:
@@ -78,13 +78,13 @@ action:
 
       - conditions:
           - condition: trigger
-            id: up_pressed
+            id: raise_pressed
         sequence:
           - repeat:
               sequence:
                 - action: light.turn_on
                   data:
-                    brightness_step_pct: "{{ step_pct }}"
+                    brightness_step_pct: "{{ step }}"
                   target:
                     entity_id: !input entity
                   continue_on_error: true
@@ -94,7 +94,7 @@ action:
                       domain: lutron_caseta
                       type: release
                       subtype: raise
-                  timeout: "{{ press_duration }}"
+                  timeout: "{{ press }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
@@ -125,13 +125,13 @@ action:
 
       - conditions:
           - condition: trigger
-            id: down_pressed
+            id: lower_pressed
         sequence:
           - repeat:
               sequence:
                 - action: light.turn_on
                   data:
-                    brightness_step_pct: "{{ -step_pct }}"
+                    brightness_step_pct: "{{ -step }}"
                   target:
                     entity_id: !input entity
                   continue_on_error: true
@@ -141,7 +141,7 @@ action:
                       domain: lutron_caseta
                       type: release
                       subtype: lower
-                  timeout: "{{ press_duration }}"
+                  timeout: "{{ press }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
