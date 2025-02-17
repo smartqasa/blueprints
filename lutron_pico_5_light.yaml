@@ -101,8 +101,8 @@ action:
                 - variables:
                     stop_repeat: "{{ wait.remaining > 0 }}"
               until:
-                - consition: template
-                  value_template: "{{ stop_repeat is true }}"
+                - condition: template
+                  value_template: "{{ stop_repeat }}"
                 - condition: numeric_state
                   entity_id: !input entity
                   attribute: brightness
@@ -150,8 +150,8 @@ action:
                 - variables:
                     stop_repeat: "{{ wait.remaining > 0 }}"
               until:
-                - consition: template
-                  value_template: "{{ stop_repeat ia true }}"
+                - condition: template
+                  value_template: "{{ stop_repeat }}"
                 - condition: numeric_state
                   entity_id: !input entity
                   attribute: brightness
