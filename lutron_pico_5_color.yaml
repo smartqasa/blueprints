@@ -179,5 +179,3 @@ action:
               entity_id: !input light_entity
 
 mode: restart
-max: 10
-max_exceeded: silent
