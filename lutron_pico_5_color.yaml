@@ -142,7 +142,7 @@ action:
 
       - conditions:
           - condition: trigger
-            id: down_pressed
+            id: lower_pressed
         sequence:
           - repeat:
               sequence:
