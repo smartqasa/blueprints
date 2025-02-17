@@ -1,72 +1,72 @@
 blueprint:
-    name: Sensor Activated Switches
-    description: |
-        This automation allows for the control of one or more switch entities based upon the state of one or more sensor entities.
+  name: Sensor Activated Switches
+  description: |
+    This automation allows for the control of one or more switch entities based upon the state of one or more sensor entities.
 
-    domain: automation
-    input:
-        sensor:
-            name: Sensor(s)
-            description: The sensor(s) that will trigger this automation.
-            selector:
-                entity:
-                    filter:
-                        domain: binary_sensor
-                    multiple: true
-        switch:
-            name: Switch(es)
-            description: The switch entity(ies) which will be controlled by this automation.
-            selector:
-                entity:
-                    filter:
-                        domain:
-                            - switch
-                            - light
-                    multiple: true
-        delay:
-            name: Delay
-            description: The amount of time (in seconds) for which the switch-on action will be delayed after the sensor has detected activity (i.e., sensor 'on' state).
-            default: 0
-            selector:
-                number:
-                    min: 0
-                    max: 300
-                    unit_of_measurement: seconds
-        duration:
-            name: Duration
-            description: The duration (in minutes) for which the switch will remain on after no further activity has been detected (i.e., sensor 'off' state).
-            default: 15
-            selector:
-                number:
-                    min: 0
-                    max: 60
-                    unit_of_measurement: "minutes"
+  domain: automation
+  input:
+    sensor:
+      name: Sensor(s)
+      description: The sensor(s) that will trigger this automation.
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+          multiple: true
+    switch:
+      name: Switch(es)
+      description: The switch entity(ies) which will be controlled by this automation.
+      selector:
+        entity:
+          filter:
+            domain:
+              - switch
+              - light
+          multiple: true
+    delay:
+      name: Delay
+      description: The amount of time (in seconds) for which the switch-on action will be delayed after the sensor has detected activity (i.e., sensor 'on' state).
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: seconds
+    duration:
+      name: Duration
+      description: The duration (in minutes) for which the switch will remain on after no further activity has been detected (i.e., sensor 'off' state).
+      default: 15
+      selector:
+        number:
+          min: 0
+          max: 60
+          unit_of_measurement: "minutes"
 
 trigger:
-    trigger: state
-    entity_id: !input sensor
-    from: "off"
-    to: "on"
-    for:
-        seconds: !input delay
+  trigger: state
+  entity_id: !input sensor
+  from: "off"
+  to: "on"
+  for:
+    seconds: !input delay
 
 condition: []
 
 action:
-    - action: homeassistant.turn_on
-      data: {}
-      target:
-          entity_id: !input switch
-    - wait_for_trigger:
-          - trigger: state
-            entity_id: !input sensor
-            from: "on"
-            to: "off"
-            for:
-                minutes: !input duration
-    - action: homeassistant.turn_off
-      data: {}
-      target:
-          entity_id: !input switch
+  - action: homeassistant.turn_on
+    data: {}
+    target:
+      entity_id: !input switch
+  - wait_for_trigger:
+      - trigger: state
+        entity_id: !input sensor
+        from: "on"
+        to: "off"
+        for:
+          minutes: !input duration
+  - action: homeassistant.turn_off
+    data: {}
+    target:
+      entity_id: !input switch
 
 mode: restart

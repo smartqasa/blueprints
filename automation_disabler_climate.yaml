@@ -1,61 +1,61 @@
 blueprint:
-    name: Automation Disabler - Climate
-    description: |
-        This automation will disable another automation upon the physical actuation of a light switch device. 
+  name: Automation Disabler - Climate
+  description: |
+    This automation will disable another automation upon the physical actuation of a light switch device. 
 
-        - Pressing the On, Raise, or Lower buttons will cause the automation to be disabled for the specified time. After the time expires the automation is re-enabled and the switch is turned off.
+    - Pressing the On, Raise, or Lower buttons will cause the automation to be disabled for the specified time. After the time expires the automation is re-enabled and the switch is turned off.
 
-        - Pressing the Off button, will cause the automation to be immediately re-enabled.
+    - Pressing the Off button, will cause the automation to be immediately re-enabled.
 
-    domain: automation
+  domain: automation
 
-    input:
-        climate:
-            name: Thermostat
-            description: The climate entity which, when physically pressed, will cause the automation to be controlled.
-            selector:
-                entity:
-                    filter:
-                        domain: climate
-                    multiple: false
-        automation:
-            name: Automation
-            description: The automation that will be controlled.
-            selector:
-                entity:
-                    filter:
-                        domain: automation
-                    multiple: false
-        time:
-            name: Time
-            description: The number of minutes for which the automation(s) will be disabled.
-            default: 60
-            selector:
-                number:
-                    min: 0
-                    max: 1440
-                    unit_of_measurement: minutes
+  input:
+    climate:
+      name: Thermostat
+      description: The climate entity which, when physically pressed, will cause the automation to be controlled.
+      selector:
+        entity:
+          filter:
+            domain: climate
+          multiple: false
+    automation:
+      name: Automation
+      description: The automation that will be controlled.
+      selector:
+        entity:
+          filter:
+            domain: automation
+          multiple: false
+    time:
+      name: Time
+      description: The number of minutes for which the automation(s) will be disabled.
+      default: 60
+      selector:
+        number:
+          min: 0
+          max: 1440
+          unit_of_measurement: minutes
 
 trigger:
-    - trigger: state
-      entity_id: !input climate
+  - trigger: state
+    entity_id: !input climate
 
 condition:
-    - condition: template
-      value_template: >-
-          {{ trigger.to_state.context.parent_id == None and
-          trigger.to_state.context.user_id == None }}
+  - condition: template
+    value_template: >-
+      {{ trigger.to_state.context.parent_id == None and
+      trigger.to_state.context.user_id == None }}
 
 action:
-    - action: automation.turn_off
-      data: {}
-      target:
-          entity_id: !input automation
-    - delay:
-          minutes: !input time
-    - action: automation.turn_on
-      data: {}
-      target:
-          entity_id: !input automation
+  - action: automation.turn_off
+    data: {}
+    target:
+      entity_id: !input automation
+  - delay:
+      minutes: !input time
+  - action: automation.turn_on
+    data: {}
+    target:
+      entity_id: !input automation
 
 mode: restart

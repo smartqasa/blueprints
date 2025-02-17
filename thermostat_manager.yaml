@@ -1,186 +1,186 @@
 blueprint:
-    name: Thermostat Manager
-    description: |
-        This automation will manage the temperature and mode settings of one or more thermostat entities.
+  name: Thermostat Manager
+  description: |
+    This automation will manage the temperature and mode settings of one or more thermostat entities.
 
-    domain: automation
+  domain: automation
 
-    input:
-        thermostat:
-            name: Thermostat(s)
-            description: "The thermostat entity(ies) that will be controlled by this automation."
-            selector:
-                entity:
-                    filter:
-                        domain: climate
-                    multiple: true
+  input:
+    thermostat:
+      name: Thermostat(s)
+      description: "The thermostat entity(ies) that will be controlled by this automation."
+      selector:
+        entity:
+          filter:
+            domain: climate
+          multiple: true
 
-        morning:
-            name: Morning Temperature
-            description: The target temperature to whoch the thermostat will be set.
-            default: 72
-            selector:
-                number:
-                    min: 45
-                    max: 90
-                    unit_of_measurement: "degrees"
-        day:
-            name: Day Temperature
-            description: The target temperature to whoch the thermostat will be set.
-            default: 72
-            selector:
-                number:
-                    min: 45
-                    max: 90
-                    unit_of_measurement: "degrees"
-        evening:
-            name: Evening Temperature
-            description: The target temperature to whoch the thermostat will be set.
-            default: 72
-            selector:
-                number:
-                    min: 45
-                    max: 90
-                    unit_of_measurement: "degrees"
-        night:
-            name: Night Temperature
-            description: The target temperature to whoch the thermostat will be set.
-            default: 72
-            selector:
-                number:
-                    min: 45
-                    max: 90
-                    unit_of_measurement: "degrees"
+    morning:
+      name: Morning Temperature
+      description: The target temperature to whoch the thermostat will be set.
+      default: 72
+      selector:
+        number:
+          min: 45
+          max: 90
+          unit_of_measurement: "degrees"
+    day:
+      name: Day Temperature
+      description: The target temperature to whoch the thermostat will be set.
+      default: 72
+      selector:
+        number:
+          min: 45
+          max: 90
+          unit_of_measurement: "degrees"
+    evening:
+      name: Evening Temperature
+      description: The target temperature to whoch the thermostat will be set.
+      default: 72
+      selector:
+        number:
+          min: 45
+          max: 90
+          unit_of_measurement: "degrees"
+    night:
+      name: Night Temperature
+      description: The target temperature to whoch the thermostat will be set.
+      default: 72
+      selector:
+        number:
+          min: 45
+          max: 90
+          unit_of_measurement: "degrees"
 
-        home:
-            name: Home Temperature Variation
-            description: |
-                The number of degrees of temperature range to use when the setting the system to Heat/Cool mode.
+    home:
+      name: Home Temperature Variation
+      description: |
+        The number of degrees of temperature range to use when the setting the system to Heat/Cool mode.
 
-                Note: Setting this variance to a number greater that zero will...
-            default: 0
-            selector:
-                number:
-                    min: 0
-                    max: 9
-                    unit_of_measurement: "degrees"
-        away:
-            name: Away Temperature Variation
-            description: The number of degrees of temperature range to use when the setting the system to Heat/Cool mode.
-            default: 4
-            selector:
-                number:
-                    min: 0
-                    max: 9
-                    unit_of_measurement: "degrees"
-        vacation:
-            name: Vacation Temperature Variation
-            description: The number of degrees of temperature range to use when the setting the system to Heat/Cool mode.
-            default: 6
-            selector:
-                number:
-                    min: 0
-                    max: 9
-                    unit_of_measurement: "degrees"
+        Note: Setting this variance to a number greater that zero will...
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 9
+          unit_of_measurement: "degrees"
+    away:
+      name: Away Temperature Variation
+      description: The number of degrees of temperature range to use when the setting the system to Heat/Cool mode.
+      default: 4
+      selector:
+        number:
+          min: 0
+          max: 9
+          unit_of_measurement: "degrees"
+    vacation:
+      name: Vacation Temperature Variation
+      description: The number of degrees of temperature range to use when the setting the system to Heat/Cool mode.
+      default: 6
+      selector:
+        number:
+          min: 0
+          max: 9
+          unit_of_measurement: "degrees"
 
-        high:
-            name: Cool Mode Outdoor Temperature
-            description: The outside air temperature at and above which the system is set to Cool Mode.
-            default: 75
-            selector:
-                number:
-                    min: 45
-                    max: 95
-                    unit_of_measurement: "degrees"
-        low:
-            name: Heat Mode Ourdoor Temperature
-            description: The outside air temperature at and below which the system is set to Heat Mode.
-            default: 50
-            selector:
-                number:
-                    min: 45
-                    max: 95
-                    unit_of_measurement: "degrees"
+    high:
+      name: Cool Mode Outdoor Temperature
+      description: The outside air temperature at and above which the system is set to Cool Mode.
+      default: 75
+      selector:
+        number:
+          min: 45
+          max: 95
+          unit_of_measurement: "degrees"
+    low:
+      name: Heat Mode Ourdoor Temperature
+      description: The outside air temperature at and below which the system is set to Heat Mode.
+      default: 50
+      selector:
+        number:
+          min: 45
+          max: 95
+          unit_of_measurement: "degrees"
 
-        guest:
-            name: Disable During Guest Mode
-            description: Turn this option on to disable the automation while the location is set to Guest mode.
-            default: false
-            selector:
-                boolean:
+    guest:
+      name: Disable During Guest Mode
+      description: Turn this option on to disable the automation while the location is set to Guest mode.
+      default: false
+      selector:
+        boolean:
 
 variables:
-    morning: !input morning
-    day: !input day
-    evening: !input evening
-    night: !input night
-    high: !input high
-    low: !input low
-    home: !input home
-    away: !input away
-    vacation: !input vacation
-    guest: !input guest
+  morning: !input morning
+  day: !input day
+  evening: !input evening
+  night: !input night
+  high: !input high
+  low: !input low
+  home: !input home
+  away: !input away
+  vacation: !input vacation
+  guest: !input guest
 
 trigger:
-    - trigger: state
-      entity_id:
-          - input_select.location_phase
-    - trigger: state
-      entity_id:
-          - input_select.location_mode
-    - trigger: state
-      entity_id:
-          - weather.forecast_home
-      attribute: temperature
+  - trigger: state
+    entity_id:
+      - input_select.location_phase
+  - trigger: state
+    entity_id:
+      - input_select.location_mode
+  - trigger: state
+    entity_id:
+      - weather.forecast_home
+    attribute: temperature
 
 condition:
-    - condition: template
-      value_template: "{{ guest == false or (guest == true and states('input_select.location_mode') != 'Guest') }}"
-    - condition: template
-      value_template: "{{ states('input_select.location_mode') != 'Entertain' }}"
+  - condition: template
+    value_template: "{{ guest == false or (guest == true and states('input_select.location_mode') != 'Guest') }}"
+  - condition: template
+    value_template: "{{ states('input_select.location_mode') != 'Entertain' }}"
 
 action:
-    - variables:
-          current_temp: "{{ state_attr('weather.forecast_home', 'temperature') }}"
-          phase: "{{ states('input_select.location_phase') }}"
-          mode: "{{ states('input_select.location_mode') }}"
-          target: >-
-              {% if phase == 'Morning' %} {{ morning }}
-              {% elif phase == 'Day' %} {{ day }}
-              {% elif phase == 'Evening' %} {{ evening }}
-              {% elif phase == 'Night' %} {{ night }}
-              {% endif %}
-          variance: >-
-              {% if mode == 'Vacation' %} {{ vacation }}
-              {% elif mode == 'Away' %} {{ away }}
-              {% else %} {{ home }}
-              {% endif %}
-    - choose:
-          - conditions:
-                - "{{ current_temp >= high }}"
-            sequence:
-                - action: climate.set_temperature
-                  data:
-                      temperature: "{{ (target + variance) | round(1) }}"
-                      hvac_mode: cool
-                  target:
-                      entity_id: !input thermostat
-
-          - conditions:
-                - "{{ current_temp <= low }}"
-            sequence:
-                - action: climate.set_temperature
-                  data:
-                      temperature: "{{ (target - variance) | round(1) }}"
-                      hvac_mode: heat
-                  target:
-                      entity_id: !input thermostat
-
-      default:
+  - variables:
+      current_temp: "{{ state_attr('weather.forecast_home', 'temperature') }}"
+      phase: "{{ states('input_select.location_phase') }}"
+      mode: "{{ states('input_select.location_mode') }}"
+      target: >-
+        {% if phase == 'Morning' %} {{ morning }}
+        {% elif phase == 'Day' %} {{ day }}
+        {% elif phase == 'Evening' %} {{ evening }}
+        {% elif phase == 'Night' %} {{ night }}
+        {% endif %}
+      variance: >-
+        {% if mode == 'Vacation' %} {{ vacation }}
+        {% elif mode == 'Away' %} {{ away }}
+        {% else %} {{ home }}
+        {% endif %}
+  - choose:
+      - conditions:
+          - "{{ current_temp >= high }}"
+        sequence:
           - action: climate.set_temperature
             data:
-                target_temp_high: "{{ (target + (variance if variance > 0 else 1)) | round(1) }}"
-                target_temp_low: "{{ (target - (variance if variance > 0 else 1)) | round(1) }}"
-                hvac_mode: heat_cool
+              temperature: "{{ (target + variance) | round(1) }}"
+              hvac_mode: cool
             target:
-                entity_id: !input thermostat
+              entity_id: !input thermostat
+
+      - conditions:
+          - "{{ current_temp <= low }}"
+        sequence:
+          - action: climate.set_temperature
+            data:
+              temperature: "{{ (target - variance) | round(1) }}"
+              hvac_mode: heat
+            target:
+              entity_id: !input thermostat
+
+    default:
+      - action: climate.set_temperature
+        data:
+          target_temp_high: "{{ (target + (variance if variance > 0 else 1)) | round(1) }}"
+          target_temp_low: "{{ (target - (variance if variance > 0 else 1)) | round(1) }}"
+          hvac_mode: heat_cool
+        target:
+          entity_id: !input thermostat

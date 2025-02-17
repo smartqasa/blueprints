@@ -27,6 +27,23 @@ blueprint:
       selector:
         action: {}
       default:
+    automation:
+      name: Automation
+      description: The automation that will be controlled.
+      selector:
+        entity:
+          filter:
+            domain: automation
+    time:
+      name: Time
+      description: The duration in minutes during which the automation(s) will be disabled.
+      default: 60
+      selector:
+        number:
+          min: 0
+          max: 1440
+          unit_of_measurement: minutes
+      default: 0
 
 trigger:
   - trigger: device
@@ -63,6 +80,22 @@ trigger:
 variables:
   press_duration: 0.4
   step_pct: 10
+  automation: !input automation
+  disable: >-
+    {%- if automation | default('') -%}
+    - if:
+        - condition: not
+          conditions:
+            - condition: state
+              entity_id: !input automation
+              state: "on"
+      then:
+        - action: automation.turn_off
+          target:
+            entity_id: !input automation
+        - delay:
+            minutes: !input time
+    {%- endif -%}
 
 action:
   - choose:
@@ -75,7 +108,12 @@ action:
               brightness_pct: 100
             target:
               entity_id: !input entity
-
+          - action: light.turn_on
+            data:
+              brightness_pct: 100
+            target:
+              entity_id: !input entity
+          - "{{ disable }}"
       - conditions:
           - condition: trigger
             id: up_pressed
