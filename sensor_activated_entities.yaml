@@ -34,6 +34,7 @@ blueprint:
     fans:
       name: Fans (Optional)
       description: The fan entity(ies) which will be controlled.
+      default: []
       selector:
         entity:
           filter:
@@ -43,6 +44,7 @@ blueprint:
     off_entities:
       name: Off Entities (Optional)
       description: The entities that will be turned off when the sensor is cleared.
+      default: []
       selector:
         entity:
           filter:
