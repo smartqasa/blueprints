@@ -1,8 +1,9 @@
 blueprint:
   domain: automation
-  name: Sensor Activated Lights
+  name: Sensor Activated Entities
   description: |
-    This automation controls the state and brightness of one or more light entities based on:
+    This automation controls the state and brightness of one or more light entities and the state of one or more
+    optional fan entities based on:
       - The state of one or more sensor entities
       - The current phase of the location
 
@@ -12,7 +13,7 @@ blueprint:
       - If a light does not support brightness control, 'Brightness' will be ignored.
   mode: restart
   input:
-    sensor:
+    sensors:
       name: Sensor(s)
       description: The sensor(s) that will trigger this automation.
       selector:
@@ -21,13 +22,22 @@ blueprint:
             domain: binary_sensor
           multiple: true
 
-    light:
-      name: Light(s)
+    lights:
+      name: Lights
       description: The light entity(ies) which will be controlled.
       selector:
         entity:
           filter:
             domain: light
+          multiple: true
+
+    fans:
+      name: Fans (Optional)
+      description: The fan entity(ies) which will be controlled.
+      selector:
+        entity:
+          filter:
+            domain: fan
           multiple: true
 
     duration_morning:
@@ -122,8 +132,8 @@ variables:
   brightness: "{{ brightness_levels[phase] | default(0) }}"
 
 trigger:
-  - platform: state
-    entity_id: !input sensor
+  - trigger: state
+    entity_id: !input sensors
     to: "on"
 
 action:
@@ -135,23 +145,30 @@ action:
           - condition: template
             value_template: "{{ brightness > 0 }}"
         then:
-          - service: light.turn_on
+          - action: light.turn_on
             data:
               transition: 1
               brightness_pct: "{{ brightness }}"
             target:
-              entity_id: !input light
+              entity_id: !input lights
+          - action: fan.turn_on
+            data: {}
+            target:
+              entity_id: !input fans
       - if:
           - condition: template
             value_template: "{{ duration != 999 }}"
         then:
           - wait_for_trigger:
               - platform: state
-                entity_id: !input sensor
+                entity_id: !input sensors
                 to: "off"
                 for:
                   minutes: "{{ duration }}"
 
-          - service: light.turn_off
+          - action: light.turn_off
             target:
-              entity_id: !input light
+              entity_id: !input lights
+          - action: fan.turn_off
+            target:
+              entity_id: !input fans
