@@ -14,7 +14,7 @@ blueprint:
 
   input:
     sensors:
-      name: Sensor(s)
+      name: Sensors
       description: The sensor(s) that will trigger this automation.
       selector:
         entity:
@@ -40,6 +40,18 @@ blueprint:
             domain: fan
           multiple: true
 
+    off_entities:
+      name: Off Entities (Optional)
+      description: The entities that will be turned off when the sensor is cleared.
+      selector:
+        entity:
+          filter:
+            domain:
+              - fan
+              - light
+              - switch
+          multiple: true
+
     duration_morning:
       name: Morning - Duration
       description: Duration in minutes for which the lights will remain on.
@@ -55,7 +67,7 @@ blueprint:
       default: 75
       selector:
         number:
-          min: 0
+          min: 1
           max: 100
           unit_of_measurement: "%"
 
@@ -74,7 +86,7 @@ blueprint:
       default: 100
       selector:
         number:
-          min: 0
+          min: 1
           max: 100
           unit_of_measurement: "%"
 
@@ -93,7 +105,7 @@ blueprint:
       default: 75
       selector:
         number:
-          min: 0
+          min: 1
           max: 100
           unit_of_measurement: "%"
 
@@ -112,7 +124,7 @@ blueprint:
       default: 25
       selector:
         number:
-          min: 0
+          min: 1
           max: 100
           unit_of_measurement: "%"
 
@@ -141,20 +153,16 @@ action:
       - condition: template
         value_template: "{{ duration > 0 }}"
     then:
-      - if:
-          - condition: template
-            value_template: "{{ brightness > 0 }}"
-        then:
-          - action: light.turn_on
-            data:
-              transition: 1
-              brightness_pct: "{{ brightness }}"
-            target:
-              entity_id: !input lights
-          - action: fan.turn_on
-            data: {}
-            target:
-              entity_id: !input fans
+      - action: light.turn_on
+        data:
+          transition: 1
+          brightness_pct: "{{ brightness }}"
+        target:
+          entity_id: !input lights
+      - action: fan.turn_on
+        data: {}
+        target:
+          entity_id: !input fans
       - if:
           - condition: template
             value_template: "{{ duration != 999 }}"
@@ -165,12 +173,22 @@ action:
                 to: "off"
                 for:
                   minutes: "{{ duration }}"
-
           - action: light.turn_off
             target:
               entity_id: !input lights
-          - action: fan.turn_off
-            target:
-              entity_id: !input fans
+          - if:
+              - condition: template
+                value_template: "{{ fans | length > 0 }}"
+            then:
+              - action: fan.turn_off
+                target:
+                  entity_id: !input fans
+          - if:
+              - condition: template
+                value_template: "{{ off_entities | length > 0 }}"
+            then:
+              - action: homeassistant.turn_off
+                target:
+                  entity_id: !input off_entities
 
 mode: restart
