@@ -8,9 +8,9 @@ blueprint:
       - The current phase of the location
 
     Notes: 
-      - A 'Duration' of '0' prevents the light from turning on during that phase.
-      - A 'Duration' of '999' keeps the light on until the sensor is triggered again.
-      - If a light does not support brightness control, 'Brightness' will be ignored.
+      - A duration of '0' prevents the light from turning on during that phase.
+      - A duration of '999' keeps the light on indefinitely.
+      - If a light does not support brightness control, the Brightness percent will be ignored.
 
   input:
     sensors:
