@@ -11,7 +11,7 @@ blueprint:
       - A 'Duration' of '0' prevents the light from turning on during that phase.
       - A 'Duration' of '999' keeps the light on until the sensor is triggered again.
       - If a light does not support brightness control, 'Brightness' will be ignored.
-  mode: restart
+
   input:
     sensors:
       name: Sensor(s)
@@ -172,3 +172,5 @@ action:
           - action: fan.turn_off
             target:
               entity_id: !input fans
+
+mode: restart
