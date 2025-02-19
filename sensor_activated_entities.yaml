@@ -221,4 +221,4 @@ action:
                 target:
                   entity_id: !input off_entities
 
-mode: restart
+mode: single
