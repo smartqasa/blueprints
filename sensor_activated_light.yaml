@@ -156,4 +156,4 @@ action:
             target:
               entity_id: !input light
 
-mode: restart
+mode: single
