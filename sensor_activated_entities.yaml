@@ -176,7 +176,7 @@ action:
       entity_id: !input light
   - if:
       - condition: template
-        value_template: "{{ fan is not none }}"
+        value_template: "{{ fan != '' }}"
     then:
       - delay:
           seconds: "{{ fan_delay }}"
@@ -211,7 +211,7 @@ action:
           entity_id: !input light
       - if:
           - condition: template
-            value_template: "{{ fan is not none }}"
+            value_template: "{{ fan != '' }}"
         then:
           - action: homeassistant.turn_off
             target:
