@@ -31,19 +31,20 @@ blueprint:
             domain: light
           multiple: true
 
-    fans:
-      name: Fans (Optional)
-      description: The fan entity(ies) which will be controlled. These would typically be exhaust fans.
+    fan:
+      name: Fan (Optional)
+      description: The fan or switch entity which will be controlled. This would typically be an exhaust fan.
       default: []
       selector:
         entity:
           filter:
-            domain: fan
-          multiple: true
+            domain:
+              - fan
+              - switch
 
-    delay:
+    fan_delay:
       name: Fan Delay
-      description: Duration in seconds to delay before turning on the fan(s). If the sensor clears before this delay is achieved, then the fans will not turn on.
+      description: Duration in seconds to delay before turning on the exhaust fan(s). If the sensor clears before this delay is achieved, then the fans will not turn on.
       default: 0
       selector:
         number:
@@ -142,8 +143,8 @@ blueprint:
 
 variables:
   phase: "{{ states('input_select.location_phase') }}"
-  fans: !input fans
-  delay: !input delay
+  fan: !input fan
+  fan_delay: !input fan_delay
   durations:
     Morning: !input duration_morning
     Day: !input duration_day
@@ -175,25 +176,25 @@ action:
       entity_id: !input lights
   - if:
       - condition: template
-        value_template: "{{ fans | length > 0 }}"
+        value_template: "{{ fan is not none }}"
     then:
       - delay:
-          seconds: "{{ delay }}"
+          seconds: "{{ fan_delay }}"
       - if:
           - condition: state
             entity_id: !input sensors
             state: "on"
         then:
-          - action: fan.turn_on
+          - action: homeassistant.turn_on
             data: {}
             target:
-              entity_id: !input fans
+              entity_id: !input fan
   - if:
       - condition: template
         value_template: "{{ duration != 999 }}"
     then:
       - delay:
-          seconds: "{{ duration - delay }}"
+          seconds: "{{ max(duration - fan_delay, 0) }}"
       - if:
           - condition: state
             entity_id: !input sensors
@@ -210,11 +211,11 @@ action:
           entity_id: !input lights
       - if:
           - condition: template
-            value_template: "{{ fans | length > 0 }}"
+            value_template: "{{ fan is not none }}"
         then:
-          - action: fan.turn_off
+          - action: homeassistant.turn_off
             target:
-              entity_id: !input fans
+              entity_id: !input fan
       - if:
           - condition: template
             value_template: "{{ off_entities | length > 0 }}"
