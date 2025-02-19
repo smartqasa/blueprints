@@ -133,7 +133,7 @@ blueprint:
     brightness_night:
       name: Night - Brightness
       description: Brightness level of the lights.
-      default: 25
+      default: 20
       selector:
         number:
           min: 1
