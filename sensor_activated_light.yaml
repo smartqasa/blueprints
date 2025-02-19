@@ -142,7 +142,7 @@ action:
         value_template: "{{ duration != 999 }}"
     then:
       - delay:
-          seconds: "{{ duration * 60 }}"
+          seconds: "{{ duration }}"
       - if:
           - condition: state
             entity_id: !input sensors
