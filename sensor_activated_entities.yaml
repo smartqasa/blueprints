@@ -154,7 +154,7 @@ variables:
     Day: !input brightness_day
     Evening: !input brightness_evening
     Night: !input brightness_night
-  duration: "{{ durations[phase] | default(0) }}"
+  duration: "{{ durations[phase] | default(0) * 60 }}"
   brightness: "{{ brightness_levels[phase] | default(100) }}"
 
 trigger:
@@ -193,7 +193,7 @@ action:
         value_template: "{{ duration != 999 }}"
     then:
       - delay:
-          seconds: "{{ duration * 60 - delay }}"
+          seconds: "{{ duration - delay }}"
       - if:
           - condition: state
             entity_id: !input sensors

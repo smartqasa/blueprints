@@ -118,7 +118,7 @@ variables:
     Day: !input brightness_day
     Evening: !input brightness_evening
     Night: !input brightness_night
-  duration: "{{ durations[phase] | default(0) }}"
+  duration: "{{ durations[phase] | default(0) * 60 }}"
   brightness: "{{ brightness_levels[phase] | default(0) }}"
 
 trigger:
