@@ -43,7 +43,7 @@ blueprint:
 
     delay:
       name: Fan Delay
-      description: Duration in seconds to delay before turning on the fan(s). If the sensor clears before this delay is achieved, then the fans will not turn on. This delay will be added to the duration of the lights.
+      description: Duration in seconds to delay before turning on the fan(s). If the sensor clears before this delay is achieved, then the fans will not turn on.
       default: 0
       selector:
         number:
