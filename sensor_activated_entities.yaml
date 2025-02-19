@@ -183,7 +183,6 @@ action:
                 entity_id: !input sensors
                 to: "off"
             timeout: "{{ delay }}"
-            continue_on_timeout: true
           - if:
               - condition: template
                 value_template: "{{ wait.completed }}"
@@ -196,6 +195,13 @@ action:
       - if:
           - condition: template
             value_template: "{{ duration != 999 }}"
+        then:
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input sensors
+                to: "off"
+                for:
+                  minutes: "{{ duration }}"
           - action: light.turn_off
             target:
               entity_id: !input lights
