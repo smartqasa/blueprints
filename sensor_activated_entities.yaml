@@ -178,14 +178,12 @@ action:
           - condition: template
             value_template: "{{ fans | length > 0 }}"
         then:
-          - wait_for_trigger:
-              - platform: state
-                entity_id: !input sensors
-                to: "off"
-            timeout: "{{ delay | default(0) }}"
+          - dalay:
+              seconds: "{{ delay }}"
           - if:
-              - condition: template
-                value_template: "{{ wait.completed is false }}"
+              - condition: state
+                entity_id: !input sensors
+                state: "on"
             then:
               - action: fan.turn_on
                 data: {}
@@ -202,9 +200,11 @@ action:
                 to: "off"
                 for:
                   minutes: "{{ duration }}"
+
           - action: light.turn_off
             target:
               entity_id: !input lights
+
           - if:
               - condition: template
                 value_template: "{{ fans | length > 0 }}"
@@ -212,6 +212,7 @@ action:
               - action: fan.turn_off
                 target:
                   entity_id: !input fans
+
           - if:
               - condition: template
                 value_template: "{{ off_entities | length > 0 }}"
