@@ -33,13 +33,23 @@ blueprint:
 
     fans:
       name: Fans (Optional)
-      description: The fan entity(ies) which will be controlled.
+      description: The fan entity(ies) which will be controlled. These would typically be exhaust fans.
       default: []
       selector:
         entity:
           filter:
             domain: fan
           multiple: true
+
+    delay:
+      name: Fan Delay
+      description: Duration in seconds to delay before turning on the fan(s). If the sensor clears before this delay is achieved, then the fans will not turn on. This delay will be added to the duration of the lights.
+      default: 90
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: seconds
 
     off_entities:
       name: Off Entities (Optional)
@@ -75,7 +85,7 @@ blueprint:
 
     duration_day:
       name: Day - Duration
-      description: Duration in minutes for which the lights will remain on.
+      description: Duration in minutes during which the lights will remain on.
       default: 15
       selector:
         number:
@@ -94,7 +104,7 @@ blueprint:
 
     duration_evening:
       name: Evening - Duration
-      description: Duration in minutes for which the lights will remain on.
+      description: Duration in minutes during which the lights will remain on.
       default: 15
       selector:
         number:
@@ -113,7 +123,7 @@ blueprint:
 
     duration_night:
       name: Night - Duration
-      description: Duration in minutes for which the lights will remain on.
+      description: Duration in minutes during which the lights will remain on.
       default: 5
       selector:
         number:
@@ -132,6 +142,8 @@ blueprint:
 
 variables:
   phase: "{{ states('input_select.location_phase') }}"
+  fans: !input fans
+  delay: !input delay
   durations:
     Morning: !input duration_morning
     Day: !input duration_day
@@ -161,20 +173,29 @@ action:
           brightness_pct: "{{ brightness }}"
         target:
           entity_id: !input lights
-      - action: fan.turn_on
-        data: {}
-        target:
-          entity_id: !input fans
+
       - if:
           - condition: template
-            value_template: "{{ duration != 999 }}"
+            value_template: "{{ fans | length > 0 and delay > 0 }}"
         then:
           - wait_for_trigger:
               - platform: state
                 entity_id: !input sensors
                 to: "off"
-                for:
-                  minutes: "{{ duration }}"
+            timeout: "{{ delay }}"
+            continue_on_timeout: true
+          - if:
+              - condition: template
+                value_template: "{{ wait.completed }}"
+            then:
+              - action: fan.turn_on
+                data: {}
+                target:
+                  entity_id: !input fans
+
+      - if:
+          - condition: template
+            value_template: "{{ duration != 999 }}"
           - action: light.turn_off
             target:
               entity_id: !input lights
