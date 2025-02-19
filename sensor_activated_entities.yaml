@@ -162,15 +162,46 @@ trigger:
     entity_id: !input sensors
     to: "on"
 
+condition:
+  - condition: template
+    value_template: "{{ duration > 0 }}"
+
 action:
+  - action: light.turn_on
+    data:
+      transition: 1
+      brightness_pct: "{{ brightness }}"
+    target:
+      entity_id: !input lights
+
   - if:
       - condition: template
-        value_template: "{{ duration > 0 }}"
+        value_template: "{{ fans | length > 0 }}"
     then:
-      - action: light.turn_on
-        data:
-          transition: 1
-          brightness_pct: "{{ brightness }}"
+      - delay:
+          seconds: "{{ delay }}"
+      - if:
+          - condition: state
+            entity_id: !input sensors
+            state: "on"
+        then:
+          - action: fan.turn_on
+            data: {}
+            target:
+              entity_id: !input fans
+
+  - if:
+      - condition: template
+        value_template: "{{ duration != 999 }}"
+    then:
+      - wait_for_trigger:
+          - platform: state
+            entity_id: !input sensors
+            to: "off"
+            for:
+              minutes: "{{ duration }}"
+
+      - action: light.turn_off
         target:
           entity_id: !input lights
 
@@ -178,47 +209,16 @@ action:
           - condition: template
             value_template: "{{ fans | length > 0 }}"
         then:
-          - delay:
-              seconds: "{{ delay }}"
-          - if:
-              - condition: state
-                entity_id: !input sensors
-                state: "on"
-            then:
-              - action: fan.turn_on
-                data: {}
-                target:
-                  entity_id: !input fans
+          - action: fan.turn_off
+            target:
+              entity_id: !input fans
 
       - if:
           - condition: template
-            value_template: "{{ duration != 999 }}"
+            value_template: "{{ off_entities | length > 0 }}"
         then:
-          - wait_for_trigger:
-              - platform: state
-                entity_id: !input sensors
-                to: "off"
-                for:
-                  minutes: "{{ duration }}"
-
-          - action: light.turn_off
+          - action: homeassistant.turn_off
             target:
-              entity_id: !input lights
-
-          - if:
-              - condition: template
-                value_template: "{{ fans | length > 0 }}"
-            then:
-              - action: fan.turn_off
-                target:
-                  entity_id: !input fans
-
-          - if:
-              - condition: template
-                value_template: "{{ off_entities | length > 0 }}"
-            then:
-              - action: homeassistant.turn_off
-                target:
-                  entity_id: !input off_entities
+              entity_id: !input off_entities
 
 mode: single
