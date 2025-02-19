@@ -13,8 +13,8 @@ blueprint:
       - If a light does not support brightness control, the Brightness percent will be ignored.
 
   input:
-    sensors:
-      name: Sensors
+    sensor:
+      name: Sensor
       description: The sensor(s) that will trigger this automation.
       selector:
         entity:
@@ -22,7 +22,7 @@ blueprint:
             domain: binary_sensor
           multiple: true
 
-    lights:
+    light:
       name: Lights
       description: The light entity(ies) which will be controlled.
       selector:
@@ -160,7 +160,7 @@ variables:
 
 trigger:
   - trigger: state
-    entity_id: !input sensors
+    entity_id: !input sensor
     to: "on"
 
 condition:
@@ -182,7 +182,7 @@ action:
           seconds: "{{ fan_delay }}"
       - if:
           - condition: state
-            entity_id: !input sensors
+            entity_id: !input sensor
             state: "on"
         then:
           - action: homeassistant.turn_on
@@ -197,12 +197,12 @@ action:
           seconds: "{{ max(duration - fan_delay, 0) }}"
       - if:
           - condition: state
-            entity_id: !input sensors
+            entity_id: !input sensor
             state: "on"
         then:
           - wait_for_trigger:
               - trigger: state
-                entity_id: !input sensors
+                entity_id: !input sensor
                 to: "off"
       - action: light.turn_off
         data:
