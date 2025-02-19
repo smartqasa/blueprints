@@ -40,6 +40,7 @@ blueprint:
           filter:
             domain:
               - fan
+              - light
               - switch
 
     fan_delay:
