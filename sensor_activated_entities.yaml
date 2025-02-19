@@ -202,6 +202,8 @@ action:
               minutes: "{{ duration }}"
 
       - action: light.turn_off
+        data:
+          transition: 1
         target:
           entity_id: !input lights
 
