@@ -178,7 +178,8 @@ action:
           - condition: template
             value_template: "{{ fans | length > 0 }}"
         then:
-          - dalay: "{{ delay }}"
+          - delay:
+              seconds: "{{ delay }}"
           - if:
               - condition: state
                 entity_id: !input sensors
