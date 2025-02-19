@@ -179,7 +179,7 @@ action:
         value_template: "{{ fans | length > 0 }}"
     then:
       - wait_for_trigger:
-          - platform: state
+          - trigger: state
             entity_id: !input sensors
             to: "off"
         timeout:
@@ -198,7 +198,7 @@ action:
         value_template: "{{ duration != 999 }}"
     then:
       - wait_for_trigger:
-          - platform: state
+          - trigger: state
             entity_id: !input sensors
             to: "off"
             for:
