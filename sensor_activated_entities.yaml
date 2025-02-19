@@ -3,9 +3,9 @@ blueprint:
   name: Sensor Activated Entities
   description: |
     This automation controls the state and brightness of one or more light entities and the state of one or more
-    optional fan entities based on:
-      - The state of one or more sensor entities
-      - The current phase of the location
+    optional fan entities based on the:
+      - state of one or more sensor entities
+      - phase of the location
 
     Notes: 
       - A duration of '0' prevents the light from turning on during that phase.
@@ -45,7 +45,7 @@ blueprint:
 
     fan_delay:
       name: Fan Delay
-      description: Duration in seconds to delay before turning on the exhaust fan(s). If the sensor clears before this delay is achieved, then the fans will not turn on.
+      description: Duration in seconds to delay before turning on the exhaust fan(s). If the sensor state is off before this delay is achieved, then the fans will not turn on.
       default: 0
       selector:
         number:
@@ -55,7 +55,7 @@ blueprint:
 
     off_entities:
       name: Off Entities (Optional)
-      description: The entities that will be turned off when the sensor is cleared.
+      description: The entities that will be turned off when the sensor state changes to off.
       default: []
       selector:
         entity:
