@@ -143,7 +143,7 @@ blueprint:
 variables:
   phase: "{{ states('input_select.location_phase') }}"
   fans: !input fans
-  delay: !input delay
+  delay: !input delay | default(0)
   durations:
     Morning: !input duration_morning
     Day: !input duration_day
@@ -155,7 +155,7 @@ variables:
     Evening: !input brightness_evening
     Night: !input brightness_night
   duration: "{{ durations[phase] | default(0) }}"
-  brightness: "{{ brightness_levels[phase] | default(0) }}"
+  brightness: "{{ brightness_levels[phase] | default(100) }}"
 
 trigger:
   - trigger: state
