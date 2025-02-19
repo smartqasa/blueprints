@@ -176,6 +176,25 @@ action:
 
       - if:
           - condition: template
+            value_template: "{{ fans | length > 0 }}"
+        then:
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input sensors
+                to: "off"
+            timeout: "{{ delay }}"
+            continue_on_timeout: true
+          - if:
+              - condition: template
+                value_template: "{{ wait.completed }}"
+            then:
+              - action: fan.turn_on
+                data: {}
+                target:
+                  entity_id: !input fans
+
+      - if:
+          - condition: template
             value_template: "{{ duration != 999 }}"
           - action: light.turn_off
             target:
