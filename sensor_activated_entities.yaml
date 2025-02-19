@@ -23,7 +23,7 @@ blueprint:
           multiple: true
 
     light:
-      name: Lights
+      name: Light
       description: The light entity(ies) which will be controlled.
       selector:
         entity:
@@ -173,7 +173,7 @@ action:
       transition: 1
       brightness_pct: "{{ brightness }}"
     target:
-      entity_id: !input lights
+      entity_id: !input light
   - if:
       - condition: template
         value_template: "{{ fan is not none }}"
@@ -208,7 +208,7 @@ action:
         data:
           transition: 2
         target:
-          entity_id: !input lights
+          entity_id: !input light
       - if:
           - condition: template
             value_template: "{{ fan is not none }}"
