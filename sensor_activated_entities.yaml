@@ -173,7 +173,6 @@ action:
       brightness_pct: "{{ brightness }}"
     target:
       entity_id: !input lights
-
   - if:
       - condition: template
         value_template: "{{ fans | length > 0 }}"
@@ -192,7 +191,6 @@ action:
             data: {}
             target:
               entity_id: !input fans
-
   - if:
       - condition: template
         value_template: "{{ duration != 999 }}"
@@ -203,13 +201,11 @@ action:
             to: "off"
             for:
               minutes: "{{ duration }}"
-
       - action: light.turn_off
         data:
           transition: 1
         target:
           entity_id: !input lights
-
       - if:
           - condition: template
             value_template: "{{ fans | length > 0 }}"
@@ -217,7 +213,6 @@ action:
           - action: fan.turn_off
             target:
               entity_id: !input fans
-
       - if:
           - condition: template
             value_template: "{{ off_entities | length > 0 }}"
