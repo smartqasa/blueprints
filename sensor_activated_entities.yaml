@@ -176,7 +176,7 @@ action:
 
       - if:
           - condition: template
-            value_template: "{{ fans | length > 0 and delay | default(0) > 0 }}"
+            value_template: "{{ fans | length > 0 and delay > 0 }}"
         then:
           - wait_for_trigger:
               - platform: state
