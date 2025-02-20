@@ -21,6 +21,26 @@ blueprint:
             domain: light
           multiple: true
 
+    transition_on:
+      name: Transition On
+      description: The transition speed in seconds when turning the light(s) on.
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: seconds
+
+    transition_off:
+      name: Transition Off
+      description: The transition speed in seconds when turning the light(s) off.
+      default: 2
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: seconds
+
     sensor:
       name: Sensor(s)
       description: The sensor(s) that will trigger this automation.
@@ -173,7 +193,7 @@ action:
             then:
               - action: light.turn_on
                 data:
-                  transition: 2
+                  transition: !input transition_on
                   brightness_pct: "{{ brightness }}"
                 target:
                   entity_id: !input light
@@ -189,7 +209,7 @@ action:
                   seconds: "{{ max(duration * 60 - sensor_clear, 0) }}"
               - action: light.turn_off
                 data:
-                  transition: 3
+                  transition: !input transition_off
                 target:
                   entity_id: !input light
               - action: homeassistant.turn_off
