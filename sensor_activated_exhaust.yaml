@@ -48,7 +48,7 @@ blueprint:
     duration:
       name: Duration
       description: The duration in minutes during which the exhaust fan will remain running after the light turns off.
-      default: 1
+      default: 5
       selector:
         number:
           min: 0
