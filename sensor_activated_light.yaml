@@ -173,7 +173,7 @@ action:
             then:
               - if:
                   - condition: template
-                    value_template: >-
+                    value_template: |
                       {% set features = state_attr(light, 'supported_features') | int(default=0) %}
                       {{ (features & 1) > 0 or (features & 32) > 0 }}
                 then:
