@@ -173,7 +173,7 @@ action:
             then:
               - action: light.turn_on
                 data:
-                  transition: 1
+                  transition: 2
                   brightness_pct: "{{ brightness }}"
                 target:
                   entity_id: !input light
@@ -189,7 +189,7 @@ action:
                   seconds: "{{ max(duration * 60 - sensor_clear, 0) }}"
               - action: light.turn_off
                 data:
-                  transition: 2
+                  transition: 3
                 target:
                   entity_id: !input light
               - action: homeassistant.turn_off
