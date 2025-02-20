@@ -30,6 +30,19 @@ blueprint:
             domain: binary_sensor
           multiple: true
 
+    off_entities:
+      name: Off Entities (Optional)
+      description: Additional entities that will be turned off when the sensor state changes to off.
+      default: []
+      selector:
+        entity:
+          filter:
+            domain:
+              - fan
+              - light
+              - switch
+          multiple: true
+
     duration_morning:
       name: Morning - Duration
       description: Duration in minutes for which the lights will remain on.
@@ -120,6 +133,7 @@ variables:
     Night: !input brightness_night
   duration: "{{ durations[phase] | default(0) }}"
   brightness: "{{ brightness_levels[phase] | default(100) }}"
+  off_entities: !input off_entities
 
 trigger:
   - platform: state
@@ -167,5 +181,12 @@ action:
                   transition: 2
                 target:
                   entity_id: !input light
+              - if:
+                  - condition: template
+                    value_template: "{{ off_entities | length > 0 }}"
+                then:
+                  - action: homeassistant.turn_off
+                    target:
+                      entity_id: !input off_entities
 
 mode: restart
