@@ -169,7 +169,7 @@ variables:
     Night: !input brightness_night
   duration: "{{ durations[phase] | default(0) }}"
   brightness: "{{ brightness_levels[phase] | default(100) }}"
-  off_entities: !input off_entities
+  off_entities: !input off_entities | deafult([])
 
 trigger:
   - platform: state
