@@ -8,7 +8,7 @@ blueprint:
 
     Notes: 
       - A duration of '0' prevents the light from turning on during that phase.
-      - A duration of '999' keeps the light on indefinitely.
+      - A duration of '99' keeps the light on indefinitely.
       - If a light does not support brightness control, 'Brightness' will be ignored.
 
   input:
@@ -37,7 +37,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 999
+          max: 99
           unit_of_measurement: minutes
     brightness_morning:
       name: Morning - Brightness
@@ -56,7 +56,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 999
+          max: 99
           unit_of_measurement: minutes
     brightness_day:
       name: Day - Brightness
@@ -75,7 +75,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 999
+          max: 99
           unit_of_measurement: minutes
     brightness_evening:
       name: Evening - Brightness
@@ -94,7 +94,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 999
+          max: 99
           unit_of_measurement: minutes
     brightness_night:
       name: Night - Brightness
@@ -139,7 +139,7 @@ action:
       entity_id: !input light
   - if:
       - condition: template
-        value_template: "{{ duration != 999 }}"
+        value_template: "{{ duration != 99 }}"
     then:
       - delay:
           seconds: "{{ duration }}"
