@@ -7,7 +7,7 @@ blueprint:
   input:
     fan:
       name: Fan
-      description: The exhaust fan entity which will be controlled.
+      description: The exhaust fan entity(ies) which will be controlled.
       selector:
         entity:
           filter:
@@ -15,6 +15,7 @@ blueprint:
               - fan
               - light
               - switch
+          multiple: true
 
     light:
       name: Light
@@ -23,14 +24,16 @@ blueprint:
         entity:
           filter:
             domain: light
+          multiple: true
 
     sensor:
       name: Sensor
-      description: The sensor entity that will be tested.
+      description: The sensor entity(ies) that will be tested.
       selector:
         entity:
           filter:
             domain: binary_sensor
+          multiple: true
 
     delay:
       name: Delay
