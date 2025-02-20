@@ -12,15 +12,6 @@ blueprint:
       - If a light does not support brightness control, 'Brightness' will be ignored.
 
   input:
-    sensor:
-      name: Sensor(s)
-      description: The sensor(s) that will trigger this automation.
-      selector:
-        entity:
-          filter:
-            domain: binary_sensor
-          multiple: true
-
     light:
       name: Light(s)
       description: The light entity(ies) which will be controlled.
@@ -28,6 +19,15 @@ blueprint:
         entity:
           filter:
             domain: light
+          multiple: true
+
+    sensor:
+      name: Sensor(s)
+      description: The sensor(s) that will trigger this automation.
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
           multiple: true
 
     duration_morning:
@@ -118,44 +118,54 @@ variables:
     Day: !input brightness_day
     Evening: !input brightness_evening
     Night: !input brightness_night
-  duration: "{{ durations[phase] | default(0) * 60 }}"
-  brightness: "{{ brightness_levels[phase] | default(0) }}"
+  duration: "{{ durations[phase] | default(0) }}"
+  brightness: "{{ brightness_levels[phase] | default(100) }}"
 
 trigger:
   - platform: state
     entity_id: !input sensor
     to: "on"
+    id: sensor_on
+  - platform: state
+    entity_id: !input sensor
+    to: "off"
+    id: sensor_off
 
 condition:
   - condition: template
     value_template: "{{ duration > 0 }}"
 
 action:
-  - action: light.turn_on
-    data:
-      transition: 1
-      brightness_pct: "{{ brightness }}"
-    target:
-      entity_id: !input light
-  - if:
-      - condition: template
-        value_template: "{{ duration != 99 }}"
-    then:
-      - delay:
-          seconds: "{{ duration }}"
-      - if:
-          - condition: state
-            entity_id: !input sensor
-            state: "on"
-        then:
-          - wait_for_trigger:
-              - trigger: state
-                entity_id: !input sensor
-                to: "off"
-      - action: light.turn_off
-        data:
-          transition: 2
-        target:
-          entity_id: !input light
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: sensor_on
+        sequence:
+          - if:
+              - condition: state
+                entity_id: !input light
+                state: "off"
+            then:
+              - action: light.turn_on
+                data:
+                  transition: 1
+                  brightness_pct: "{{ brightness }}"
+                target:
+                  entity_id: !input light
+      - conditions:
+          - condition: trigger
+            id: sensor_off
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ duration != 99 }}"
+            then:
+              - delay:
+                  minutes: "{{ duration }}"
+              - action: light.turn_off
+                data:
+                  transition: 2
+                target:
+                  entity_id: !input light
 
-mode: single
+mode: restart

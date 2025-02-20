@@ -1,0 +1,98 @@
+blueprint:
+  domain: automation
+  name: Sensor Activated Exhaust
+  description: |
+    This automation controls the state of an exhaust fan entity based on combination of states of a light and sensor entity.
+
+  input:
+    fan:
+      name: Fan
+      description: The exhaust fan entity which will be controlled.
+      selector:
+        entity:
+          filter:
+            domain:
+              - fan
+              - light
+              - switch
+
+    light:
+      name: Light
+      description: The light entity that will trigger exhaust fan's scheduled start.
+      selector:
+        entity:
+          filter:
+            domain: light
+
+    sensor:
+      name: Sensor
+      description: The sensor entity that will be tested.
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+
+    delay:
+      name: Delay
+      description: Duration in seconds to delay before turning on the exhaust fan. If the sensor state is off before this delay is achieved, then the fans will not turn on.
+      default: 90
+      selector:
+        number:
+          min: 0
+          max: 180
+          unit_of_measurement: seconds
+
+    duration:
+      name: Duration
+      description: The duration in minutes during which the exhaust fan will remain running after the light turns off.
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 10
+          unit_of_measurement: minutes
+
+variables:
+  delay: !input delay
+  duration: !input delay
+
+trigger:
+  - trigger: state
+    entity_id: !input light
+    to: "on"
+    id: "light_on"
+  - trigger: state
+    entity_id: !input light
+    to: "off"
+    id: "light_off"
+
+condition: []
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: "light_on"
+        sequence:
+          - delay:
+              seconds: "{{ delay }}"
+          - if:
+              - condition: state
+                entity_id: !input sensor
+                state: "on"
+            then:
+              - action: homeassistant.turn_on
+                data: {}
+                target:
+                  entity_id: !input fan
+      - conditions:
+          - condition: trigger
+            id: "light_off"
+        sequence:
+          - delay:
+              minutes: "{{ duration }}"
+          - action: homeassistant.turn_off
+            target:
+              entity_id: !input fan
+
+mode: restart
