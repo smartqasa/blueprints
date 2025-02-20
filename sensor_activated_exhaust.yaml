@@ -91,8 +91,8 @@ action:
                   - platform: state
                     entity_id: !input sensor
                     to: "on"
-                    timeout:
-                      minutes: 10
+                timeout:
+                  minutes: 10
                 continue_on_timeout: false
               - action: homeassistant.turn_on
                 target:
