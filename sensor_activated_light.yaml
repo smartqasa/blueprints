@@ -15,6 +15,7 @@ blueprint:
     sensor:
       name: Sensor(s)
       description: The sensor(s) that will trigger this automation.
+      default: []
       selector:
         entity:
           filter:
@@ -34,6 +35,7 @@ blueprint:
     light:
       name: Light(s)
       description: The light entity(ies) which will be controlled.
+      default: []
       selector:
         entity:
           filter:
@@ -143,7 +145,6 @@ blueprint:
     off_entities:
       name: Off Entities (Optional)
       description: Additional entities that will be turned off when the sensor state changes to off.
-      default: []
       selector:
         entity:
           filter:

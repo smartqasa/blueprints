@@ -5,9 +5,39 @@ blueprint:
     This automation controls the state of an exhaust fan entity based on combination of states of a light and sensor entity.
 
   input:
+    light:
+      name: Light
+      description: The light entity that will trigger exhaust fan's scheduled start.
+      default: []
+      selector:
+        entity:
+          filter:
+            domain: light
+          multiple: true
+
+    delay:
+      name: Delay
+      description: The duration in seconds to delay before turning on the exhaust fan. If the sensor state is off before this delay is achieved, then the fans will not turn on.
+      default: 90
+      selector:
+        number:
+          min: 0
+          max: 180
+          unit_of_measurement: seconds
+
+    sensor:
+      name: Sensor
+      description: The sensor entity that will be tested following the delay.
+      default: []
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+
     fan:
       name: Fan
       description: The exhaust fan entity(ies) which will be controlled.
+      default: []
       selector:
         entity:
           filter:
@@ -16,34 +46,6 @@ blueprint:
               - light
               - switch
           multiple: true
-
-    light:
-      name: Light
-      description: The light entity that will trigger exhaust fan's scheduled start.
-      selector:
-        entity:
-          filter:
-            domain: light
-          multiple: true
-
-    sensor:
-      name: Sensor
-      description: The sensor entity(ies) that will be tested.
-      selector:
-        entity:
-          filter:
-            domain: binary_sensor
-          multiple: true
-
-    delay:
-      name: Delay
-      description: Duration in seconds to delay before turning on the exhaust fan. If the sensor state is off before this delay is achieved, then the fans will not turn on.
-      default: 90
-      selector:
-        number:
-          min: 0
-          max: 180
-          unit_of_measurement: seconds
 
     duration:
       name: Duration
@@ -57,7 +59,7 @@ blueprint:
 
 variables:
   delay: !input delay
-  duration: !input delay
+  duration: !input duration
 
 trigger:
   - trigger: state
@@ -85,7 +87,17 @@ action:
                 state: "on"
             then:
               - action: homeassistant.turn_on
-                data: {}
+                target:
+                  entity_id: !input fan
+            else:
+              - wait_for_trigger:
+                  - platform: state
+                    entity_id: !input sensor
+                    to: "on"
+                    timeout:
+                      minutes: 10
+                continue_on_timeout: false
+              - action: homeassistant.turn_on
                 target:
                   entity_id: !input fan
       - conditions:
