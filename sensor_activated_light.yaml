@@ -12,6 +12,25 @@ blueprint:
       - If a light does not support brightness control, 'Brightness' will be ignored.
 
   input:
+    sensor:
+      name: Sensor(s)
+      description: The sensor(s) that will trigger this automation.
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+          multiple: true
+
+    sensor_clear:
+      name: Sensor Clear Time
+      description: The time in seceonds that it takes for the sensor to clear. For a motion sensor, this is usually 60 seconds.
+      default: 60
+      selector:
+        number:
+          min: 0
+          max: 360
+          unit_of_measurement: seconds
+
     light:
       name: Light(s)
       description: The light entity(ies) which will be controlled.
@@ -41,38 +60,6 @@ blueprint:
           max: 30
           unit_of_measurement: seconds
 
-    sensor:
-      name: Sensor(s)
-      description: The sensor(s) that will trigger this automation.
-      selector:
-        entity:
-          filter:
-            domain: binary_sensor
-          multiple: true
-
-    sensor_clear:
-      name: Sensor Clear Time
-      description: The time in seceonds that it takes for the sensor to clear. For a motion sensor, this is usually 60 seconds.
-      default: 60
-      selector:
-        number:
-          min: 0
-          max: 360
-          unit_of_measurement: seconds
-
-    off_entities:
-      name: Off Entities (Optional)
-      description: Additional entities that will be turned off when the sensor state changes to off.
-      default: []
-      selector:
-        entity:
-          filter:
-            domain:
-              - fan
-              - light
-              - switch
-          multiple: true
-
     duration_morning:
       name: Morning - Duration
       description: Duration in minutes for which the lights will remain on.
@@ -82,6 +69,7 @@ blueprint:
           min: 0
           max: 99
           unit_of_measurement: minutes
+
     brightness_morning:
       name: Morning - Brightness
       description: Brightness level of the lights.
@@ -101,6 +89,7 @@ blueprint:
           min: 0
           max: 99
           unit_of_measurement: minutes
+
     brightness_day:
       name: Day - Brightness
       description: Brightness level of the lights.
@@ -120,6 +109,7 @@ blueprint:
           min: 0
           max: 99
           unit_of_measurement: minutes
+
     brightness_evening:
       name: Evening - Brightness
       description: Brightness level of the lights.
@@ -139,6 +129,7 @@ blueprint:
           min: 0
           max: 99
           unit_of_measurement: minutes
+
     brightness_night:
       name: Night - Brightness
       description: Brightness level of the lights.
@@ -148,6 +139,19 @@ blueprint:
           min: 1
           max: 100
           unit_of_measurement: "%"
+
+    off_entities:
+      name: Off Entities (Optional)
+      description: Additional entities that will be turned off when the sensor state changes to off.
+      default: []
+      selector:
+        entity:
+          filter:
+            domain:
+              - fan
+              - light
+              - switch
+          multiple: true
 
 variables:
   sensor_clear: !input sensor_clear
