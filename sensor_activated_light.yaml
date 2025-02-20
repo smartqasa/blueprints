@@ -30,6 +30,16 @@ blueprint:
             domain: binary_sensor
           multiple: true
 
+    sensor_clear:
+      name: Sensor Clear Time
+      description: The time in seceonds that it takes for the sensor to clear. For a motion sensor, this is usually 60 seconds.
+      default: 60
+      selector:
+        number:
+          min: 0
+          max: 360
+          unit_of_measurement: seconds
+
     off_entities:
       name: Off Entities (Optional)
       description: Additional entities that will be turned off when the sensor state changes to off.
@@ -120,6 +130,7 @@ blueprint:
           unit_of_measurement: "%"
 
 variables:
+  sensor_clear: !input sensor_clear
   phase: "{{ states('input_select.location_phase') }}"
   durations:
     Morning: !input duration_morning
@@ -160,12 +171,20 @@ action:
                 entity_id: !input light
                 state: "off"
             then:
-              - action: light.turn_on
-                data:
-                  transition: 1
-                  brightness_pct: "{{ brightness }}"
-                target:
-                  entity_id: !input light
+              - if:
+                  - condition: template
+                    value_template: "{{ 'brightness' in state_attr(light, 'supported_features') }}"
+                then:
+                  - action: light.turn_on
+                    data:
+                      transition: 1
+                      brightness_pct: "{{ brightness }}"
+                    target:
+                      entity_id: !input light
+                else:
+                  - action: light.turn_on
+                    target:
+                      entity_id: !input light
       - conditions:
           - condition: trigger
             id: sensor_off
@@ -175,18 +194,13 @@ action:
                 value_template: "{{ duration != 99 }}"
             then:
               - delay:
-                  minutes: "{{ duration }}"
+                  seconds: "{{ max(duration * 60 - sensor_clear, 0) }}"
               - action: light.turn_off
                 data:
                   transition: 2
                 target:
                   entity_id: !input light
-              - if:
-                  - condition: template
-                    value_template: "{{ off_entities | length > 0 }}"
-                then:
-                  - action: homeassistant.turn_off
-                    target:
-                      entity_id: !input off_entities
-
+              - action: homeassistant.turn_off
+                target:
+                  entity_id: !input off_entities
 mode: restart
