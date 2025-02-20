@@ -171,23 +171,12 @@ action:
                 entity_id: !input light
                 state: "off"
             then:
-              - if:
-                  - condition: template
-                    value_template: >-
-                      {% set entity = (!input light)[0] if light is iterable else !input light %}
-                      {% set features = state_attr(entity, 'supported_features') | int(default=0) %}
-                      {{ (features & 1) > 0 or (features & 32) > 0 }}
-                then:
-                  - service: light.turn_on
-                    data:
-                      transition: 1
-                      brightness_pct: "{{ brightness }}"
-                    target:
-                      entity_id: !input light
-                else:
-                  - service: light.turn_on
-                    target:
-                      entity_id: !input light
+              - action: light.turn_on
+                data:
+                  transition: 1
+                  brightness_pct: "{{ brightness }}"
+                target:
+                  entity_id: !input light
       - conditions:
           - condition: trigger
             id: sensor_off
