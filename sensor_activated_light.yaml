@@ -173,7 +173,11 @@ action:
             then:
               - if:
                   - condition: template
-                    value_template: "{{ state_attr(light, 'supported_features') | int(default=0) & 1 > 0 }}"
+                    value_template: > -
+                      {{ 
+                        (state_attr(light, 'supported_features') | int(default=0)) & 1 > 0 or 
+                        (state_attr(light, 'supported_features') | int(default=0)) & 32 > 0 
+                      }}
                 then:
                   - action: light.turn_on
                     data:
