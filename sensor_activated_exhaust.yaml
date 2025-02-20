@@ -8,6 +8,7 @@ blueprint:
     light:
       name: Light
       description: The light entity that will trigger exhaust fan's scheduled start.
+      default: []
       selector:
         entity:
           filter:
@@ -27,6 +28,7 @@ blueprint:
     sensor:
       name: Sensor
       description: The sensor entity that will be tested following the delay.
+      default: []
       selector:
         entity:
           filter:
@@ -35,6 +37,7 @@ blueprint:
     fan:
       name: Fan
       description: The exhaust fan entity(ies) which will be controlled.
+      default: []
       selector:
         entity:
           filter:
