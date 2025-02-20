@@ -217,7 +217,12 @@ action:
                   transition: !input transition_off
                 target:
                   entity_id: !input light
-              - action: homeassistant.turn_off
-                target:
-                  entity_id: !input off_entities
+
+              - if:
+                  - condition: template
+                    value_template: "{{ off_entities | length > 0 }}"
+                then:
+                  - action: homeassistant.turn_off
+                    target:
+                      entity_id: !input off_entities
 mode: restart
