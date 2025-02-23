@@ -13,9 +13,19 @@ blueprint:
           filter:
             domain: binary_sensor
 
-    delay:
-      name: Delay
-      description: The amount of time in seconds to delay before turning on the exhaust fan. If the sensor state is off before this delay is achieved, then the fans will not turn on.
+    sensor_clear:
+      name: Sensor Clear Time
+      description: The number of seceonds that it takes for the sensor to clear. For a motion sensor, this is usually 60 seconds.
+      default: 60
+      selector:
+        number:
+          min: 0
+          max: 360
+          unit_of_measurement: seconds
+
+    active:
+      name: Active Time
+      description: The number of seconds the sensor must remain active before turning on the exhaust fan. The Sensor Clear Time will be added to this value. If the sensor state changes to off before this delay is achieved, then the fans will not turn on.
       default: 90
       selector:
         number:
@@ -54,12 +64,16 @@ blueprint:
           max: 10
           unit_of_measurement: minutes
 
+variables:
+  active: !input active
+  sensor_clear: !input sensor_clear
+
 trigger:
   - trigger: state
     entity_id: !input sensor
     to: "on"
     for:
-      seconds: !input delay
+      seconds: "{{ active + sensor_clear }}"
     id: "sensor_on"
   - trigger: state
     entity_id: !input light
