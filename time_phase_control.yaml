@@ -5,7 +5,7 @@ blueprint:
   input:
     morning:
       name: Morning
-      description: "Offset for the sunrise time in minutes (e.g., '-30' for 30 minutes before sunrise, '15' for 15 minutes after)."
+      description: The offset to sunrise in minutes (e.g., '-30' for 30 minutes before sunrise, '15' for 15 minutes after) when Morning mode is activated.
       default: 0
       selector:
         number:
@@ -14,13 +14,13 @@ blueprint:
           mode: box
     day:
       name: Day
-      description: Time when it's considered day.
+      description: The time when Day mode is activated.
       default: "08:00:00"
       selector:
         time: {}
     evening:
       name: Evening
-      description: "Offset for the sunset time in minutes (e.g., '-30' for 30 minutes before sunset, '15' for 15 minutes after)."
+      description: The offset to sunset in minutes (e.g., '-30' for 30 minutes before sunrise, '15' for 15 minutes after) when Evening mode is activated.
       default: 0
       selector:
         number:
@@ -29,7 +29,7 @@ blueprint:
           mode: box
     night:
       name: Night
-      description: Time when it's considered night.
+      description: The time when Night mode is activated.
       default: "23:00:00"
       selector:
         time: {}

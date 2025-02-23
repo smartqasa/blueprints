@@ -206,24 +206,26 @@ action:
       - conditions:
           - condition: trigger
             id: sensor_off
+          - condition: template
+            value_template: "{{ duration != 99 }}"
         sequence:
+          - delay:
+              seconds: "{{ max(duration * 60 - sensor_clear, 0) }}"
           - if:
-              - condition: template
-                value_template: "{{ duration != 99 }}"
+              - condition: state
+                entity_id: !input light
+                state: "on"
             then:
-              - delay:
-                  seconds: "{{ max(duration * 60 - sensor_clear, 0) }}"
               - action: light.turn_off
                 data:
                   transition: !input transition_off
                 target:
                   entity_id: !input light
-
-              - if:
-                  - condition: template
-                    value_template: "{{ off_entities | length > 0 }}"
-                then:
-                  - action: homeassistant.turn_off
-                    target:
-                      entity_id: !input off_entities
+          - if:
+              - condition: template
+                value_template: "{{ off_entities | length > 0 }}"
+            then:
+              - action: homeassistant.turn_off
+                target:
+                  entity_id: !input off_entities
 mode: restart
