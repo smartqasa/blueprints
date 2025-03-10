@@ -28,14 +28,14 @@ trigger:
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "Button 0"
+    subtype: "on"
     id: on_pressed
 
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "Button 2"
+    subtype: "off"
     id: off_pressed
 
 variables:
@@ -53,7 +53,7 @@ action:
                 device_id: !input pico
                 domain: lutron_caseta
                 type: release
-                subtype: "Button 0"
+                subtype: "on"
             timeout: "{{ press_duration }}"
             continue_on_timeout: true
           - if:
@@ -78,7 +78,7 @@ action:
                           device_id: !input pico
                           domain: lutron_caseta
                           type: release
-                          subtype: "Button 0"
+                          subtype: "on"
                       timeout: "{{ press_duration }}"
                       continue_on_timeout: true
                     - if:
@@ -99,7 +99,7 @@ action:
                 device_id: !input pico
                 domain: lutron_caseta
                 type: release
-                subtype: "Button 2"
+                subtype: "off"
             timeout: "{{ press_duration }}"
             continue_on_timeout: true
           - if:
@@ -122,7 +122,7 @@ action:
                           device_id: !input pico
                           domain: lutron_caseta
                           type: release
-                          subtype: "Button 2"
+                          subtype: "off"
                       timeout: "{{ press_duration }}"
                       continue_on_timeout: true
                     - if:
