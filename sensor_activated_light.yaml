@@ -42,6 +42,13 @@ blueprint:
             domain: light
           multiple: true
 
+    respect_state:
+      name: Respect Light State
+      description: If enabled, the automation will not turn on the light(s) if already on. If disabled (default), the light(s) will be turned on regardless of the current state.
+      default: false
+      selector:
+        boolean: {}
+
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on.
@@ -171,6 +178,7 @@ variables:
   duration: "{{ durations[phase] | default(0) }}"
   brightness: "{{ brightness_levels[phase] | default(100) }}"
   off_entities: !input off_entities
+  respect_state: !input respect_state
 
 trigger:
   - platform: state
@@ -193,6 +201,18 @@ action:
             id: sensor_on
         sequence:
           - if:
+              - condition: or
+                conditions:
+                  - condition: template
+                    value_template: "{{ not respect_state }}"
+                  - condition: and
+                    conditions:
+                      - condition: template
+                        value_template: "{{ respect_state }}"
+                      - condition: state
+                        entity_id: !input light
+                        state: "off"
+
               - condition: state
                 entity_id: !input light
                 state: "off"
