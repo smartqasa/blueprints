@@ -20,6 +20,27 @@ blueprint:
           filter:
             domain: light
           multiple: true
+
+    transition_on:
+      name: Transition On
+      description: The transition speed in seconds when turning the light(s) on.
+      default: 1
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: seconds
+
+    transition_off:
+      name: Transition Off
+      description: The transition speed in seconds when turning the light(s) off.
+      default: 2
+      selector:
+        number:
+          min: 0
+          max: 30
+          unit_of_measurement: seconds
+
     middle_button_action:
       name: Middle (Favorite) Button Override
       description: "Action(s) to execute when MIDDLE button is pressed. If left blank, action will default to setting the light entity to a brightness 80% and color temperature 2700."
@@ -72,6 +93,7 @@ action:
           - action: light.turn_on
             data:
               brightness_pct: 100
+              transition: !input transition_on
             target:
               entity_id: !input entity
 
@@ -157,6 +179,8 @@ action:
             id: off_pressed
         sequence:
           - action: light.turn_off
+            data:
+              transition: !input transition_off
             target:
               entity_id: !input entity
 
