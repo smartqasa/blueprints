@@ -16,6 +16,18 @@ blueprint:
             domain: scene
           multiple: true
 
+    transition:
+      name: Transition Time (optional)
+      description: Transition time in seconds for scene entities that support it
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: seconds
+          step: 1
+          mode: slider
+
     trigger_mode:
       name: Trigger Mode
       description: Choose how to trigger the automation
@@ -39,30 +51,37 @@ blueprint:
         text:
           type: text
 
-    transition:
-      name: Transition Time (optional)
-      description: Transition time in seconds for scene entities that support it
-      default: 0
+    start_date:
+      name: Start Date (MM-DD)
+      description: The beginning of the date range (month-day only)
+      default: "01-01"
       selector:
-        number:
-          min: 0
-          max: 300
-          unit_of_measurement: seconds
-          step: 1
-          mode: slider
+        text:
+          type: text
+          placeholder: "MM-DD"
 
-mode: single
+    end_date:
+      name: End Date (MM-DD)
+      description: The end of the date range (month-day only)
+      default: "12-31"
+      selector:
+        text:
+          type: text
+          placeholder: "MM-DD"
+
+variables:
+  start_date: !input start_date
+  end_date: !input end_date
+  trigger_mode: !input trigger_mode
 
 trigger:
   - trigger: time
     at: !input trigger_time
     id: time
-
   - trigger: sun
     event: sunrise
     offset: !input offset
     id: sunrise
-
   - trigger: sun
     event: sunset
     offset: !input offset
@@ -80,6 +99,14 @@ condition:
       {% else %}
         false
       {% endif %}
+  - condition: template
+    value_template: >
+      {% set today = now().strftime('%m-%d') %}
+      {% if start_date <= end_date %}
+        {{ start_date <= today <= end_date }}
+      {% else %}
+        {{ today >= start_date or today <= end_date }}
+      {% endif %}
 
 action:
   - action: scene.turn_on
@@ -87,3 +114,5 @@ action:
       entity_id: !input scene_list
     data:
       transition: !input transition
+
+mode: single
