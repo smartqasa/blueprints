@@ -3,7 +3,7 @@ blueprint:
   name: Time Activating Scenes
   description: |
     Activate a scene or list of scenes at a specific time or offset to sunrise/sunset.
-    Includes a transition time setting.
+    Includes a transition time setting and day of week selection.
 
   input:
     scene_list:
@@ -67,10 +67,41 @@ blueprint:
         text:
           type: text
 
+    days_of_week:
+      name: Days of Week
+      description: Select the days of the week when the automation should run
+      default:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+        - sat
+        - sun
+      selector:
+        select:
+          multiple: true
+          options:
+            - label: Monday
+              value: mon
+            - label: Tuesday
+              value: tue
+            - label: Wednesday
+              value: wed
+            - label: Thursday
+              value: thu
+            - label: Friday
+              value: fri
+            - label: Saturday
+              value: sat
+            - label: Sunday
+              value: sun
+
 variables:
   start_date: !input start_date
   end_date: !input end_date
   trigger_mode: !input trigger_mode
+  selected_days: !input days_of_week
 
 trigger:
   - trigger: time
@@ -105,6 +136,10 @@ condition:
       {% else %}
         {{ today >= start_date or today <= end_date }}
       {% endif %}
+  - condition: template
+    value_template: >
+      {% set current_day = now().strftime('%a').lower()[:3] %}
+      {{ current_day in selected_days }}
 
 action:
   - action: scene.turn_on
