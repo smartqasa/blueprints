@@ -1,0 +1,89 @@
+blueprint:
+  domain: automation
+  name: Activate a Scene or list of Scenes based on a Schedule
+  description: |
+    Activate a scene or list of scenes at a specific time or offset to sunrise/sunset.
+    Includes a transition time setting.
+
+  input:
+    scene_list:
+      name: Scenes to Activate
+      description: A scene or list of scenes to activate
+      default: []
+      selector:
+        entity:
+          filter:
+            domain: scene
+          multiple: true
+
+    trigger_mode:
+      name: Trigger Mode
+      description: Choose how to trigger the automation
+      selector:
+        select:
+          options:
+            - time
+            - sunrise
+            - sunset
+
+    trigger_time:
+      name: Trigger Time (if mode is 'time')
+      selector:
+        time: {}
+
+    offset:
+      name: Offset (if mode is sunrise or sunset)
+      description: Positive or negative offset in HH:MM format (e.g., -00:30 or 01:00)
+      default: "00:00"
+      selector:
+        text:
+          type: text
+
+    transition:
+      name: Transition Time (optional)
+      description: Transition time in seconds for scene entities that support it
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: seconds
+          step: 1
+          mode: slider
+
+mode: single
+
+trigger:
+  - trigger: time
+    at: !input trigger_time
+    id: time
+
+  - trigger: sun
+    event: sunrise
+    offset: !input offset
+    id: sunrise
+
+  - trigger: sun
+    event: sunset
+    offset: !input offset
+    id: sunset
+
+condition:
+  - condition: template
+    value_template: >
+      {% if trigger.id == 'time' %}
+        {{ trigger_mode == 'time' }}
+      {% elif trigger.id == 'sunrise' %}
+        {{ trigger_mode == 'sunrise' }}
+      {% elif trigger.id == 'sunset' %}
+        {{ trigger_mode == 'sunset' }}
+      {% else %}
+        false
+      {% endif %}
+
+action:
+  - action: scene.turn_on
+    target:
+      entity_id: !input scene_list
+    data:
+      transition: !input transition
