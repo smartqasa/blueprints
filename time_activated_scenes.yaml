@@ -1,6 +1,6 @@
 blueprint:
   domain: automation
-  name: Activate a Scene or list of Scenes based on a Schedule
+  name: Time Activating Scenes
   description: |
     Activate a scene or list of scenes at a specific time or offset to sunrise/sunset.
     Includes a transition time setting.
