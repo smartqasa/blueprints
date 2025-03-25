@@ -53,21 +53,19 @@ blueprint:
 
     start_date:
       name: Start Date (MM-DD)
-      description: The beginning of the date range (month-day only)
+      description: The beginning of the valid date range (month and day only)
       default: "01-01"
       selector:
         text:
           type: text
-          placeholder: "MM-DD"
 
     end_date:
       name: End Date (MM-DD)
-      description: The end of the date range (month-day only)
+      description: The end of the valid date range (month and day only)
       default: "12-31"
       selector:
         text:
           type: text
-          placeholder: "MM-DD"
 
 variables:
   start_date: !input start_date
