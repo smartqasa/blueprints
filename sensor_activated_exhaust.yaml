@@ -5,26 +5,17 @@ blueprint:
     This automation controls the state of an exhaust fan entity based on combination of states of a light and sensor entity.
 
   input:
-    sensor:
-      name: Sensor
-      description: The sensor that will trigger the exhaust fan's scheduled start.
+    light:
+      name: Light
+      description: The light entity that will trigger the exhaust fan's scheduled stop.
       selector:
         entity:
           filter:
-            domain: binary_sensor
+            domain: light
+          multiple: true
 
-    sensor_clear:
-      name: Sensor Clear Time
-      description: The number of seceonds that it takes for the sensor to clear. For a motion sensor, this is usually 60 seconds.
-      default: 60
-      selector:
-        number:
-          min: 0
-          max: 360
-          unit_of_measurement: seconds
-
-    active:
-      name: Active Time
+    delay:
+      name: Delayed Start
       description: The number of seconds the sensor must remain active before turning on the exhaust fan. The Sensor Clear Time will be added to this value. If the sensor state changes to off before this delay is achieved, then the fans will not turn on.
       default: 90
       selector:
@@ -33,8 +24,26 @@ blueprint:
           max: 180
           unit_of_measurement: seconds
 
-    fan:
-      name: Fan
+    sensor:
+      name: Sensor
+      description: The sensor that will trigger the exhaust fan's scheduled start.
+      selector:
+        entity:
+          filter:
+            domain: binary_sensor
+
+    window:
+      name: Motion Window
+      description: The number of seconds wait for the sensor to become active following the delay.
+      default: 60
+      selector:
+        number:
+          min: 15
+          max: 120
+          unit_of_measurement: seconds
+
+    exhaust:
+      name: Exhaust Fan
       description: The exhaust fan entity(ies) which will be controlled.
       selector:
         entity:
@@ -43,15 +52,6 @@ blueprint:
               - fan
               - light
               - switch
-          multiple: true
-
-    light:
-      name: Light
-      description: The light entity that will trigger the exhaust fan's scheduled stop.
-      selector:
-        entity:
-          filter:
-            domain: light
           multiple: true
 
     duration:
@@ -64,51 +64,61 @@ blueprint:
           max: 10
           unit_of_measurement: minutes
 
-variables:
-  active: !input active
-  sensor_clear: !input sensor_clear
+variables: {}
 
 trigger:
   - trigger: state
-    entity_id: !input sensor
-    to: "on"
-    for:
-      seconds: "{{ active + sensor_clear }}"
-    id: "sensor_on"
-  - trigger: state
     entity_id: !input light
-    to: "off"
-    for:
-      minutes: !input duration
-    id: "light_off"
+    to: "on"
 
 condition: []
 
 action:
-  - choose:
-      - conditions:
-          - condition: trigger
-            id: "sensor_on"
-        sequence:
-          - if:
-              - condition: state
-                entity_id: !input fan
-                state: "off"
-            then:
-              - action: homeassistant.turn_on
-                target:
-                  entity_id: !input fan
-      - conditions:
-          - condition: trigger
-            id: "light_off"
-        sequence:
-          - if:
-              - condition: state
-                entity_id: !input fan
-                state: "on"
-            then:
-              - action: homeassistant.turn_off
-                target:
-                  entity_id: !input fan
+  - wait_for_trigger:
+      - trigger: state
+        entity_id: !input light
+        to: "off"
+    timeout:
+      seconds: !input delay
+  - if:
+      condition: template
+      value_template: "{{ wait.completed }}"
+    then:
+      - stop:
+  - if:
+      - condition: state
+        entity_id: !input sensor
+        state: "off"
+    then:
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: !input sensor
+            to: "on"
+        timeout:
+          seconds: !input window
+        continue_on_timeout: false
+  - action: homeassistant.turn_on
+    target:
+      entity_id: !input exhaust
+  - delay:
+      minutes: !input duration
+  - if:
+      condition: state
+      entity_id: !input light
+      state: "off"
+    then:
+      - action: homeassistant.turn_off
+        target:
+          entity_id: !input exhaust
+    else:
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: !input light
+            to: "off"
+        timeout:
+          minutes: !input duration
+      - action: homeassistant.turn_off
+        target:
+          entity_id: !input exhaust
 
-mode: restart
+mode: single

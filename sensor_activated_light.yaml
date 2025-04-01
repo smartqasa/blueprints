@@ -181,11 +181,11 @@ variables:
   respect_state: !input respect_state
 
 trigger:
-  - platform: state
+  - trigger: state
     entity_id: !input sensor
     to: "on"
     id: sensor_on
-  - platform: state
+  - trigger: state
     entity_id: !input sensor
     to: "off"
     id: sensor_off
