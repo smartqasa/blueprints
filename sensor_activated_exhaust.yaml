@@ -21,7 +21,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 180
+          max: 300
           unit_of_measurement: seconds
 
     sensor:
