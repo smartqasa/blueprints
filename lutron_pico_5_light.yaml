@@ -150,7 +150,12 @@ action:
           - condition: trigger
             id: stop_pressed
         sequence:
-          - if: "{{ middle_button_action | length > 0 }}"
+          - if: >-
+              {{ 
+                middle_button_action is defined and 
+                middle_button_action is sequence and 
+                middle_button_action | length > 0
+              }}
             then:
               - sequence: !input middle_button_action
             else:
