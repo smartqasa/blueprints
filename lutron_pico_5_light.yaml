@@ -34,7 +34,7 @@ blueprint:
           unit_of_measurement: percent
     hold:
       name: Hold Time
-      description: "The time in seconds to hold the raise/lower button before the light starts dimming."
+      description: "The time in milliseconds to hold the raise/lower button before the light starts dimming."
       default: 400
       selector:
         number:
