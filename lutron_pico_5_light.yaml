@@ -15,7 +15,6 @@ blueprint:
         device:
           filter:
             model: PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
-
     entity:
       name: Light Entity(ies)
       description: "Light entity(ies) to control."
@@ -24,7 +23,6 @@ blueprint:
           filter:
             domain: light
           multiple: true
-
     step:
       name: Brightness Step Percentage
       description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
@@ -34,7 +32,16 @@ blueprint:
           min: 1
           max: 25
           unit_of_measurement: percent
-
+    hold:
+      name: Hold Time
+      description: "The time in seconds to hold the raise/lower button before the light starts dimming."
+      default: 0.25
+      selector:
+        number:
+          min: 0.1
+          max: 0.5
+          unit_of_measurement: seconds
+          mode: slider
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on.
@@ -44,7 +51,6 @@ blueprint:
           min: 0
           max: 10
           unit_of_measurement: seconds
-
     transition_off:
       name: Transition Off
       description: The transition speed in seconds when turning the light(s) off.
@@ -54,7 +60,6 @@ blueprint:
           min: 0
           max: 10
           unit_of_measurement: seconds
-
     middle_button_action:
       name: Middle (Favorite) Button Override
       description: "Optional actions to run when the middle (favorite) button is pressed. If left blank, the light will be set to 80% brightness and 2800K color temperature."
@@ -64,7 +69,6 @@ blueprint:
 
 variables:
   step: !input step
-  press: 0.25
   middle_button_action: !input middle_button_action
 
 trigger:
@@ -130,7 +134,7 @@ action:
                       type: release
                       subtype: raise
                   timeout:
-                    seconds: "{{ press }}"
+                    seconds: !input hold
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
@@ -145,7 +149,7 @@ action:
           - condition: trigger
             id: stop_pressed
         sequence:
-          - if: "{{ middle_button_action is not none }}"
+          - if: "{{ middle_button_action }}"
             then:
               - sequence: !input middle_button_action
             else:
@@ -174,7 +178,7 @@ action:
                       type: release
                       subtype: lower
                   timeout:
-                    seconds: "{{ press }}"
+                    seconds: !input hold
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
