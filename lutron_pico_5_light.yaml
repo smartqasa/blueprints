@@ -1,9 +1,12 @@
 blueprint:
   domain: automation
   name: Lutron Pico 5 Button - Light Entity Control
-  description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with a light entity. It is designed to simulate the operation of a standard Lutron Caseta wall dimmer including the press and hold functionality for the raise/lower buttons. It allows for the control over the brightness step percentage and transition speed and the assignment of any action to the middle button."
+  description: >-
+    Control one or more lights using a Lutron Pico 5-Button remote (model PJ2-3BRL-GXX-X01).
+    This blueprint simulates a standard Lutron Caseta wall dimmer, including press-and-hold 
+    dimming for the raise/lower buttons. Customize brightness step size, transition speed, 
+    and optionally assign any action to the middle (favorite) button.
   source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
-
   input:
     pico:
       name: Pico Device
@@ -15,7 +18,7 @@ blueprint:
 
     entity:
       name: Light Entity(ies)
-      description: "Light entity to control."
+      description: "Light entity(ies) to control."
       selector:
         entity:
           filter:
@@ -54,7 +57,7 @@ blueprint:
 
     middle_button_action:
       name: Middle (Favorite) Button Override
-      description: "Action(s) to execute when MIDDLE button is pressed. If left blank, action will default to setting the light entity to a brightness 80% and color temperature 2700."
+      description: "Optional actions to run when the middle (favorite) button is pressed. If left blank, the light will be set to 80% brightness and 2800K color temperature."
       selector:
         action: {}
       default:
@@ -62,6 +65,7 @@ blueprint:
 variables:
   step: !input step
   press: 0.25
+  middle_button_action: !input middle_button_action
 
 trigger:
   - trigger: device
@@ -107,7 +111,6 @@ action:
               transition: !input transition_on
             target:
               entity_id: !input entity
-
       - conditions:
           - condition: trigger
             id: raise_pressed
@@ -138,24 +141,20 @@ action:
                   entity_id: !input entity
                   attribute: brightness
                   above: 254
-
       - conditions:
           - condition: trigger
             id: stop_pressed
         sequence:
-          - variables:
-              middle_button_action: !input middle_button_action
-          - choose:
-              - conditions: "{{ middle_button_action != none }}"
-                sequence: !input middle_button_action
-            default:
+          - if: "{{ middle_button_action is not none }}"
+            then:
+              - sequence: !input middle_button_action
+            else:
               - action: light.turn_on
                 target:
                   entity_id: !input entity
                 data:
                   brightness_pct: 80
                   kelvin: 2800
-
       - conditions:
           - condition: trigger
             id: lower_pressed
@@ -186,7 +185,6 @@ action:
                   entity_id: !input entity
                   attribute: brightness
                   below: 1
-
       - conditions:
           - condition: trigger
             id: off_pressed
