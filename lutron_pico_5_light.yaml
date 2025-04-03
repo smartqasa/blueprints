@@ -11,7 +11,10 @@ blueprint:
       selector:
         device:
           filter:
-            model: PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
+            model:
+              - PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
+              - PJ2-3BRL-GXX-F01 (Pico3ButtonRaiseLower)
+
     entity:
       name: Light Entity(ies)
       description: "Light entity to control."
@@ -21,6 +24,16 @@ blueprint:
             domain: light
           multiple: true
 
+    step:
+      name: Brightness Step Percentage
+      description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 25
+          unit_of_measurement: percent
+
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on.
@@ -28,7 +41,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 30
+          max: 10
           unit_of_measurement: seconds
 
     transition_off:
@@ -38,7 +51,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 30
+          max: 10
           unit_of_measurement: seconds
 
     middle_button_action:
@@ -47,6 +60,10 @@ blueprint:
       selector:
         action: {}
       default:
+
+variables:
+  step: !input step
+  press: 0.25
 
 trigger:
   - trigger: device
@@ -80,10 +97,6 @@ trigger:
     subtype: "off"
     id: off_pressed
 
-variables:
-  press: 0.4
-  step: 10
-
 action:
   - choose:
       - conditions:
@@ -115,7 +128,8 @@ action:
                       domain: lutron_caseta
                       type: release
                       subtype: raise
-                  timeout: "{{ press }}"
+                  timeout:
+                    seconds: "{{ press }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
@@ -152,7 +166,7 @@ action:
               sequence:
                 - action: light.turn_on
                   data:
-                    brightness_step_pct: "{{ -step }}"
+                    brightness_step_pct: "{{ step * -1 }}"
                   target:
                     entity_id: !input entity
                   continue_on_error: true
@@ -162,7 +176,8 @@ action:
                       domain: lutron_caseta
                       type: release
                       subtype: lower
-                  timeout: "{{ press }}"
+                  timeout:
+                    seconds: "{{ press }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
