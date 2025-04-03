@@ -69,6 +69,7 @@ blueprint:
 variables:
   step: !input step
   hold: !input hold
+  hold_time: "{{ hold / 1000 }}"
   middle_button_action: !input middle_button_action
 
 trigger:
@@ -134,7 +135,7 @@ action:
                       type: release
                       subtype: raise
                   timeout:
-                    seconds: "{{ hold * 1000 }}"
+                    seconds: "{{ hold_time }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
@@ -178,7 +179,7 @@ action:
                       type: release
                       subtype: lower
                   timeout:
-                    seconds: "{{ hold * 1000 }}"
+                    seconds: "{{ hold_time }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
