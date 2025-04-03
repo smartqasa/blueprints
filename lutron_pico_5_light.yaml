@@ -151,8 +151,7 @@ action:
             id: stop_pressed
         sequence:
           - if:
-              condition: template
-              value_template: "{{ middle_button_action != none }}"
+              conditions: "{{ middle_button_action != none }}"
             then:
               - sequence: !input middle_button_action
             else:
