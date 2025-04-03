@@ -150,8 +150,7 @@ action:
           - condition: trigger
             id: stop_pressed
         sequence:
-          - if:
-              conditions: "{{ middle_button_action != none }}"
+          - if: "{{ middle_button_action != none }}"
             then:
               - sequence: !input middle_button_action
             else:
