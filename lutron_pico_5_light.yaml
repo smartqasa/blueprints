@@ -35,12 +35,12 @@ blueprint:
     hold:
       name: Hold Time
       description: "The time in seconds to hold the raise/lower button before the light starts dimming."
-      default: 0.4
+      default: 400
       selector:
         number:
-          min: 0.1
-          max: 1.0
-          unit_of_measurement: seconds
+          min: 100
+          max: 1000
+          unit_of_measurement: milliseconds
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on.
@@ -68,6 +68,7 @@ blueprint:
 
 variables:
   step: !input step
+  hold: !input hold
   middle_button_action: !input middle_button_action
 
 trigger:
@@ -133,7 +134,7 @@ action:
                       type: release
                       subtype: raise
                   timeout:
-                    seconds: !input hold
+                    seconds: "{{ hold * 1000 }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
@@ -177,7 +178,7 @@ action:
                       type: release
                       subtype: lower
                   timeout:
-                    seconds: !input hold
+                    seconds: "{{ hold * 1000 }}"
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
