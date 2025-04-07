@@ -21,7 +21,7 @@ blueprint:
       selector:
         number:
           min: 0
-          max: 300
+          max: 600
           unit_of_measurement: seconds
 
     sensor:
@@ -39,7 +39,7 @@ blueprint:
       selector:
         number:
           min: 15
-          max: 120
+          max: 300
           unit_of_measurement: seconds
 
     exhaust:

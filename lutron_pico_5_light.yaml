@@ -6,7 +6,7 @@ blueprint:
     This blueprint simulates a standard Lutron Caseta wall dimmer, including press-and-hold 
     dimming for the raise/lower buttons. Customize brightness step size, transition speed, 
     and optionally assign any action to the middle (favorite) button.
-  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
+  source_url: https://gist.github.com/smartqasa/9814a750a0d0cfb196fa1fa7ae3630bb
   input:
     pico:
       name: Pico Device
