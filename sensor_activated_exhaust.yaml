@@ -1,5 +1,6 @@
 blueprint:
   domain: automation
+
   name: Sensor Activated Exhaust
   description: |
     This automation controls the state of an exhaust fan entity based on combination of states of a light and sensor entity.

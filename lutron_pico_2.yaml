@@ -1,9 +1,9 @@
 blueprint:
+  domain: automation
+
   name: Lutron Pico 2 Button - Light/Switch
   description: |
     This automation allows for the control of one or more light or switch entities by a Lutron 2 Button Pico (PJ2-2B-GXX-X01).
-
-  domain: automation
 
   input:
     pico_remote:
@@ -31,7 +31,6 @@ trigger:
     type: press
     subtype: "on"
     id: on_pressed
-
   - trigger: device
     device_id: !input pico_remote
     domain: lutron_caseta

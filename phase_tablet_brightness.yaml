@@ -1,8 +1,9 @@
 blueprint:
+  domain: automation
   name: Phase Activated Tablet Brightness
   description: |
     This automation allows for the setting of screen brightness for one of more dashboard tablets based upon the location phase.
-  domain: automation
+
   input:
     dashboard:
       name: Tablet Screen Brightness Entities
@@ -49,7 +50,6 @@ blueprint:
           min: 0
           max: 255
           unit_of_measurement: level
-
     saver:
       name: Tablets Screen Saver Entities
       description: The screen saver brightness entity ids of the tablets that will be controlled.

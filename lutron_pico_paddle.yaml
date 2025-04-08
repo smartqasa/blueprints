@@ -1,10 +1,9 @@
 blueprint:
+  domain: automation
   name: Lutron Pico Paddle - Light with Brightness Control
   description: |
     This automation allows for controlling one or more light entities with a Lutron Paddle Pico (PJ2-1P-GXX).
     A short press will toggle the light on/off, while a long press will gradually adjust brightness.
-
-  domain: automation
 
   input:
     pico:

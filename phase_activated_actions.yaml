@@ -1,7 +1,7 @@
 blueprint:
+  domain: automation
   name: Phase Activated Actions
   description: Time Activated Actions
-  domain: automation
 
   input:
     phase:
@@ -14,7 +14,6 @@ blueprint:
             - Day
             - Evening
             - Night
-
     modes:
       name: Modes
       description: The modes during which this automation will execute.
@@ -31,7 +30,6 @@ blueprint:
         - Home
         - Away
         - Vacation
-
     scenes:
       name: Scene(s)
       description: The scene(s) that will be activated.
@@ -41,7 +39,6 @@ blueprint:
             domain: scene
           multiple: true
       default:
-
     scripts:
       name: Script(s)
       description: The scene(s) that will be activated.
@@ -51,7 +48,6 @@ blueprint:
             domain: script
           multiple: true
       default:
-
     lights_on:
       name: Lights On
       description: The light entities that will be turned on.
@@ -88,7 +84,6 @@ blueprint:
             domain: light
           multiple: true
       default:
-
     fans_on:
       name: Fans On
       description: The fan entities that will be turned on.
@@ -116,7 +111,6 @@ blueprint:
             domain: fan
           multiple: true
       default:
-
     shades_open:
       name: Shades Open
       description: The shade entities that will be opened.
@@ -144,7 +138,6 @@ blueprint:
             domain: cover
           multiple: true
       default:
-
     switches_on:
       name: Switches On
       description: The switch entities that will be turned on.
@@ -163,7 +156,6 @@ blueprint:
             domain: switch
           multiple: true
       default:
-
     garages:
       name: Garage Doors
       description: The garage door entities that will be closed.
@@ -173,7 +165,6 @@ blueprint:
             domain: cover
           multiple: true
       default:
-
     locks:
       name: Door Locks
       description: The locks entities that will be locked.
@@ -183,7 +174,6 @@ blueprint:
             domain: lock
           multiple: true
       default:
-
     media_players:
       name: TVs
       description: The TVs entities that will be turned off.
@@ -193,7 +183,6 @@ blueprint:
             domain: media_player
           multiple: true
       default:
-
     actions:
       name: General Actions
       description: The actions to execute.
@@ -242,7 +231,6 @@ action:
         target:
           entity_id: "{{ expand(scenes) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Scripts
   - if:
       - condition: template
@@ -252,7 +240,6 @@ action:
         target:
           entity_id: "{{ expand(scripts) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Lights
   - if:
       - condition: template
@@ -273,7 +260,6 @@ action:
         target:
           entity_id: "{{ expand(lights_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Fans
   - if:
       - condition: template
@@ -293,7 +279,6 @@ action:
         target:
           entity_id: "{{ expand(fans_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Shades
   - if:
       - condition: template
@@ -313,7 +298,6 @@ action:
         target:
           entity_id: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Switches
   - if:
       - condition: template
@@ -331,7 +315,6 @@ action:
         target:
           entity_id: "{{ expand(switches_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Garage Doors
   - if:
       - condition: template
@@ -341,7 +324,6 @@ action:
         target:
           entity_id: "{{ expand(garages) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Door Locks
   - if:
       - condition: template
@@ -351,7 +333,6 @@ action:
         target:
           entity_id: "{{ expand(locks) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Media Players
   - if:
       - condition: template
@@ -361,13 +342,11 @@ action:
         target:
           entity_id: "{{ expand(media_players) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
-
   # Actions
   - if:
       - condition: template
         value_template: "{{ actions != None }}"
     then: !input actions
-
   # Shades
   - if:
       - condition: template

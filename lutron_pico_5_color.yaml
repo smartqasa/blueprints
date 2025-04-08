@@ -1,8 +1,9 @@
 blueprint:
   domain: automation
+  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
+
   name: Lutron Pico 5 Button - Color Light Control
   description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with a light entity. It is designed to simulate the operation of a standard Lutron Caseta wall dimmer including the press and hold functionality for the raise/lower buttons. It allows for the control over the brightness step percentage and transition speed and the assignment of any action to the middle button."
-  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
 
   input:
     pico:

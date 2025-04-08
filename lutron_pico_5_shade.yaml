@@ -1,7 +1,10 @@
 blueprint:
+  domain: automation
+  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
+
   name: Lutron Pico 5 Button - Shade Entity Control
   description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with one or more cover entities. It is designed to simulate the operation of a standard Lutron Caseta fan controller including the press and hold functionality for the raise/lower buttons. It allows for the assignment of any action to the middle button."
-  domain: automation
+
   input:
     pico:
       name: Pico Device
@@ -27,8 +30,6 @@ blueprint:
           min: 1
           max: 100
           unit_of_measurement: percent
-
-  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
 
 trigger:
   - trigger: device

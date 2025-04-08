@@ -1,4 +1,6 @@
 blueprint:
+  domain: automation
+
   name: Automation Disabler - Climate
   description: |
     This automation will disable another automation upon the physical actuation of a light switch device. 
@@ -6,8 +8,6 @@ blueprint:
     - Pressing the On, Raise, or Lower buttons will cause the automation to be disabled for the specified time. After the time expires the automation is re-enabled and the switch is turned off.
 
     - Pressing the Off button, will cause the automation to be immediately re-enabled.
-
-  domain: automation
 
   input:
     climate:

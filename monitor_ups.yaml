@@ -1,9 +1,11 @@
 blueprint:
+  domain: automation
+
   name: Monitor - UPS Status and Battery Level
   description: >
     Monitors a UPS and sends notifications when its status changes. 
     Shuts down the server if the battery level becomes critically low.
-  domain: automation
+
   input:
     ups_status_sensor:
       name: UPS Status Sensor

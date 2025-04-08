@@ -1,0 +1,64 @@
+blueprint:
+  domain: automation
+
+  name: Monitor - Low Battery Levels
+  description: >
+    Sends a notification if any battery-powered sensor reports a level
+    below a given threshold. Only sensors with device_class: battery are included.
+
+  input:
+    battery_threshold:
+      name: Battery Threshold (%)
+      description: Send alert if battery is below this level
+      default: 30
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    run_time:
+      name: Daily Check Time
+      description: Time of day to check battery levels
+      default: "08:00:00"
+      selector:
+        time:
+
+variables:
+  location_id: "{{ states('input_text.location_id') | default('Undefined Location') }}"
+  battery_threshold: !input battery_threshold
+  low_batteries: >
+    {% set ns = namespace(list=[]) %}
+    {% for entity in states.sensor %}
+      {% if entity.attributes.device_class == 'battery' and entity.state not in ['unknown', 'unavailable'] %}
+        {% set level = entity.state | int(-1) %}
+        {% if 0 <= level < battery_threshold %}
+          {% set name = entity.name %}
+          {% set ns.list = ns.list + [(name ~ ' (' ~ level ~ '%)')] %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {{ ns.list }}
+
+trigger:
+  - platform: time
+    at: !input run_time
+
+condition:
+  - condition: template
+    value_template: "{{ low_batteries | length > 0 }}"
+
+action:
+  - action: script.system_send_notification
+    data:
+      log_level: WARNING
+      location_id: "{{ location_id }}"
+      event: "Low Battery Alert"
+      details: |
+        The following devices have low battery levels:
+
+        {% for battery in low_batteries %}
+        - {{ battery }}
+        {% endfor %}
+
+mode: queued
+max: 5
