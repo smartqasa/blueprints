@@ -238,7 +238,7 @@ action:
     then:
       - action: script.turn_on
         target:
-          entity_id: "{{ expand(scripts) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input scripts
         continue_on_error: true
   # Lights
   - if:
@@ -250,7 +250,7 @@ action:
           brightness_pct: !input lights_level
           kelvin: !input lights_kelvin
         target:
-          entity_id: "{{ expand(lights_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input lights_on
         continue_on_error: true
   - if:
       - condition: template
@@ -258,7 +258,7 @@ action:
     then:
       - action: light.turn_off
         target:
-          entity_id: "{{ expand(lights_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input lights_off
         continue_on_error: true
   # Fans
   - if:
@@ -288,7 +288,7 @@ action:
         data:
           position: "{{ shades_position }}"
         target:
-          entity_id: "{{ expand(shades_open) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input shades_open
         continue_on_error: true
   - if:
       - condition: template
@@ -296,7 +296,7 @@ action:
     then:
       - action: cover.close_cover
         target:
-          entity_id: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input shades_close
         continue_on_error: true
   # Switches
   - if:
@@ -305,7 +305,7 @@ action:
     then:
       - action: switch.turn_on
         target:
-          entity_id: "{{ expand(switches_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input switches_on
         continue_on_error: true
   - if:
       - condition: template
@@ -313,7 +313,7 @@ action:
     then:
       - action: switch.turn_off
         target:
-          entity_id: "{{ expand(switches_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input switches_off
         continue_on_error: true
   # Garage Doors
   - if:
@@ -322,7 +322,7 @@ action:
     then:
       - action: cover.close_cover
         target:
-          entity_id: "{{ expand(garages) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input garages
         continue_on_error: true
   # Door Locks
   - if:
@@ -331,7 +331,7 @@ action:
     then:
       - action: lock.lock
         target:
-          entity_id: "{{ expand(locks) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input locks
         continue_on_error: true
   # Media Players
   - if:
@@ -340,12 +340,13 @@ action:
     then:
       - action: media_player.turn_off
         target:
-          entity_id: "{{ expand(media_players) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: !input media_players
         continue_on_error: true
   # Actions
   - if:
       - condition: template
         value_template: "{{ actions is not none and actions | length > 0 }}"
-    then: !input actions
+    then:
+      - sequence: !input actions
 
 mode: restart
