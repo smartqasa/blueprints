@@ -197,9 +197,13 @@ variables:
   lights_on: !input lights_on
   lights_off: !input lights_off
   fans_on: !input fans_on
+  fans_on_list: "{{ expand(fans_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   fans_off: !input fans_off
+  fans_off_list: "{{ expand(fans_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   shades_open: !input shades_open
+  shades_open_list: "{{ expand(shades_open) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   shades_close: !input shades_close
+  shades_close_list: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   shades_position: !input shades_position
   switches_on: !input switches_on
   switches_off: !input switches_off
@@ -263,40 +267,40 @@ action:
   # Fans
   - if:
       - condition: template
-        value_template: "{{ fans_on is not none and fans_on | length > 0 }}"
+        value_template: "{{ fans_on_list | length > 0 }}"
     then:
       - action: fan.turn_on
         data:
           percentage: !input fans_level
         target:
-          entity_id: "{{ expand(fans_on) | rejectattr('state', 'in', ['on', 'unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ fans_on_list }}"
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ fans_off is not none and fans_off | length > 0 }}"
+        value_template: "{{ fans_off_list | length > 0 }}"
     then:
       - action: fan.turn_off
         target:
-          entity_id: "{{ expand(fans_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ fans_off_list }}"
         continue_on_error: true
   # Shades
   - if:
       - condition: template
-        value_template: "{{ shades_open is not none and shades_open | length > 0 }}"
+        value_template: "{{ shades_open_list | length > 0 }}"
     then:
       - action: cover.set_cover_position
         data:
           position: "{{ shades_position }}"
         target:
-          entity_id: "{{ expand(shades_open) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ shades_open_list }}"
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ shades_close is not none and shades_close | length > 0 }}"
+        value_template: "{{ shades_close_list | length > 0 }}"
     then:
       - action: cover.close_cover
         target:
-          entity_id: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ shades_close_list }}"
         continue_on_error: true
   # Switches
   - if:
