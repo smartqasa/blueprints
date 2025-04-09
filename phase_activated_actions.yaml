@@ -349,4 +349,4 @@ action:
     then:
       - sequence: !input actions
 
-mode: restart
+mode: single
