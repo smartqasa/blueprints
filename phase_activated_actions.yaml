@@ -223,7 +223,7 @@ action:
   # Scenes
   - if:
       - condition: template
-        value_template: "{{ scenes != None }}"
+        value_template: "{{ scenes is not empty }}"
     then:
       - action: scene.turn_on
         data:
@@ -234,7 +234,7 @@ action:
   # Scripts
   - if:
       - condition: template
-        value_template: "{{ scripts != None }}"
+        value_template: "{{ scripts is not empty }}"
     then:
       - action: script.turn_on
         target:
@@ -243,7 +243,7 @@ action:
   # Lights
   - if:
       - condition: template
-        value_template: "{{ lights_on != None }}"
+        value_template: "{{ lights_on is not empty }}"
     then:
       - action: light.turn_on
         data:
@@ -254,7 +254,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ lights_off != None }}"
+        value_template: "{{ lights_off is not empty }}"
     then:
       - action: light.turn_off
         target:
@@ -263,7 +263,7 @@ action:
   # Fans
   - if:
       - condition: template
-        value_template: "{{ fans_on != None }}"
+        value_template: "{{ fans_on is not empty }}"
     then:
       - action: fan.turn_on
         data:
@@ -273,7 +273,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ fans_off != None }}"
+        value_template: "{{ fans_off is not empty }}"
     then:
       - action: fan.turn_off
         target:
@@ -282,7 +282,7 @@ action:
   # Shades
   - if:
       - condition: template
-        value_template: "{{ shades_open != None }}"
+        value_template: "{{ shades_open is not empty }}"
     then:
       - action: cover.set_cover_position
         data:
@@ -292,7 +292,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ shades_close != None }}"
+        value_template: "{{ shades_close is not empty }}"
     then:
       - action: cover.close_cover
         target:
@@ -301,7 +301,7 @@ action:
   # Switches
   - if:
       - condition: template
-        value_template: "{{ switches_on != None }}"
+        value_template: "{{ switches_on is not empty }}"
     then:
       - action: switch.turn_on
         target:
@@ -309,7 +309,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ switches_off != None }}"
+        value_template: "{{ switches_off is not empty }}"
     then:
       - action: switch.turn_off
         target:
@@ -318,7 +318,7 @@ action:
   # Garage Doors
   - if:
       - condition: template
-        value_template: "{{ garages != None }}"
+        value_template: "{{ garages is not empty }}"
     then:
       - action: cover.close_cover
         target:
@@ -327,7 +327,7 @@ action:
   # Door Locks
   - if:
       - condition: template
-        value_template: "{{ locks != None }}"
+        value_template: "{{ locks is not empty }}"
     then:
       - action: lock.lock
         target:
@@ -336,7 +336,7 @@ action:
   # Media Players
   - if:
       - condition: template
-        value_template: "{{ media_players != None }}"
+        value_template: "{{ media_players is not empty }}"
     then:
       - action: media_player.turn_off
         target:
@@ -345,22 +345,7 @@ action:
   # Actions
   - if:
       - condition: template
-        value_template: "{{ actions != None }}"
+        value_template: "{{ actions is not empty }}"
     then: !input actions
-  # Shades
-  - if:
-      - condition: template
-        value_template: "{{ shades_open != None or shades_close != None }}"
-    then:
-      - delay:
-          minutes: 1
-      - action: cover.stop_cover
-        target:
-          entity_id: "{{ expand(shades_open) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
-        continue_on_error: true
-      - action: cover.stop_cover
-        target:
-          entity_id: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
-        continue_on_error: true
 
 mode: restart

@@ -29,21 +29,23 @@ blueprint:
     step:
       name: Volume Step Percentage
       description: "The percentage of volume to which the media player is changed when the RAISE/LOWER buttons are pressed and held."
+      default: 10
       selector:
         number:
           min: 1
           max: 33
           unit_of_measurement: percentage
-      default: 10
+
     speed:
       name: Volume Transition Speed
       description: "The rate of speed in milliseconds at which the brightness of the light entity will be changed."
+      default: 500
       selector:
         number:
           min: 100
           max: 2000
           unit_of_measurement: milliseconds
-      default: 500
+
     middle_button_action:
       name: Middle (Favorite) Button Override
       description: "Action(s) to execute when MIDDLE button is pressed. If left blank, action will default to setting the light entity to a brightness 80% and color temperature 2700."
@@ -131,7 +133,7 @@ action:
             id: stop_pressed
         sequence:
           - choose:
-              - conditions: "{{ middle_button_action != none }}"
+              - conditions: "{{ middle_button_action is not empty }}"
                 sequence: !input middle_button_action
             default:
               - action: light.turn_on

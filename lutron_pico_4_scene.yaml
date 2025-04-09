@@ -71,25 +71,25 @@ action:
           - condition: trigger
             id: button_1
           - condition: template
-            value_template: "{{ button_1 != none }}"
+            value_template: "{{ button_1 is not empty }}"
         sequence: !input button_1
       - conditions:
           - condition: trigger
             id: button_2
           - condition: template
-            value_template: "{{ button_2 != none }}"
+            value_template: "{{ button_2 is not empty }}"
         sequence: !input button_2
       - conditions:
           - condition: trigger
             id: button_3
           - condition: template
-            value_template: "{{ button_3 != none }}"
+            value_template: "{{ button_3 is not empty }}"
         sequence: !input button_3
       - conditions:
           - condition: trigger
             id: button_4
           - condition: template
-            value_template: "{{ button_4 != none }}"
+            value_template: "{{ button_4 is not empty }}"
         sequence: !input button_4
 
 mode: restart
