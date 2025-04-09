@@ -221,16 +221,12 @@ condition:
 
 action:
   # Scenes
-  - if:
-      - condition: template
-        value_template: "{{ scenes is not none and scenes | length > 0 }}"
-    then:
-      - action: scene.turn_on
-        data:
-          transition: 1
-        target:
-          entity_id: "{{ expand(scenes) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
-        continue_on_error: true
+  - action: scene.turn_on
+    data:
+      transition: 1
+    target:
+      entity_id: !input scenes
+    continue_on_error: true
   # Scripts
   - if:
       - condition: template
