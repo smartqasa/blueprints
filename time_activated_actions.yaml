@@ -1,5 +1,6 @@
 blueprint:
   domain: automation
+
   name: Time Activated Actions
   description: |
     Execute a list of actions at a specific time or offset to sunrise/sunset.

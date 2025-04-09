@@ -1,5 +1,6 @@
 blueprint:
   domain: automation
+
   name: Phase Activated Actions
   description: Time Activated Actions
 

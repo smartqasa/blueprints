@@ -1,9 +1,10 @@
 blueprint:
+  domain: automation
+
   name: Sensor Activated Switches
   description: |
     This automation allows for the control of one or more switch entities based upon the state of one or more sensor entities.
 
-  domain: automation
   input:
     sensor:
       name: Sensor(s)

@@ -1,5 +1,6 @@
 blueprint:
   domain: automation
+
   name: Phase Activated Tablet Brightness
   description: |
     This automation allows for the setting of screen brightness for one of more dashboard tablets based upon the location phase.

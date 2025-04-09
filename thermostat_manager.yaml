@@ -1,9 +1,9 @@
 blueprint:
+  domain: automation
+
   name: Thermostat Manager
   description: |
     This automation will manage the temperature and mode settings of one or more thermostat entities.
-
-  domain: automation
 
   input:
     thermostat:

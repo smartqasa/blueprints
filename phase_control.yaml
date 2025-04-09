@@ -1,5 +1,6 @@
 blueprint:
   domain: automation
+
   name: Phase Control
   description: Change the phase of the day based on time triggers, with minute offsets for sunrise and sunset.
 

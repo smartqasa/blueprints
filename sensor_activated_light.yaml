@@ -1,5 +1,6 @@
 blueprint:
   domain: automation
+
   name: Sensor Activated Lights
   description: |
     This automation controls the state and brightness of one or more light entities based on:
