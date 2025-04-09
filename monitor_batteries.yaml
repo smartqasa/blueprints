@@ -19,7 +19,7 @@ blueprint:
     run_time:
       name: Daily Check Time
       description: Time of day to check battery levels
-      default: "08:00:00"
+      default: "06:00:00"
       selector:
         time:
 
