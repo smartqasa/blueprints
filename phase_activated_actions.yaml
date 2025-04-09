@@ -248,7 +248,7 @@ action:
       - action: light.turn_on
         data:
           brightness_pct: !input lights_level
-          kelvin: !input lights_kelvin
+          color_temp_kelvin: !input lights_kelvin
         target:
           entity_id: "{{ expand(lights_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
         continue_on_error: true
