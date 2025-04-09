@@ -193,32 +193,32 @@ blueprint:
 variables:
   modes: !input modes
   scenes: !input scenes
-  scenes_list: "{{ expand(scenes) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  scenes_list: "{{ expand(scenes) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   scripts: !input scripts
-  scripts_list: "{{ expand(scripts) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  scripts_list: "{{ expand(scripts) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   lights_on: !input lights_on
-  lights_on_list: "{{ expand(lights_on) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  lights_on_list: "{{ expand(lights_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   lights_off: !input lights_off
-  lights_off_list: "{{ expand(lights_off) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  lights_off_list: "{{ expand(lights_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   fans_on: !input fans_on
-  fans_on_list: "{{ expand(fans_on) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  fans_on_list: "{{ expand(fans_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   fans_off: !input fans_off
-  fans_off_list: "{{ expand(fans_off) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  fans_off_list: "{{ expand(fans_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   shades_open: !input shades_open
-  shades_open_list: "{{ expand(shades_open) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  shades_open_list: "{{ expand(shades_open) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   shades_close: !input shades_close
-  shades_close_list: "{{ expand(shades_close) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  shades_close_list: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   shades_position: !input shades_position
   switches_on: !input switches_on
-  switches_on_list: "{{ expand(switches_on) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  switches_on_list: "{{ expand(switches_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   switches_off: !input switches_off
-  switches_off_list: "{{ expand(switches_off) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  switches_off_list: "{{ expand(switches_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   garages: !input garages
-  garages_list: "{{ expand(garages) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  garages_list: "{{ expand(garages) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   locks: !input locks
-  locks_list: "{{ expand(locks) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  locks_list: "{{ expand(locks) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   media_players: !input media_players
-  media_players_list: "{{ expand(media_players) | select('state', 'not in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+  media_players_list: "{{ expand(media_players) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   actions: !input actions
 
 trigger:
