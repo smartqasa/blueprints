@@ -193,9 +193,13 @@ blueprint:
 variables:
   modes: !input modes
   scenes: !input scenes
+  scenes_list: "{{ expand(scenes) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   scripts: !input scripts
+  scripts_list: "{{ expand(scripts) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   lights_on: !input lights_on
+  lights_on_list: "{{ expand(lights_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   lights_off: !input lights_off
+  lights_off_list: "{{ expand(lights_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   fans_on: !input fans_on
   fans_on_list: "{{ expand(fans_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   fans_off: !input fans_off
@@ -206,10 +210,15 @@ variables:
   shades_close_list: "{{ expand(shades_close) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   shades_position: !input shades_position
   switches_on: !input switches_on
+  switches_on_list: "{{ expand(switches_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   switches_off: !input switches_off
+  switches_off_list: "{{ expand(switches_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   garages: !input garages
+  garages_list: "{{ expand(garages) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   locks: !input locks
+  locks_list: "{{ expand(locks) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   media_players: !input media_players
+  media_players_list: "{{ expand(media_players) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
   actions: !input actions
 
 trigger:
@@ -227,42 +236,42 @@ action:
   # Scenes
   - if:
       - condition: template
-        value_template: "{{ scenes is not none and scenes | length > 0 }}"
+        value_template: "{{ scenes_list | length > 0 }}"
     then:
       - action: scene.turn_on
         data:
           transition: 1
         target:
-          entity_id: "{{ expand(scenes) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ scenes_list }}"
         continue_on_error: true
   # Scripts
   - if:
       - condition: template
-        value_template: "{{ scripts is not none and scripts | length > 0 }}"
+        value_template: "{{ scripts_list | length > 0 }}"
     then:
       - action: script.turn_on
         target:
-          entity_id: "{{ expand(scripts) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ scripts_list }}"
         continue_on_error: true
   # Lights
   - if:
       - condition: template
-        value_template: "{{ lights_on is not none and lights_on | length > 0 }}"
+        value_template: "{{ lights_on_list | length > 0 }}"
     then:
       - action: light.turn_on
         data:
           brightness_pct: !input lights_level
           color_temp_kelvin: !input lights_kelvin
         target:
-          entity_id: "{{ expand(lights_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ lights_on_list }}"
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ lights_off is not none and lights_off | length > 0 }}"
+        value_template: "{{ lights_off_list | length > 0 }}"
     then:
       - action: light.turn_off
         target:
-          entity_id: "{{ expand(lights_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ lights_off_list }}"
         continue_on_error: true
   # Fans
   - if:
@@ -305,46 +314,46 @@ action:
   # Switches
   - if:
       - condition: template
-        value_template: "{{ switches_on is not none and switches_on | length > 0 }}"
+        value_template: "{{ switches_on_list | length > 0 }}"
     then:
       - action: switch.turn_on
         target:
-          entity_id: "{{ expand(switches_on) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ switches_on_list }}"
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ switches_off is not none and switches_off | length > 0 }}"
+        value_template: "{{ switches_off_list | length > 0 }}"
     then:
       - action: switch.turn_off
         target:
-          entity_id: "{{ expand(switches_off) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ switches_off_list }}"
         continue_on_error: true
   # Garage Doors
   - if:
       - condition: template
-        value_template: "{{ garages is not none and garages | length > 0 }}"
+        value_template: "{{ garages_list | length > 0 }}"
     then:
       - action: cover.close_cover
         target:
-          entity_id: "{{ expand(garages) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ garages_list }}"
         continue_on_error: true
   # Door Locks
   - if:
       - condition: template
-        value_template: "{{ locks is not none and locks | length > 0 }}"
+        value_template: "{{ locks_list | length > 0 }}"
     then:
       - action: lock.lock
         target:
-          entity_id: "{{ expand(locks) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ locks_list }}"
         continue_on_error: true
   # Media Players
   - if:
       - condition: template
-        value_template: "{{ media_players is not none and media_players | length > 0 }}"
+        value_template: "{{ media_players_list | length > 0 }}"
     then:
       - action: media_player.turn_off
         target:
-          entity_id: "{{ expand(media_players) | rejectattr('state', 'in', ['unavailable', 'unknown']) | map(attribute='entity_id') | list }}"
+          entity_id: "{{ media_players_list }}"
         continue_on_error: true
   # Actions
   - if:
