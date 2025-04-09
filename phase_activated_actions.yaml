@@ -223,7 +223,7 @@ action:
   # Scenes
   - if:
       - condition: template
-        value_template: "{{ scenes is not empty }}"
+        value_template: "{{ scenes is not none and scenes | length > 0 }}"
     then:
       - action: scene.turn_on
         data:
@@ -234,7 +234,7 @@ action:
   # Scripts
   - if:
       - condition: template
-        value_template: "{{ scripts is not empty }}"
+        value_template: "{{ scripts is not none and scripts | length > 0 }}"
     then:
       - action: script.turn_on
         target:
@@ -243,7 +243,7 @@ action:
   # Lights
   - if:
       - condition: template
-        value_template: "{{ lights_on is not empty }}"
+        value_template: "{{ lights_on is not none and lights_on | length > 0 }}"
     then:
       - action: light.turn_on
         data:
@@ -254,7 +254,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ lights_off is not empty }}"
+        value_template: "{{ lights_off is not none and lights_off | length > 0 }}"
     then:
       - action: light.turn_off
         target:
@@ -263,7 +263,7 @@ action:
   # Fans
   - if:
       - condition: template
-        value_template: "{{ fans_on is not empty }}"
+        value_template: "{{ fans_on is not none and fans_on | length > 0 }}"
     then:
       - action: fan.turn_on
         data:
@@ -273,7 +273,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ fans_off is not empty }}"
+        value_template: "{{ fans_off is not none and fans_off | length > 0 }}"
     then:
       - action: fan.turn_off
         target:
@@ -282,7 +282,7 @@ action:
   # Shades
   - if:
       - condition: template
-        value_template: "{{ shades_open is not empty }}"
+        value_template: "{{ shades_open is not none and shades_open | length > 0 }}"
     then:
       - action: cover.set_cover_position
         data:
@@ -292,7 +292,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ shades_close is not empty }}"
+        value_template: "{{ shades_close is not none and shades_close | length > 0 }}"
     then:
       - action: cover.close_cover
         target:
@@ -301,7 +301,7 @@ action:
   # Switches
   - if:
       - condition: template
-        value_template: "{{ switches_on is not empty }}"
+        value_template: "{{ switches_on is not none and switches_on | length > 0 }}"
     then:
       - action: switch.turn_on
         target:
@@ -309,7 +309,7 @@ action:
         continue_on_error: true
   - if:
       - condition: template
-        value_template: "{{ switches_off is not empty }}"
+        value_template: "{{ switches_off is not none and switches_off | length > 0 }}"
     then:
       - action: switch.turn_off
         target:
@@ -318,7 +318,7 @@ action:
   # Garage Doors
   - if:
       - condition: template
-        value_template: "{{ garages is not empty }}"
+        value_template: "{{ garages is not none and garages | length > 0 }}"
     then:
       - action: cover.close_cover
         target:
@@ -327,7 +327,7 @@ action:
   # Door Locks
   - if:
       - condition: template
-        value_template: "{{ locks is not empty }}"
+        value_template: "{{ locks is not none and locks | length > 0 }}"
     then:
       - action: lock.lock
         target:
@@ -336,7 +336,7 @@ action:
   # Media Players
   - if:
       - condition: template
-        value_template: "{{ media_players is not empty }}"
+        value_template: "{{ media_players is not none and media_players | length > 0 }}"
     then:
       - action: media_player.turn_off
         target:
@@ -345,7 +345,7 @@ action:
   # Actions
   - if:
       - condition: template
-        value_template: "{{ actions is not empty }}"
+        value_template: "{{ actions is not none and actions | length > 0 }}"
     then: !input actions
 
 mode: restart

@@ -145,18 +145,18 @@ condition: []
 
 action:
   - choose:
-      - conditions: "{{ on_action_all is not empty }}"
+      - conditions: "{{ on_action_all is not none and on_action_all | length > 0 }}"
         sequence: !input on_action_all
-      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and on_action_morning is not none }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and on_action_morning is not none and on_action_morning | length > 0 }}"
         sequence: !input on_action_morning
-      - conditions: "{{ is_state('input_select.location_phase', 'Day') and on_action_day is not none }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Day') and on_action_day is not none and on_action_day | length > 0 }}"
         sequence: !input on_action_day
-      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and on_action_evening is not none }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and on_action_evening is not none and on_action_evening | length > 0 }}"
         sequence: !input on_action_evening
-      - conditions: "{{ is_state('input_select.location_phase', 'Night') and on_action_night is not none }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Night') and on_action_night is not none and on_action_night | length > 0 }}"
         sequence: !input on_action_night
   - choose:
-      - conditions: "{{ on_action_all is not none }}"
+      - conditions: "{{ on_action_all is not none and on_action_all | length > 0 }}"
         sequence:
           - wait_for_trigger:
               trigger: state
@@ -202,15 +202,15 @@ action:
               for:
                 minutes: !input delay_night
   - choose:
-      - conditions: "{{ off_action_all is not empty }}"
+      - conditions: "{{ off_action_all is not none and off_action_all | length > 0 }}"
         sequence: !input off_action_all
-      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and off_action_morning is not empty }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Morning') and off_action_morning is not none and off_action_morning | length > 0 }}"
         sequence: !input off_action_morning
-      - conditions: "{{ is_state('input_select.location_phase', 'Day') and off_action_day is not empty }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Day') and off_action_day is not none and off_action_day | length > 0 }}"
         sequence: !input off_action_day
-      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and off_action_evening is not empty }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Evening') and off_action_evening is not none and off_action_evening | length > 0 }}"
         sequence: !input off_action_evening
-      - conditions: "{{ is_state('input_select.location_phase', 'Night') and off_action_night is not empty }}"
+      - conditions: "{{ is_state('input_select.location_phase', 'Night') and off_action_night is not none and off_action_night | length > 0 }}"
         sequence: !input off_action_night
 
 mode: restart

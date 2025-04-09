@@ -133,7 +133,7 @@ action:
             id: stop_pressed
         sequence:
           - choose:
-              - conditions: "{{ middle_button_action is not empty }}"
+              - conditions: "{{ middle_button_action is not none and middle_button_action | length > 0 }}"
                 sequence: !input middle_button_action
             default:
               - action: light.turn_on
