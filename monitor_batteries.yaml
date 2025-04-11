@@ -64,10 +64,7 @@ action:
       log_level: WARNING
       location_id: "{{ location_id }}"
       event: "Low Battery Alert"
-      details: >
-        The following devices have low battery levels:
-        {% for battery in low_batteries %}
-          - {{ battery }}
-        {% endfor %}
+    details: >-
+      The following devices have low battery levels:\n\n{% for battery in low_batteries %}- {{ battery }}\n{% endfor %}
 
 mode: single
