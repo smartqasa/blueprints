@@ -67,7 +67,7 @@ action:
       details: >
         The following devices have low battery levels:
         {% for battery in low_batteries %}
-        - {{ battery }}
+          - {{ battery }}
         {% endfor %}
 
 mode: single
