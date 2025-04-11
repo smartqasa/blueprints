@@ -35,7 +35,7 @@ variables:
   location_id: "{{ states('input_text.location_id') | default('Undefined Location') }}"
   battery_threshold: !input battery_threshold
   ignored_entities: !input ignore_entities
-  low_batteries: >-
+  low_batteries: >
     {% set ns = namespace(list=[]) %}
     {% for entity in states.sensor %}
       {% if entity.entity_id not in ignored_entities 
