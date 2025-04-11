@@ -1,0 +1,58 @@
+blueprint:
+  domain: automation
+
+  name: Monitor - Unavailable or Unknown Entities
+  description: >
+    Sends a notification if any entity reports a state of 'unavailable' or 'unknown'.
+    Allows specifying entities to ignore.
+
+  input:
+    run_time:
+      name: Daily Check Time
+      description: Time of day to check entity states
+      default: "06:00:00"
+      selector:
+        time:
+    ignore_entities:
+      name: Entities to Ignore
+      description: Select entities to exclude from checks
+      default: []
+      selector:
+        entity:
+          multiple: true
+
+variables:
+  location_id: "{{ states('input_text.location_id') | default('Undefined Location') }}"
+  ignored_entities: !input ignore_entities
+  problem_entities: >
+    {% set ns = namespace(list=[]) %}
+    {% for entity in states %}
+      {% if entity.entity_id not in ignored_entities 
+          and entity.state in ['unavailable', 'unknown'] %}
+        {% set name = entity.name | default(entity.entity_id) %}
+        {% set ns.list = ns.list + [name ~ ' (' ~ entity.state ~ ')'] %}
+      {% endif %}
+    {% endfor %}
+    {{ ns.list }}
+
+trigger:
+  - platform: time
+    at: !input run_time
+
+condition:
+  - condition: template
+    value_template: "{{ problem_entities | length > 0 }}"
+
+action:
+  - action: script.system_send_notification
+    data:
+      log_level: WARNING
+      location_id: "{{ location_id }}"
+      event: "Unavailable or Unknown Entities Alert"
+      details: |
+        The following entities are unavailable or unknown:
+
+        {% for entity in problem_entities -%}  - {{ entity }}
+        {% endfor %}
+
+mode: single

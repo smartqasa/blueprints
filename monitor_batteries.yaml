@@ -1,5 +1,6 @@
 blueprint:
   domain: automation
+
   name: Monitor - Low Battery Levels
   description: >
     Sends a notification if any battery-powered sensor reports a level
@@ -67,7 +68,7 @@ action:
       details: |
         The following devices have low battery levels:
 
-        {% for battery in low_batteries -%}- {{ battery }}
+        {% for battery in low_batteries -%}  - {{ battery }}
         {% endfor %}
 
 mode: single
