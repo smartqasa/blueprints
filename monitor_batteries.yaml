@@ -66,10 +66,8 @@ action:
       event: "Low Battery Alert"
       details: >-
         The following devices have low battery levels:
-
         {% for battery in low_batteries %}
-        - {{ battery }}\n
+        - {{ battery | join('\n')}}
         {% endfor %}
 
-mode: queued
-max: 5
+mode: single
