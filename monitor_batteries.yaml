@@ -68,7 +68,7 @@ action:
         The following devices have low battery levels:
 
         {% for battery in low_batteries %}
-        - {{ battery }}
+        - {{ battery }}\n
         {% endfor %}
 
 mode: queued
