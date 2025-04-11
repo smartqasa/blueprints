@@ -1,10 +1,10 @@
 blueprint:
   domain: automation
-
   name: Monitor - Low Battery Levels
   description: >
     Sends a notification if any battery-powered sensor reports a level
     below a given threshold. Only sensors with device_class: battery are included.
+    Allows specifying entities to ignore.
 
   input:
     battery_threshold:
@@ -22,14 +22,25 @@ blueprint:
       default: "06:00:00"
       selector:
         time:
+    ignore_entities:
+      name: Entities to Ignore
+      description: Select entities to exclude from low battery checks
+      default: []
+      selector:
+        entity:
+          multiple: true
+          domain: sensor
 
 variables:
   location_id: "{{ states('input_text.location_id') | default('Undefined Location') }}"
   battery_threshold: !input battery_threshold
+  ignored_entities: !input ignore_entities
   low_batteries: >
     {% set ns = namespace(list=[]) %}
     {% for entity in states.sensor %}
-      {% if entity.attributes.device_class == 'battery' and entity.state not in ['unknown', 'unavailable'] %}
+      {% if entity.entity_id not in ignored_entities 
+          and entity.attributes.device_class == 'battery' 
+          and entity.state not in ['unknown', 'unavailable'] %}
         {% set level = entity.state | int(-1) %}
         {% if 0 <= level < battery_threshold %}
           {% set name = entity.name %}
