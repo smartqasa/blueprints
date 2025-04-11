@@ -66,6 +66,6 @@ action:
       event: "Low Battery Alert"
       details: |
         The following devices have low battery levels:
-        {% for battery in low_batteries %}- {{ battery }} {% endfor %}
+        {% for battery in low_batteries %}- {{ battery }}{% endfor %}
 
 mode: single
