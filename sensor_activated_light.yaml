@@ -213,10 +213,6 @@ action:
                       - condition: state
                         entity_id: !input light
                         state: "off"
-
-              - condition: state
-                entity_id: !input light
-                state: "off"
             then:
               - action: light.turn_on
                 data:
