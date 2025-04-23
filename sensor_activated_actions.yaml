@@ -124,7 +124,7 @@ variables:
     Day: !input on_action_day
     Evening: !input on_action_evening
     Night: !input on_action_night
-  on_actions: "{{ on_actions_list[phase] | null }}"
+  on_actions: "{{ on_actions_list[phase] | default([]) }}"
   duration_list:
     Morning: !input duration_morning
     Day: !input duration_day
@@ -136,7 +136,7 @@ variables:
     Day: !input off_action_day
     Evening: !input off_action_evening
     Night: !input off_action_night
-  off_actions: "{{ off_actions_list[phase] | null }}"
+  off_actions: "{{ off_actions_list[phase] | default([]) }}"
 
 trigger:
   - trigger: state
