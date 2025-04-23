@@ -1,7 +1,7 @@
 blueprint:
   domain: automation
 
-  name: Sensor Activated Actions
+  name: Sensor Activated Action
   description: |
     This automation allows for the execution of a set of actions based upon (a) the state of one or more sensor entities and (b) the phase of the location.
 
