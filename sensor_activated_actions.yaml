@@ -57,7 +57,7 @@ blueprint:
       selector:
         action:
     duration_day:
-      name: Day - Sensor On Actions
+      name: Day - Duration
       description: The time (in minutes) to wait before executing the Sensor Off Actions.
       default: 0
       selector:
@@ -135,10 +135,6 @@ trigger:
     entity_id: !input sensor
     to: "off"
     id: sensor_off
-
-condition:
-  - condition: template
-    value_template: "{{ duration > 0 }}"
 
 action:
   - choose:
