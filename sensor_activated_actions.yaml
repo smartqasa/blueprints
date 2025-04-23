@@ -119,24 +119,12 @@ blueprint:
 variables:
   sensor_clear: !input sensor_clear
   phase: "{{ states('input_select.location_phase') }}"
-  on_actions_list:
-    Morning: !input on_action_morning
-    Day: !input on_action_day
-    Evening: !input on_action_evening
-    Night: !input on_action_night
-  on_actions: "{{ on_actions_list[phase] | default([]) }}"
   duration_list:
     Morning: !input duration_morning
     Day: !input duration_day
     Evening: !input duration_evening
     Night: !input duration_night
   duration: "{{ duration_list[phase] | default(0) }}"
-  off_actions_list:
-    Morning: !input off_action_morning
-    Day: !input off_action_day
-    Evening: !input off_action_evening
-    Night: !input off_action_night
-  off_actions: "{{ off_actions_list[phase] | default([]) }}"
 
 trigger:
   - trigger: state
@@ -158,21 +146,29 @@ action:
           - condition: trigger
             id: sensor_on
         sequence:
-          - if:
-              - condition: template
-                value_template: "{{ on_actions is not none and on_actions | length > 0 }}"
-            then:
-              - sequence: "{{ on_actions }}"
+          - choose:
+              - conditions: "{{ phase == 'Morning' }}"
+                sequence: !input on_action_morning
+              - conditions: "{{ phase == 'Day' }}"
+                sequence: !input on_action_day
+              - conditions: "{{ phase == 'Evening' }}"
+                sequence: !input on_action_evening
+              - conditions: "{{ phase == 'Night' }}"
+                sequence: !input on_action_night
       - conditions:
           - condition: trigger
             id: sensor_off
         sequence:
           - delay:
               seconds: "{{ max(duration * 60 - sensor_clear, 0) }}"
-          - if:
-              - condition: template
-                value_template: "{{ off_actions is not none and off_actions | length > 0 }}"
-            then:
-              - sequence: "{{ off_actions }}"
+          - choose:
+              - conditions: "{{ phase == 'Morning' }}"
+                sequence: !input off_action_morning
+              - conditions: "{{ phase == 'Day' }}"
+                sequence: !input off_action_day
+              - conditions: "{{ phase == 'Evening' }}"
+                sequence: !input off_action_evening
+              - conditions: "{{ phase == 'Night' }}"
+                sequence: !input off_action_night
 
 mode: restart
