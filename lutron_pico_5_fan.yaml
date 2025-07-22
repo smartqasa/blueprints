@@ -1,8 +1,14 @@
 blueprint:
   domain: automation
+  source_url: https://gist.github.com/smartqasa/4bc708e5f0a9618b0471b7ebaa7d25d2
 
   name: Lutron Pico 5 Button - Fan Entity Control
-  description: "This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with one or more fan entities. It is designed to simulate the operation of a standard Lutron Caseta fan controller including the press and hold functionality for the raise/lower buttons. It allows for the assignment of any action to the middle button."
+  description: >-
+    Control one or more fans using a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01).
+    This blueprint simulates a standard Lutron Caseta fan controller, including press-and-hold
+    for the raise/lower buttons. Specify the number of speed settings the fan supports
+    (4 or 6), and set the speed percentage for the "on" button. The blueprint also allows you to
+    assign any action to the middle (favorite) button.
 
   input:
     pico:
@@ -41,8 +47,6 @@ blueprint:
       selector:
         action: {}
       default:
-
-  source_url: https://gist.github.com/cymone-smart/9814a750a0d0cfb196fa1fa7ae3630bb
 
 variables:
   speeds: !input speeds
