@@ -187,19 +187,23 @@ trigger:
     to: "on"
     id: sensor_on
   - trigger: state
+    entity_id: input_select.location_phase
+    id: phase_changed
+  - trigger: state
     entity_id: !input sensor
     to: "off"
     id: sensor_off
 
-condition:
-  - condition: template
-    value_template: "{{ duration > 0 }}"
+condition: []
 
 action:
   - choose:
       - conditions:
           - condition: trigger
             id: sensor_on
+          - condition: template
+            value_template: "{{ duration > 0 }}"
+
         sequence:
           - if:
               - condition: or
