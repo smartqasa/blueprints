@@ -50,6 +50,13 @@ blueprint:
       selector:
         boolean: {}
 
+    cancel_on_phase_change:
+      name: Cancel on Phase Change
+      description: If enabled, the automation will cancel the off action when the phase changes. If disabled, the light(s) will turn off after the specified duration even if the phase changes.
+      default: false
+      selector:
+        boolean: {}
+
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on.
@@ -180,6 +187,7 @@ variables:
   brightness: "{{ brightness_levels[phase] | default(100) }}"
   off_entities: !input off_entities
   respect_state: !input respect_state
+  cancel_on_phase_change: !input cancel_on_phase_change
 
 trigger:
   - trigger: state
@@ -188,35 +196,36 @@ trigger:
     id: sensor_on
   - trigger: state
     entity_id: input_select.location_phase
-    id: phase_changed
-  - trigger: state
-    entity_id: !input sensor
-    to: "off"
-    id: sensor_off
+    id: phase_change
 
-condition: []
+condition:
+  - condition: and
+    conditions:
+      - condition: trigger
+        id: sensor_on
+      - condition: template
+        value_template: "{{ duration > 0 }}"
+  - condition: and
+    conditions:
+      - condition: trigger
+        id: phase_change
+      - condition: template
+        value_template: "{{ cancel_on_phase_change }}"
 
 action:
   - choose:
       - conditions:
           - condition: trigger
             id: sensor_on
-          - condition: template
-            value_template: "{{ duration > 0 }}"
-
         sequence:
           - if:
               - condition: or
                 conditions:
+                  - condition: state
+                    entity_id: !input light
+                    state: "off"
                   - condition: template
                     value_template: "{{ not respect_state }}"
-                  - condition: and
-                    conditions:
-                      - condition: template
-                        value_template: "{{ respect_state }}"
-                      - condition: state
-                        entity_id: !input light
-                        state: "off"
             then:
               - action: light.turn_on
                 data:
@@ -224,12 +233,16 @@ action:
                   brightness_pct: "{{ brightness }}"
                 target:
                   entity_id: !input light
-      - conditions:
-          - condition: trigger
-            id: sensor_off
-          - condition: template
-            value_template: "{{ duration != 99 }}"
-        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ duration == 99 }}"
+            then:
+              - stop: "Automation configured to leave lights on indefinitely."
+                error: false
+          - wait_for_trigger:
+              - platform: state
+                entity_id: !input sensor
+                to: "off"
           - delay:
               seconds: "{{ max(duration * 60 - sensor_clear, 0) }}"
           - if:
@@ -249,4 +262,10 @@ action:
               - action: homeassistant.turn_off
                 target:
                   entity_id: !input off_entities
+      - conditions:
+          - condition: trigger
+            id: phase_change
+        sequence:
+          - stop: "Automation cancelled due to phase change."
+            error: false
 mode: restart
