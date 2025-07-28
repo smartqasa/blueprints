@@ -199,18 +199,20 @@ trigger:
     id: phase_change
 
 condition:
-  - condition: and
+  - condition: or
     conditions:
-      - condition: trigger
-        id: sensor_on
-      - condition: template
-        value_template: "{{ duration > 0 }}"
-  - condition: and
-    conditions:
-      - condition: trigger
-        id: phase_change
-      - condition: template
-        value_template: "{{ cancel_on_phase_change }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: sensor_on
+          - condition: template
+            value_template: "{{ duration > 0 }}"
+      - condition: and
+        conditions:
+          - condition: trigger
+            id: phase_change
+          - condition: template
+            value_template: "{{ cancel_on_phase_change }}"
 
 action:
   - choose:
