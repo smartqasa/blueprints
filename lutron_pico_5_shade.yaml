@@ -64,6 +64,7 @@ trigger:
     id: off_pressed
 
 variables:
+  entity: !input entity
   tilt: !input tilt
 
 condition: []
@@ -74,16 +75,26 @@ action:
           - condition: trigger
             id: on_pressed
         sequence:
-          - action: script.system_toggle_shade
-            data:
-              entity: !input entity
-              tilt: "{{ tilt | int }}"
+          - if:
+              - condition: template
+                value_template: "{{ tilt|int > 0 and tilt|int < 100 }}"
+            then:
+              - action: cover.set_cover_position
+                data:
+                  position: "{{ tilt }}"
+                target:
+                  entity_id: !input entity
+            else:
+              - action: cover.open_cover
+                target:
+                  entity_id: !input entity
       - conditions:
           - condition: trigger
             id: up_pressed
         sequence:
-          - delay:
-              milliseconds: 100
+          - action: cover.open_cover
+            target:
+              entity_id: !input entity
       - conditions:
           - condition: trigger
             id: stop_pressed
@@ -95,8 +106,9 @@ action:
           - condition: trigger
             id: down_pressed
         sequence:
-          - delay:
-              milliseconds: 100
+          - action: cover.close_cover
+            target:
+              entity_id: !input entity
       - conditions:
           - condition: trigger
             id: off_pressed
@@ -107,3 +119,4 @@ action:
 
 mode: queued
 max: 10
+max_exceeded: silent
