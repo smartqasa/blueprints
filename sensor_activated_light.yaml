@@ -242,7 +242,7 @@ action:
               - stop: "Automation configured to leave lights on indefinitely."
                 error: false
           - wait_for_trigger:
-              - platform: state
+              - trigger: state
                 entity_id: !input sensor
                 to: "off"
           - delay:

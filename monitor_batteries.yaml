@@ -52,7 +52,7 @@ variables:
     {{ ns.list }}
 
 trigger:
-  - platform: time
+  - trigger: time
     at: !input run_time
 
 condition:

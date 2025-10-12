@@ -44,7 +44,7 @@ variables:
   remaining_runtime: "{{ (states(runtime_sensor) | float(0) / 60) | int | default('unknown') }}"
 
 trigger:
-  - platform: state
+  - trigger: state
     entity_id: !input ups_status_sensor
 
 condition:
