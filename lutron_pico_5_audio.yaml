@@ -4,10 +4,7 @@ blueprint:
 
   name: Lutron Pico 5 Button - Media Player Entity Control
   description: >-
-    This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01)
-    remote with a light entity. It is designed to simulate the operation of a standard Lutron Caseta 
-    wall dimmer including the press and hold functionality for the raise/lower buttons. It allows for 
-    the control over the brightness step percentage and transition speed and the assignment of any 
+    This blueprint allows for the association of a Lutron Pico 5 Button (model PJ2-3BRL-GXX-X01) remote with a media player entity. It is designed to simulate the operation of a standard Lutron Caseta audio pico including the press and hold functionality for the raise/lower buttons. It allows for     the control over the volume step percentage and the assignment of any
     action to the middle button.
 
   input:
@@ -19,7 +16,7 @@ blueprint:
           filter:
             model: PJ2-3BRL-GXX-X01 (Pico3ButtonRaiseLower)
     entity:
-      name: Light Entity(ies)
+      name: Media Player Entity(ies)
       description: "Media Player entity to control."
       selector:
         entity:
@@ -38,7 +35,7 @@ blueprint:
 
     speed:
       name: Volume Transition Speed
-      description: "The rate of speed in milliseconds at which the brightness of the light entity will be changed."
+      description: "The rate of speed in milliseconds at which the brightness of the media_player entity will be changed."
       default: 500
       selector:
         number:
@@ -48,7 +45,7 @@ blueprint:
 
     middle_button_action:
       name: Middle (Favorite) Button Override
-      description: "Action(s) to execute when MIDDLE button is pressed. If left blank, action will default to setting the light entity to a brightness 80% and color temperature 2700."
+      description: "Action(s) to execute when MIDDLE button is pressed. If left blank, no action will be taken."
       selector:
         action: {}
       default:
@@ -135,14 +132,7 @@ action:
           - choose:
               - conditions: "{{ middle_button_action is not none and middle_button_action | length > 0 }}"
                 sequence: !input middle_button_action
-            default:
-              - action: light.turn_on
-                data:
-                  transition: !input transition_on
-                  brightness_pct: 80
-                  kelvin: 2800
-                target:
-                  entity_id: !input entity
+            default: []
       - conditions:
           - condition: trigger
             id: down_pressed
@@ -150,6 +140,7 @@ action:
           - repeat:
               sequence:
                 - action: media_player.volume_down
+                  data: {}
                   target:
                     entity_id: !input entity
                   continue_on_error: true
@@ -174,9 +165,8 @@ action:
           - condition: trigger
             id: off_pressed
         sequence:
-          - action: light.turn_off
-            data:
-              transition: !input transition_off
+          - action: media_player.media_next_track
+            data: {}
             target:
               entity_id: !input entity
 
