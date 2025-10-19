@@ -99,6 +99,8 @@ blueprint:
 trigger:
   - trigger: state
     entity_id: input_button.location_phase
+  - trigger: state
+    entity_id: input_button.tablet_brightness
 
 condition: []
 
