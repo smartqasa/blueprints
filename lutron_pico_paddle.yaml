@@ -12,8 +12,8 @@ blueprint:
       description: "Select the Pico remote to configure:"
       selector:
         device:
-          filter:
-            model: PJ2-1P-GXX (PaddleSwitchPico)
+          integration: lutron_caseta
+
     entity:
       name: Light Entity(ies)
       description: "Light entity to control."
