@@ -1,9 +1,11 @@
 blueprint:
+  domain: automation
+
   name: Two Switch Mirror
   description: >
     Keep two independent switches in sync — when either one changes,
     the other automatically mirrors its state.
-  domain: automation
+
   input:
     switch_a:
       name: First Switch
