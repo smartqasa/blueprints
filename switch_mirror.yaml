@@ -1,0 +1,16 @@
+alias: Mirror Two Switches
+trigger:
+  - platform: state
+    entity_id:
+      - switch.switch_a
+      - switch.switch_b
+action:
+  - service: "switch.turn_{{ trigger.to_state.state }}"
+    target:
+      entity_id: >
+        {% if trigger.entity_id == 'switch.switch_a' %}
+          switch.switch_b
+        {% else %}
+          switch.switch_a
+        {% endif %}
+mode: parallel
