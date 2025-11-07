@@ -57,6 +57,7 @@ blueprint:
           filter:
             domain: light
           multiple: true
+      default: []
     lights_level:
       name: Light Brightness
       description: The level of brightness to set the lights when they are turned on.
