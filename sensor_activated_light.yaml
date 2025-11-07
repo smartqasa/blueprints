@@ -166,7 +166,7 @@ blueprint:
               - light
               - switch
           multiple: true
-          default: []
+      default: []
 
 variables:
   sensor_clear: !input sensor_clear
