@@ -18,8 +18,8 @@ blueprint:
       name: Light Entity(ies)
       description: "Light entity to control."
       selector:
-        entity:
-          filter:
+        target:
+          entity:
             domain: light
           multiple: true
 
