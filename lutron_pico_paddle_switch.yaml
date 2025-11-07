@@ -1,0 +1,59 @@
+blueprint:
+  domain: automation
+  name: Lutron Pico Paddle - Switch Control
+  description: |
+    This automation allows controlling one or more switch entities with a Lutron Paddle Pico (PJ2-1P-GXX).
+    A short press on the top toggles the switch on, and a short press on the bottom toggles it off.
+
+  input:
+    pico:
+      name: Pico Remote
+      description: "Select the Pico remote to configure:"
+      selector:
+        device:
+          integration: lutron_caseta
+
+    entity:
+      name: Switch Entity(ies)
+      description: "Switch entity or entities to control."
+      selector:
+        entity:
+          filter:
+            domain: switch
+          multiple: true
+
+trigger:
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "on"
+    id: on_pressed
+
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: press
+    subtype: "off"
+    id: off_pressed
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: on_pressed
+        sequence:
+          - action: switch.turn_on
+            target:
+              entity_id: !input entity
+
+      - conditions:
+          - condition: trigger
+            id: off_pressed
+        sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: !input entity
+
+mode: queued
+max: 5
