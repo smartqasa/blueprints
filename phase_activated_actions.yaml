@@ -188,6 +188,7 @@ blueprint:
       description: The actions to execute.
       selector:
         action:
+      default: []
 
 variables:
   modes: !input modes
