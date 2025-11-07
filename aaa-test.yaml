@@ -39,7 +39,6 @@ blueprint:
           filter:
             domain:
               - scene
-          multiple: true
       default:
     scripts:
       name: Script(s)
