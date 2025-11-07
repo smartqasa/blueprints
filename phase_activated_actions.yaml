@@ -35,8 +35,8 @@ blueprint:
       name: Scene(s)
       description: The scene(s) that will be activated.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: scene
           multiple: true
       default:
@@ -44,8 +44,8 @@ blueprint:
       name: Script(s)
       description: The scene(s) that will be activated.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: script
           multiple: true
       default:
@@ -53,8 +53,8 @@ blueprint:
       name: Lights On
       description: The light entities that will be turned on.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: light
           multiple: true
       default:
@@ -80,8 +80,8 @@ blueprint:
       name: Lights Off
       description: The light entities that will be turned off.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: light
           multiple: true
       default:
@@ -89,8 +89,8 @@ blueprint:
       name: Fans On
       description: The fan entities that will be turned on.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: fan
           multiple: true
       default:
@@ -107,8 +107,8 @@ blueprint:
       name: Fans Off
       description: The fan entities that will be turned off.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: fan
           multiple: true
       default:
@@ -116,8 +116,8 @@ blueprint:
       name: Shades Open
       description: The shade entities that will be opened.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: cover
           multiple: true
       default:
@@ -134,8 +134,8 @@ blueprint:
       name: Shades Close
       description: The shade entities that will be closed.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: cover
           multiple: true
       default:
@@ -143,8 +143,8 @@ blueprint:
       name: Switches On
       description: The switch entities that will be turned on.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: switch
           multiple: true
       default:
@@ -152,8 +152,8 @@ blueprint:
       name: Switches Off
       description: The switch entities that will be turned off.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: switch
           multiple: true
       default:
@@ -161,8 +161,8 @@ blueprint:
       name: Garage Doors
       description: The garage door entities that will be closed.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: cover
           multiple: true
       default:
@@ -170,8 +170,8 @@ blueprint:
       name: Door Locks
       description: The locks entities that will be locked.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: lock
           multiple: true
       default:
@@ -179,8 +179,8 @@ blueprint:
       name: TVs
       description: The TVs entities that will be turned off.
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain: media_player
           multiple: true
       default:

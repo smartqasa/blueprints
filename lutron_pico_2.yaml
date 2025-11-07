@@ -17,8 +17,8 @@ blueprint:
       name: Entity(ies)
       description: "Light or switch entity to control."
       selector:
-        target:
-          entity:
+        entity:
+          filter:
             domain:
               - light
               - switch
