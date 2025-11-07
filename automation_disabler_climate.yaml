@@ -14,16 +14,16 @@ blueprint:
       name: Thermostat
       description: The climate entity which, when physically pressed, will cause the automation to be controlled.
       selector:
-        entity:
-          filter:
+        target:
+          entity:
             domain: climate
           multiple: false
     automation:
       name: Automation
       description: The automation that will be controlled.
       selector:
-        entity:
-          filter:
+        target:
+          entity:
             domain: automation
           multiple: false
     time:
