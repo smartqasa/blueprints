@@ -61,21 +61,21 @@ blueprint:
     lights_level:
       name: Light Brightness
       description: The level of brightness to set the lights when they are turned on.
-      default: 0
       selector:
         number:
           min: 0
           max: 100
           unit_of_measurement: "%"
+      default: 0
     lights_kelvin:
       name: Light Temperature
       description: The color temperature (in Kelvin) to set the lights when they are turned on.
-      default: 2800
       selector:
         number:
           min: 2000
           max: 6535
           unit_of_measurement: "kelvin"
+      default: 2800
     lights_off:
       name: Lights Off
       description: The light entities that will be turned off.
