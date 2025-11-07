@@ -20,7 +20,6 @@ blueprint:
         entity:
           filter:
             domain: cover
-          multiple: false
     tilt:
       name: Open (Tilt) Position
       description: "The percentage to open the shade when the open button is pressed. This is useful for zerba style shades that do not support tilt action calls."

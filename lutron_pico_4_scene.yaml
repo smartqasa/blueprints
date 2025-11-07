@@ -14,22 +14,18 @@ blueprint:
             model: PJ2-4B-GXX-X31 (Pico4ButtonScene)
     button_1:
       name: Button 1 Pressed
-      default: []
       selector:
         action: {}
     button_2:
       name: Button 2 Pressed
-      default: []
       selector:
         action: {}
     button_3:
       name: Button 3 Pressed
-      default: []
       selector:
         action: {}
     button_4:
       name: Button 4 Pressed
-      default: []
       selector:
         action: {}
 

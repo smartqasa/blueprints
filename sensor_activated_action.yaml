@@ -16,7 +16,6 @@ blueprint:
     on_action_all:
       name: All Phases - Sensor On Actions
       description: Actions to execute when the sensor changes to the 'on' state.
-      default:
       selector:
         action:
     delay_all:
@@ -31,13 +30,11 @@ blueprint:
     off_action_all:
       name: All Phases - Sensor Off Actions
       description: The actions to execute when the sensor changes to the 'off' state.
-      default:
       selector:
         action:
     on_action_morning:
       name: Morning - Sensor On Actions
       description: Actions to execute when the sensor changes to the 'on' state.
-      default:
       selector:
         action:
     delay_morning:
@@ -52,13 +49,11 @@ blueprint:
     off_action_morning:
       name: Morning - Sensor Off Actions
       description: The actions to execute when the sensor changes to the 'off' state.
-      default:
       selector:
         action:
     on_action_day:
       name: Day - Sensor On Actions
       description: Actions to execute when the sensor changes to the 'on' state.
-      default:
       selector:
         action:
     delay_day:
@@ -73,13 +68,11 @@ blueprint:
     off_action_day:
       name: Day - Sensor Off Actions
       description: The actions to execute when the sensor changes to the 'off' state.
-      default:
       selector:
         action:
     on_action_evening:
       name: Evening - Sensor On Actions
       description: Actions to execute when the sensor changes to the 'on' state.
-      default:
       selector:
         action:
     delay_evening:
@@ -94,13 +87,11 @@ blueprint:
     off_action_evening:
       name: Evening - Sensor Off Actions
       description: The actions to execute when the sensor changes to the 'off' state.
-      default:
       selector:
         action:
     on_action_night:
       name: Night - Sensor On Actions
       description: Actions to execute when the sensor changes to the 'on' state.
-      default:
       selector:
         action:
     delay_night:
@@ -115,7 +106,6 @@ blueprint:
     off_action_night:
       name: Night - Sensor Off Actions
       description: The actions to execute when the sensor changes to the 'off' state.
-      default:
       selector:
         action:
 

@@ -10,7 +10,6 @@ blueprint:
     scene_list:
       name: Scenes to Activate
       description: A scene or list of scenes to activate
-      default: []
       selector:
         entity:
           filter:
