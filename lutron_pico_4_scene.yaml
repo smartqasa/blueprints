@@ -16,18 +16,22 @@ blueprint:
       name: Button 1 Pressed
       selector:
         action: {}
+      default: []
     button_2:
       name: Button 2 Pressed
       selector:
         action: {}
+      default: []
     button_3:
       name: Button 3 Pressed
       selector:
         action: {}
+      default: []
     button_4:
       name: Button 4 Pressed
       selector:
         action: {}
+      default: []
 
 variables:
   button_1: !input button_1
