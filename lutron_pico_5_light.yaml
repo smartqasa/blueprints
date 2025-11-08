@@ -143,6 +143,7 @@ action:
                     - "{{ wait.remaining > 0 }}"
                   then:
                     - stop:
+                - delay: 0.1
               until:
                 - condition: numeric_state
                   entity_id: !input entity
@@ -192,6 +193,7 @@ action:
                     - "{{ wait.remaining > 0 }}"
                   then:
                     - stop:
+                - delay: 0.1
               until:
                 - condition: numeric_state
                   entity_id: !input entity
