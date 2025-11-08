@@ -83,7 +83,7 @@ trigger:
     id: off_pressed
 
 variables:
-  press_duration: 0.45
+  press_duration: 0.5
   middle_button_action: !input middle_button_action
 
 condition: []

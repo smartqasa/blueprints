@@ -13,7 +13,6 @@ blueprint:
       selector:
         device:
           integration: lutron_caseta
-
     entity:
       name: Light Entity(ies)
       description: "Light entity to control."
@@ -22,6 +21,47 @@ blueprint:
           filter:
             domain: light
           multiple: true
+    step:
+      name: Brightness Step Percentage
+      description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 25
+          unit_of_measurement: percent
+    hold:
+      name: Hold Time
+      description: "A button press of less than this time will brighted/dim the light(s) by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
+      default: 500
+      selector:
+        number:
+          min: 100
+          max: 1000
+          unit_of_measurement: milliseconds
+    transition_on:
+      name: Transition On
+      description: The transition speed in seconds when turning the light(s) on. If the device has a buit in transition, this will add to it.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 10
+          unit_of_measurement: seconds
+    transition_off:
+      name: Transition Off
+      description: The transition speed in seconds when turning the light(s) off. If the device has a buit in transition, this will add to it.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 10
+          unit_of_measurement: seconds
+
+variables:
+  step_pct: !input step
+  hold: !input hold
+  hold_time: "{{ hold / 1000 }}"
 
 trigger:
   - trigger: device
@@ -38,10 +78,6 @@ trigger:
     subtype: "off"
     id: off_pressed
 
-variables:
-  press_duration: 0.45
-  step_pct: 10
-
 action:
   - choose:
       - conditions:
@@ -54,7 +90,7 @@ action:
                 domain: lutron_caseta
                 type: release
                 subtype: "on"
-            timeout: "{{ press_duration }}"
+            timeout: "{{ hold_time }}"
             continue_on_timeout: true
           - if:
               - "{{ wait.remaining > 0 }}"
@@ -63,7 +99,8 @@ action:
                 target:
                   entity_id: !input entity
                 data:
-                  brightness: 255
+                  brightness_pct: 100
+                  transition: !input transition_on
             else:
               - repeat:
                   sequence:
@@ -79,12 +116,13 @@ action:
                           domain: lutron_caseta
                           type: release
                           subtype: "on"
-                      timeout: "{{ press_duration }}"
+                      timeout: "{{ hold_time }}"
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
                       then:
                         - stop:
+                    - delay: 0.1
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
@@ -100,7 +138,7 @@ action:
                 domain: lutron_caseta
                 type: release
                 subtype: "off"
-            timeout: "{{ press_duration }}"
+            timeout: "{{ hold_time }}"
             continue_on_timeout: true
           - if:
               - "{{ wait.remaining > 0 }}"
@@ -108,12 +146,14 @@ action:
               - action: light.turn_off
                 target:
                   entity_id: !input entity
+                data:
+                  transition: !input transition_off
             else:
               - repeat:
                   sequence:
                     - action: light.turn_on
                       data:
-                        brightness_step_pct: "{{ -step_pct }}"
+                        brightness_step_pct: "{{ step_pct * -1 }}"
                       target:
                         entity_id: !input entity
                       continue_on_error: true
@@ -123,16 +163,18 @@ action:
                           domain: lutron_caseta
                           type: release
                           subtype: "off"
-                      timeout: "{{ press_duration }}"
+                      timeout: "{{ hold_time }}"
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
                       then:
                         - stop:
+                    - delay: 0.1
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
                       attribute: brightness
                       below: 1
 
-mode: restart
+mode: queued
+max: 5

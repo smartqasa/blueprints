@@ -36,8 +36,8 @@ blueprint:
           unit_of_measurement: percent
     hold:
       name: Hold Time
-      description: "The time in milliseconds to hold the raise/lower button before the light starts dimming. A button press of less than this time will brighten/dim the light by the step percentage."
-      default: 450
+      description: "A button press of less than this time will brighted/dim the light by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
+      default: 500
       selector:
         number:
           min: 100
@@ -69,7 +69,7 @@ blueprint:
       default:
 
 variables:
-  step: !input step
+  step_pct: !input step
   hold: !input hold
   hold_time: "{{ hold / 1000 }}"
   middle_button_action: !input middle_button_action
@@ -126,7 +126,7 @@ action:
               sequence:
                 - action: light.turn_on
                   data:
-                    brightness_step_pct: "{{ step }}"
+                    brightness_step_pct: "{{ step_pct }}"
                   target:
                     entity_id: !input entity
                   continue_on_error: true
@@ -175,7 +175,7 @@ action:
               sequence:
                 - action: light.turn_on
                   data:
-                    brightness_step_pct: "{{ step * -1 }}"
+                    brightness_step_pct: "{{ step_pct * -1 }}"
                   target:
                     entity_id: !input entity
                   continue_on_error: true
@@ -207,4 +207,5 @@ action:
             target:
               entity_id: !input entity
 
-mode: restart
+mode: queued
+max: 5

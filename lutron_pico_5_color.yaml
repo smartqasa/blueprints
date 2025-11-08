@@ -62,7 +62,7 @@ trigger:
     id: off_pressed
 
 variables:
-  press: 0.45
+  press: 0.5
   step: 10
 
 condition: []
@@ -178,4 +178,5 @@ action:
             target:
               entity_id: !input light_entity
 
-mode: restart
+mode: queued
+max: 5
