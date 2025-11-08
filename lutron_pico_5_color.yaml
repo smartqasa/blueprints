@@ -62,7 +62,7 @@ trigger:
     id: off_pressed
 
 variables:
-  press: 0.4
+  press: 0.45
   step: 10
 
 condition: []

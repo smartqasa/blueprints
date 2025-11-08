@@ -121,7 +121,7 @@ action:
                   target:
                     entity_id: !input entity
                 - delay:
-                    milliseconds: 750
+                    milliseconds: 450
               until:
                 - condition: state
                   entity_id: !input entity

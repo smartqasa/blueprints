@@ -37,7 +37,7 @@ blueprint:
     hold:
       name: Hold Time
       description: "The time in milliseconds to hold the raise/lower button before the light starts dimming. A button press of less than this time will brighten/dim the light by the step percentage."
-      default: 400
+      default: 450
       selector:
         number:
           min: 100
