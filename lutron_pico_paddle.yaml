@@ -81,13 +81,6 @@ trigger:
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
-    type: release
-    subtype: "on"
-    id: on_released
-
-  - trigger: device
-    device_id: !input pico
-    domain: lutron_caseta
     type: press
     subtype: "off"
     id: off_pressed
@@ -108,7 +101,7 @@ action:
               milliseconds: !input hold_time
             continue_on_timeout: true
           - if:
-              - "{{ wait.remaining > 0 }}"
+              - "{{ wait.completed }}"
             then:
               - action: light.turn_on
                 target:
@@ -125,8 +118,19 @@ action:
                       target:
                         entity_id: !input entity
                       continue_on_error: true
-                    - delay:
+                    - wait_for_trigger:
+                        - trigger: device
+                          device_id: !input pico
+                          domain: lutron_caseta
+                          type: release
+                          subtype: "on"
+                      timeout:
                         milliseconds: !input step_delay
+                      continue_on_timeout: true
+                    - if:
+                        - "{{ completed }}"
+                      then:
+                        - stop:
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
@@ -146,7 +150,7 @@ action:
               milliseconds: !input hold_time
             continue_on_timeout: true
           - if:
-              - "{{ wait.remaining > 0 }}"
+              - "{{ wait.completed }}"
             then:
               - action: light.turn_off
                 target:
