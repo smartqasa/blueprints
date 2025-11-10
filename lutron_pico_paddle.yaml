@@ -128,7 +128,7 @@ action:
                         milliseconds: !input step_delay
                       continue_on_timeout: true
                     - if:
-                        - "{{ wait.remaining > 0 }}"
+                        - "{{ completed }}"
                       then:
                         - stop:
                   until:
@@ -176,7 +176,7 @@ action:
                         milliseconds: !input step_delay
                       continue_on_timeout: true
                     - if:
-                        - "{{ wait.remaining > 0 }}"
+                        - "{{ wait.completed }}"
                       then:
                         - stop:
                   until:
@@ -185,4 +185,4 @@ action:
                       attribute: brightness
                       below: 1
 
-mode: single
+mode: restart
