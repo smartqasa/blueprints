@@ -89,7 +89,8 @@ action:
                 domain: lutron_caseta
                 type: release
                 subtype: "on"
-            timeout: "{{ hold_time }}"
+            timeout:
+              milliseconds: "{{ hold_time }}"
             continue_on_timeout: true
           - if:
               - "{{ wait.remaining > 0 }}"
@@ -115,13 +116,15 @@ action:
                           domain: lutron_caseta
                           type: release
                           subtype: "on"
-                      timeout: "{{ hold_time }}"
+                      timeout:
+                        milliseconds: "{{ hold_time }}"
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
                       then:
                         - stop:
-                    - delay: 0.1
+                    - delay:
+                        milliseconds: 50
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
@@ -137,7 +140,8 @@ action:
                 domain: lutron_caseta
                 type: release
                 subtype: "off"
-            timeout: "{{ hold_time }}"
+            timeout:
+              milliseconds: "{{ hold_time }}"
             continue_on_timeout: true
           - if:
               - "{{ wait.remaining > 0 }}"
@@ -162,13 +166,15 @@ action:
                           domain: lutron_caseta
                           type: release
                           subtype: "off"
-                      timeout: "{{ hold_time }}"
+                      timeout:
+                        milliseconds: "{{ hold_time }}"
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
                       then:
                         - stop:
-                    - delay: 0.1
+                    - delay:
+                        milliseconds: 50
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
