@@ -176,5 +176,4 @@ action:
                       attribute: brightness
                       below: 1
 
-mode: queued
-max: 5
+mode: single
