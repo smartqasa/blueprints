@@ -24,7 +24,7 @@ blueprint:
     hold_time:
       name: Hold Time
       description: "A button press of less than this time will brighted/dim the light(s) by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
-      default: 150
+      default: 200
       selector:
         number:
           min: 100
@@ -33,14 +33,14 @@ blueprint:
     step:
       name: Brightness Step Percentage
       description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
-      default: 10
+      default: 5
       selector:
         number:
           min: 1
           max: 25
           unit_of_measurement: percent
-    step_speed:
-      name: Step Speed
+    step_delay:
+      name: Step Delay
       description: "The amount of time in milliseconds between each brightness step when holding the raise/lower button."
       default: 300
       selector:
@@ -125,7 +125,7 @@ action:
                           type: release
                           subtype: "on"
                       timeout:
-                        milliseconds: !input step_speed
+                        milliseconds: !input step_delay
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
@@ -173,7 +173,7 @@ action:
                           type: release
                           subtype: "off"
                       timeout:
-                        milliseconds: !input step_speed
+                        milliseconds: !input step_delay
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
