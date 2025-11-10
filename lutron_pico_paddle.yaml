@@ -60,8 +60,7 @@ blueprint:
 
 variables:
   step_pct: !input step
-  hold: !input hold
-  hold_time: "{{ hold / 1000 }}"
+  hold_time: !input hold
 
 trigger:
   - trigger: device
