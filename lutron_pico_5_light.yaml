@@ -34,7 +34,7 @@ blueprint:
           min: 1
           max: 25
           unit_of_measurement: percent
-    hold:
+    hold_time:
       name: Hold Time
       description: "A button press of less than this time will brighted/dim the light by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
       default: 500
@@ -70,8 +70,6 @@ blueprint:
 
 variables:
   step_pct: !input step
-  hold: !input hold
-  hold_time: "{{ hold / 1000 }}"
   middle_button_action: !input middle_button_action
 
 trigger:
@@ -137,13 +135,12 @@ action:
                       type: release
                       subtype: raise
                   timeout:
-                    seconds: "{{ hold_time }}"
+                    milliseconds: !input hold_time
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
                   then:
                     - stop:
-                - delay: 0.1
               until:
                 - condition: numeric_state
                   entity_id: !input entity
@@ -187,13 +184,12 @@ action:
                       type: release
                       subtype: lower
                   timeout:
-                    seconds: "{{ hold_time }}"
+                    milliseconds: !input hold_time
                   continue_on_timeout: true
                 - if:
                     - "{{ wait.remaining > 0 }}"
                   then:
                     - stop:
-                - delay: 0.1
               until:
                 - condition: numeric_state
                   entity_id: !input entity
@@ -209,5 +205,4 @@ action:
             target:
               entity_id: !input entity
 
-mode: queued
-max: 5
+mode: restart

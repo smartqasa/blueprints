@@ -21,6 +21,15 @@ blueprint:
           filter:
             domain: light
           multiple: true
+    hold_time:
+      name: Hold Time
+      description: "A button press of less than this time will brighted/dim the light(s) by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
+      default: 500
+      selector:
+        number:
+          min: 100
+          max: 1000
+          unit_of_measurement: milliseconds
     step:
       name: Brightness Step Percentage
       description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
@@ -30,10 +39,10 @@ blueprint:
           min: 1
           max: 25
           unit_of_measurement: percent
-    hold:
-      name: Hold Time
-      description: "A button press of less than this time will brighted/dim the light(s) by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
-      default: 500
+    step_speed:
+      name: Step Speed
+      description: "The amount of time in milliseconds between each brightness step when holding the raise/lower button."
+      default: 100
       selector:
         number:
           min: 100
@@ -60,7 +69,6 @@ blueprint:
 
 variables:
   step_pct: !input step
-  hold_time: !input hold
 
 trigger:
   - trigger: device
@@ -90,7 +98,7 @@ action:
                 type: release
                 subtype: "on"
             timeout:
-              milliseconds: "{{ hold_time }}"
+              milliseconds: !input hold_time
             continue_on_timeout: true
           - if:
               - "{{ wait.remaining > 0 }}"
@@ -117,7 +125,7 @@ action:
                           type: release
                           subtype: "on"
                       timeout:
-                        milliseconds: "{{ hold_time }}"
+                        milliseconds: !input step_speed
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
@@ -139,7 +147,7 @@ action:
                 type: release
                 subtype: "off"
             timeout:
-              milliseconds: "{{ hold_time }}"
+              milliseconds: !input hold_time
             continue_on_timeout: true
           - if:
               - "{{ wait.remaining > 0 }}"
@@ -165,7 +173,7 @@ action:
                           type: release
                           subtype: "off"
                       timeout:
-                        milliseconds: "{{ hold_time }}"
+                        milliseconds: !input step_speed
                       continue_on_timeout: true
                     - if:
                         - "{{ wait.remaining > 0 }}"
