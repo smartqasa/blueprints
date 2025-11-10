@@ -35,7 +35,7 @@ blueprint:
           max: 25
           unit_of_measurement: percent
     step_delay:
-      name: Step Delay
+      name: Step Cycle Delay
       description: "The amount of time in milliseconds between each brightness step when holding the raise/lower button."
       default: 450
       selector:
