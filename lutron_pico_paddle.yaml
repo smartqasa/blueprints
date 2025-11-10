@@ -40,7 +40,7 @@ blueprint:
           max: 25
           unit_of_measurement: percent
     step_delay:
-      name: Step Delay
+      name: Step Cycle Delay
       description: "The amount of time in milliseconds between each brightness step when holding the raise/lower button."
       default: 450
       selector:
@@ -77,6 +77,13 @@ trigger:
     type: press
     subtype: "on"
     id: on_pressed
+
+  - trigger: device
+    device_id: !input pico
+    domain: lutron_caseta
+    type: release
+    subtype: "on"
+    id: on_released
 
   - trigger: device
     device_id: !input pico
@@ -118,19 +125,8 @@ action:
                       target:
                         entity_id: !input entity
                       continue_on_error: true
-                    - wait_for_trigger:
-                        - trigger: device
-                          device_id: !input pico
-                          domain: lutron_caseta
-                          type: release
-                          subtype: "on"
-                      timeout:
+                    - delay:
                         milliseconds: !input step_delay
-                      continue_on_timeout: true
-                    - if:
-                        - "{{ completed }}"
-                      then:
-                        - stop:
                   until:
                     - condition: numeric_state
                       entity_id: !input entity

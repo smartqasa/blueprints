@@ -78,7 +78,6 @@ action:
               entity_id: !input light_entity
             data:
               brightness_pct: 100
-
       - conditions:
           - condition: trigger
             id: raise_pressed
@@ -139,7 +138,6 @@ action:
               value: "{{ phase }}"
           - delay:
               milliseconds: 500
-
       - conditions:
           - condition: trigger
             id: lower_pressed
@@ -169,7 +167,6 @@ action:
                   entity_id: !input light_entity
                   attribute: brightness
                   below: 1
-
       - conditions:
           - condition: trigger
             id: off_pressed
