@@ -146,7 +146,6 @@ action:
                             logger: blueprint.pico_dimmer
                             message: "Released ON button — stopping brightness loop."
                         - stop:
-                    - delay: 0.1
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
@@ -221,7 +220,6 @@ action:
                             logger: blueprint.pico_dimmer
                             message: "Released OFF button — stopping brightness loop."
                         - stop:
-                    - delay: 0.1
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
