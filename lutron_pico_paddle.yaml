@@ -1,21 +1,17 @@
 blueprint:
   domain: automation
-
-  name: Lutron Pico Paddle - Light with Brightness Control
+  name: Lutron Pico Paddle - Light with Brightness Control (Debug)
   description: |
-    This automation allows for controlling one or more light entities with a Lutron Paddle Pico (PJ2-1P-GXX).
-    A short press will toggle the light on/off, while a long press will gradually adjust brightness.
+    Debug version with logging to trace Pico button press logic.
 
   input:
     pico:
       name: Pico Remote
-      description: "Select the Pico remote to configure:"
       selector:
         device:
           integration: lutron_caseta
     entity:
       name: Light Entity(ies)
-      description: "Light entity to control."
       selector:
         entity:
           filter:
@@ -23,7 +19,6 @@ blueprint:
           multiple: true
     step:
       name: Brightness Step Percentage
-      description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
       default: 10
       selector:
         number:
@@ -32,7 +27,6 @@ blueprint:
           unit_of_measurement: percent
     hold:
       name: Hold Time
-      description: "A button press of less than this time will brighted/dim the light(s) by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
       default: 500
       selector:
         number:
@@ -41,7 +35,6 @@ blueprint:
           unit_of_measurement: milliseconds
     transition_on:
       name: Transition On
-      description: The transition speed in seconds when turning the light(s) on. If the device has a buit in transition, this will add to it.
       default: 0
       selector:
         number:
@@ -50,7 +43,6 @@ blueprint:
           unit_of_measurement: seconds
     transition_off:
       name: Transition Off
-      description: The transition speed in seconds when turning the light(s) off. If the device has a buit in transition, this will add to it.
       default: 0
       selector:
         number:
@@ -78,11 +70,22 @@ trigger:
     id: off_pressed
 
 action:
+  - service: system_log.write
+    data:
+      level: info
+      logger: blueprint.pico_dimmer
+      message: "Automation started. Trigger: {{ trigger.id }} | Entities: {{ expand(!input entity) | map(attribute='entity_id') | list }}"
+
   - choose:
       - conditions:
           - condition: trigger
             id: on_pressed
         sequence:
+          - service: system_log.write
+            data:
+              level: info
+              logger: blueprint.pico_dimmer
+              message: "ON button pressed — waiting for release..."
           - wait_for_trigger:
               - trigger: device
                 device_id: !input pico
@@ -95,6 +98,11 @@ action:
           - if:
               - "{{ wait.remaining > 0 }}"
             then:
+              - service: system_log.write
+                data:
+                  level: info
+                  logger: blueprint.pico_dimmer
+                  message: "Short ON press detected (remaining {{ wait.remaining }}s) — turning light on."
               - action: light.turn_on
                 target:
                   entity_id: !input entity
@@ -102,6 +110,11 @@ action:
                   brightness_pct: 100
                   transition: !input transition_on
             else:
+              - service: system_log.write
+                data:
+                  level: info
+                  logger: blueprint.pico_dimmer
+                  message: "Long ON press detected — beginning brightness increase loop."
               - repeat:
                   sequence:
                     - action: light.turn_on
@@ -110,6 +123,11 @@ action:
                       target:
                         entity_id: !input entity
                       continue_on_error: true
+                    - service: system_log.write
+                      data:
+                        level: debug
+                        logger: blueprint.pico_dimmer
+                        message: "Stepped brightness up by {{ step_pct }}%"
                     - wait_for_trigger:
                         - trigger: device
                           device_id: !input pico
@@ -122,18 +140,28 @@ action:
                     - if:
                         - "{{ wait.remaining > 0 }}"
                       then:
+                        - service: system_log.write
+                          data:
+                            level: info
+                            logger: blueprint.pico_dimmer
+                            message: "Released ON button — stopping brightness loop."
                         - stop:
-                    - delay:
-                        milliseconds: 50
+                    - delay: 0.1
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
                       attribute: brightness
                       above: 254
+
       - conditions:
           - condition: trigger
             id: off_pressed
         sequence:
+          - service: system_log.write
+            data:
+              level: info
+              logger: blueprint.pico_dimmer
+              message: "OFF button pressed — waiting for release..."
           - wait_for_trigger:
               - trigger: device
                 device_id: !input pico
@@ -146,12 +174,22 @@ action:
           - if:
               - "{{ wait.remaining > 0 }}"
             then:
+              - service: system_log.write
+                data:
+                  level: info
+                  logger: blueprint.pico_dimmer
+                  message: "Short OFF press detected — turning light off."
               - action: light.turn_off
                 target:
                   entity_id: !input entity
                 data:
                   transition: !input transition_off
             else:
+              - service: system_log.write
+                data:
+                  level: info
+                  logger: blueprint.pico_dimmer
+                  message: "Long OFF press detected — beginning brightness decrease loop."
               - repeat:
                   sequence:
                     - action: light.turn_on
@@ -160,6 +198,11 @@ action:
                       target:
                         entity_id: !input entity
                       continue_on_error: true
+                    - service: system_log.write
+                      data:
+                        level: debug
+                        logger: blueprint.pico_dimmer
+                        message: "Stepped brightness down by {{ step_pct }}%"
                     - wait_for_trigger:
                         - trigger: device
                           device_id: !input pico
@@ -172,9 +215,13 @@ action:
                     - if:
                         - "{{ wait.remaining > 0 }}"
                       then:
+                        - service: system_log.write
+                          data:
+                            level: info
+                            logger: blueprint.pico_dimmer
+                            message: "Released OFF button — stopping brightness loop."
                         - stop:
-                    - delay:
-                        milliseconds: 50
+                    - delay: 0.1
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
