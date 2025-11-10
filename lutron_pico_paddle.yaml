@@ -74,7 +74,7 @@ action:
     data:
       level: info
       logger: blueprint.pico_dimmer
-      message: "Automation started. Trigger: {{ trigger.id }} | Entities: {{ expand(!input entity) | map(attribute='entity_id') | list }}"
+      message: "Automation started."
 
   - choose:
       - conditions:
