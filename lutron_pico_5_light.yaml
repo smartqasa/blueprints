@@ -43,6 +43,15 @@ blueprint:
           min: 100
           max: 1000
           unit_of_measurement: milliseconds
+    brightness_on:
+      name: Brightness On Level
+      description: "The brightness percentage to set when the 'On' button is pressed."
+      default: 100
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: percent
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on.
@@ -112,7 +121,7 @@ action:
         sequence:
           - action: light.turn_on
             data:
-              brightness_pct: 100
+              brightness_pct: !input brightness_on
               transition: !input transition_on
             target:
               entity_id: !input entity

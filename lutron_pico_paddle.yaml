@@ -48,6 +48,15 @@ blueprint:
           min: 100
           max: 1000
           unit_of_measurement: milliseconds
+    brightness_on:
+      name: Brightness On Level
+      description: "The brightness percentage to set when the 'On' button is pressed."
+      default: 100
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: percent
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on. If the device has a buit in transition, this will add to it.
@@ -69,6 +78,7 @@ blueprint:
 
 variables:
   step_pct: !input step
+  buffer_delay: 50
 
 trigger:
   - trigger: device
@@ -118,6 +128,7 @@ action:
                       target:
                         entity_id: !input entity
                       continue_on_error: true
+
                     - wait_for_trigger:
                         - trigger: device
                           device_id: !input pico
@@ -131,6 +142,8 @@ action:
                         - "{{ completed }}"
                       then:
                         - stop:
+                    - delay:
+                        milliseconds: !input buffer_delay
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
@@ -179,6 +192,8 @@ action:
                         - "{{ wait.completed }}"
                       then:
                         - stop:
+                    - delay:
+                        milliseconds: !input buffer_delay
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
