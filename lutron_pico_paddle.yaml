@@ -24,57 +24,57 @@ blueprint:
     hold_time:
       name: Hold Time
       description: "A button press of less than this time will brighted/dim the light(s) by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
-      default: 250
       selector:
         number:
           min: 100
           max: 1000
           unit_of_measurement: milliseconds
+      default: 250
     step:
       name: Brightness Step Percentage
       description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
-      default: 5
       selector:
         number:
           min: 1
           max: 25
           unit_of_measurement: percent
+      default: 5
     step_delay:
       name: Step Cycle Delay
       description: "The amount of time in milliseconds between each brightness step when holding the raise/lower button."
-      default: 450
       selector:
         number:
           min: 100
           max: 1000
           unit_of_measurement: milliseconds
+      default: 450
     brightness_on:
       name: Brightness On Level
       description: "The brightness percentage to set when the 'On' button is pressed."
-      default: 100
       selector:
         number:
           min: 1
           max: 100
           unit_of_measurement: percent
+      default: 100
     transition_on:
       name: Transition On
       description: The transition speed in seconds when turning the light(s) on. If the device has a buit in transition, this will add to it.
-      default: 0
       selector:
         number:
           min: 0
           max: 10
           unit_of_measurement: seconds
+      default: 0
     transition_off:
       name: Transition Off
       description: The transition speed in seconds when turning the light(s) off. If the device has a buit in transition, this will add to it.
-      default: 0
       selector:
         number:
           min: 0
           max: 10
           unit_of_measurement: seconds
+      default: 0
 
 variables:
   step_pct: !input step
