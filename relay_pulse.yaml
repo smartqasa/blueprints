@@ -3,8 +3,8 @@ blueprint:
 
   name: Relay Pulse
   description: >
-    Turns on a light or switch entity briefly to simulate a momentary press or pulse,
-    then turns it off after a configurable duration..
+    Turns on a light or switch entity briefly to simulate a momentary press or
+    pulse, then turns it off after a configurable duration.
 
   input:
     target_entity:
