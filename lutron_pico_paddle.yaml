@@ -47,7 +47,7 @@ blueprint:
           min: 100
           max: 1000
           unit_of_measurement: milliseconds
-      default: 450
+      default: 350
     brightness_on:
       name: Brightness On Level
       description: "The brightness percentage to set when the 'On' button is pressed."
@@ -78,7 +78,7 @@ blueprint:
 
 variables:
   step_pct: !input step
-  buffer_delay: 50
+  buffer_delay: 100
 
 trigger:
   - trigger: device
