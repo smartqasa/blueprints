@@ -130,37 +130,33 @@ action:
                   entity_id: !input entity
                 data:
                   brightness_pct: 100
-                  transition: !input transition_on
-            else:
-              - repeat:
-                  sequence:
-                    - action: light.turn_on
-                      data:
-                        brightness_step_pct: '{{ step_pct }}'
-                      target:
-                        entity_id: !input entity
-                      continue_on_error: true
-
-                    - wait_for_trigger:
-                        - trigger: device
-                          device_id: !input pico
-                          domain: lutron_caseta
-                          type: release
-                          subtype: 'on'
-                      timeout:
-                        milliseconds: !input step_delay
-                      continue_on_timeout: true
-                    - if:
-                        - '{{ wait.completed }}'
-                      then:
-                        - stop:
-                    - delay:
-                        milliseconds: '{{ buffer_delay }}'
-                  until:
-                    - condition: numeric_state
-                      entity_id: !input entity
-                      attribute: brightness
-                      above: 254
+              - stop:
+          - repeat:
+              sequence:
+                - action: light.turn_on
+                  data:
+                    brightness_step_pct: '{{ step_pct }}'
+                  target:
+                    entity_id: !input entity
+                  continue_on_error: true
+                - wait_for_trigger:
+                    - trigger: device
+                      device_id: !input pico
+                      domain: lutron_caseta
+                      type: release
+                      subtype: 'on'
+                  timeout:
+                    milliseconds: !input step_delay
+                  continue_on_timeout: true
+                - if:
+                    - '{{ wait.completed }}'
+                  then:
+                    - stop:
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  above: 254
       - conditions:
           - condition: trigger
             id: off_pressed
@@ -180,36 +176,32 @@ action:
               - action: light.turn_off
                 target:
                   entity_id: !input entity
-                data:
-                  transition: !input transition_off
-            else:
-              - repeat:
-                  sequence:
-                    - action: light.turn_on
-                      data:
-                        brightness_step_pct: '{{ step_pct * -1 }}'
-                      target:
-                        entity_id: !input entity
-                      continue_on_error: true
-                    - wait_for_trigger:
-                        - trigger: device
-                          device_id: !input pico
-                          domain: lutron_caseta
-                          type: release
-                          subtype: 'off'
-                      timeout:
-                        milliseconds: !input step_delay
-                      continue_on_timeout: true
-                    - if:
-                        - '{{ wait.completed }}'
-                      then:
-                        - stop:
-                    - delay:
-                        milliseconds: '{{ buffer_delay }}'
-                  until:
-                    - condition: numeric_state
-                      entity_id: !input entity
-                      attribute: brightness
-                      below: 1
+              - stop:
+          - repeat:
+              sequence:
+                - action: light.turn_on
+                  data:
+                    brightness_step_pct: '{{ step_pct * -1 }}'
+                  target:
+                    entity_id: !input entity
+                  continue_on_error: true
+                - wait_for_trigger:
+                    - trigger: device
+                      device_id: !input pico
+                      domain: lutron_caseta
+                      type: release
+                      subtype: 'off'
+                  timeout:
+                    milliseconds: !input step_delay
+                  continue_on_timeout: true
+                - if:
+                    - '{{ wait.completed }}'
+                  then:
+                    - stop:
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  below: 1
 
 mode: restart
