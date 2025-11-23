@@ -43,7 +43,7 @@ blueprint:
           min: 1
           max: 25
           unit_of_measurement: percent
-      default: 5
+      default: 10
     step_delay:
       name: Step Cycle Delay
       description:
@@ -54,7 +54,7 @@ blueprint:
           min: 100
           max: 1000
           unit_of_measurement: milliseconds
-      default: 350
+      default: 400
     brightness_on:
       name: Brightness On Level
       description:
@@ -65,46 +65,26 @@ blueprint:
           max: 100
           unit_of_measurement: percent
       default: 100
-    transition_on:
-      name: Transition On
-      description:
-        The transition speed in seconds when turning the light(s) on. If the
-        device has a buit in transition, this will add to it.
-      selector:
-        number:
-          min: 0
-          max: 10
-          unit_of_measurement: seconds
-      default: 0
-    transition_off:
-      name: Transition Off
-      description:
-        The transition speed in seconds when turning the light(s) off. If the
-        device has a buit in transition, this will add to it.
-      selector:
-        number:
-          min: 0
-          max: 10
-          unit_of_measurement: seconds
-      default: 0
 
 variables:
   step_pct: !input step
   buffer_delay: 100
 
 trigger:
-  - trigger: device
-    device_id: !input pico
-    domain: lutron_caseta
-    type: press
-    subtype: 'on'
-    id: on_pressed
+  - platform: event
+    event_type: lutron_caseta_button_event
+    event_data:
+      device_id: !input pico
+      type: press
+      button_type: 'on'
+    id: off_pressed
 
-  - trigger: device
-    device_id: !input pico
-    domain: lutron_caseta
-    type: press
-    subtype: 'off'
+  - platform: event
+    event_type: lutron_caseta_button_event
+    event_data:
+      device_id: !input pico
+      type: press
+      button_type: 'off'
     id: off_pressed
 
 action:
@@ -152,11 +132,6 @@ action:
                     - '{{ wait.completed }}'
                   then:
                     - stop:
-              until:
-                - condition: numeric_state
-                  entity_id: !input entity
-                  attribute: brightness
-                  above: 254
       - conditions:
           - condition: trigger
             id: off_pressed
@@ -198,10 +173,5 @@ action:
                     - '{{ wait.completed }}'
                   then:
                     - stop:
-              until:
-                - condition: numeric_state
-                  entity_id: !input entity
-                  attribute: brightness
-                  below: 1
 
 mode: restart
