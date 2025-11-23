@@ -71,7 +71,7 @@ variables:
   buffer_delay: 100
 
 trigger:
-  - platform: event
+  - trigger: event
     event_type: lutron_caseta_button_event
     event_data:
       device_id: !input pico
@@ -79,7 +79,7 @@ trigger:
       button_type: 'on'
     id: off_pressed
 
-  - platform: event
+  - trigger: event
     event_type: lutron_caseta_button_event
     event_data:
       device_id: !input pico
@@ -94,11 +94,12 @@ action:
             id: on_pressed
         sequence:
           - wait_for_trigger:
-              - trigger: device
-                device_id: !input pico
-                domain: lutron_caseta
-                type: release
-                subtype: 'on'
+              - trigger: event
+                event_type: lutron_caseta_button_event
+                event_data:
+                  device_id: !input pico
+                  type: release
+                  button_type: 'on'
             timeout:
               milliseconds: !input hold_time
             continue_on_timeout: true
@@ -137,11 +138,12 @@ action:
             id: off_pressed
         sequence:
           - wait_for_trigger:
-              - trigger: device
-                device_id: !input pico
-                domain: lutron_caseta
-                type: release
-                subtype: 'off'
+              - trigger: event
+                event_type: lutron_caseta_button_event
+                event_data:
+                  device_id: !input pico
+                  type: release
+                  button_type: 'off'
             timeout:
               milliseconds: !input hold_time
             continue_on_timeout: true
