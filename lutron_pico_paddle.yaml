@@ -9,13 +9,13 @@ blueprint:
   input:
     pico:
       name: Pico Remote
-      description: "Select the Pico remote to configure:"
+      description: 'Select the Pico remote to configure:'
       selector:
         device:
           integration: lutron_caseta
     entity:
       name: Light Entity(ies)
-      description: "Light entity to control."
+      description: 'Light entity to control.'
       selector:
         entity:
           filter:
@@ -23,7 +23,10 @@ blueprint:
           multiple: true
     hold_time:
       name: Hold Time
-      description: "A button press of less than this time will brighted/dim the light(s) by the step percentage. More will mimic the press and hold behavior of a dimmer switch."
+      description:
+        'A button press of less than this time will brighted/dim the light(s) by
+        the step percentage. More will mimic the press and hold behavior of a
+        dimmer switch.'
       selector:
         number:
           min: 100
@@ -32,7 +35,9 @@ blueprint:
       default: 250
     step:
       name: Brightness Step Percentage
-      description: "The percentage to increase/decrease the brightness when the raise/lower button is pressed."
+      description:
+        'The percentage to increase/decrease the brightness when the raise/lower
+        button is pressed.'
       selector:
         number:
           min: 1
@@ -41,7 +46,9 @@ blueprint:
       default: 5
     step_delay:
       name: Step Cycle Delay
-      description: "The amount of time in milliseconds between each brightness step when holding the raise/lower button."
+      description:
+        'The amount of time in milliseconds between each brightness step when
+        holding the raise/lower button.'
       selector:
         number:
           min: 100
@@ -50,7 +57,8 @@ blueprint:
       default: 350
     brightness_on:
       name: Brightness On Level
-      description: "The brightness percentage to set when the 'On' button is pressed."
+      description:
+        "The brightness percentage to set when the 'On' button is pressed."
       selector:
         number:
           min: 1
@@ -59,7 +67,9 @@ blueprint:
       default: 100
     transition_on:
       name: Transition On
-      description: The transition speed in seconds when turning the light(s) on. If the device has a buit in transition, this will add to it.
+      description:
+        The transition speed in seconds when turning the light(s) on. If the
+        device has a buit in transition, this will add to it.
       selector:
         number:
           min: 0
@@ -68,7 +78,9 @@ blueprint:
       default: 0
     transition_off:
       name: Transition Off
-      description: The transition speed in seconds when turning the light(s) off. If the device has a buit in transition, this will add to it.
+      description:
+        The transition speed in seconds when turning the light(s) off. If the
+        device has a buit in transition, this will add to it.
       selector:
         number:
           min: 0
@@ -85,14 +97,14 @@ trigger:
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "on"
+    subtype: 'on'
     id: on_pressed
 
   - trigger: device
     device_id: !input pico
     domain: lutron_caseta
     type: press
-    subtype: "off"
+    subtype: 'off'
     id: off_pressed
 
 action:
@@ -106,12 +118,12 @@ action:
                 device_id: !input pico
                 domain: lutron_caseta
                 type: release
-                subtype: "on"
+                subtype: 'on'
             timeout:
               milliseconds: !input hold_time
             continue_on_timeout: true
           - if:
-              - "{{ wait.completed }}"
+              - '{{ wait.completed }}'
             then:
               - action: light.turn_on
                 target:
@@ -124,7 +136,7 @@ action:
                   sequence:
                     - action: light.turn_on
                       data:
-                        brightness_step_pct: "{{ step_pct }}"
+                        brightness_step_pct: '{{ step_pct }}'
                       target:
                         entity_id: !input entity
                       continue_on_error: true
@@ -134,16 +146,16 @@ action:
                           device_id: !input pico
                           domain: lutron_caseta
                           type: release
-                          subtype: "on"
+                          subtype: 'on'
                       timeout:
                         milliseconds: !input step_delay
                       continue_on_timeout: true
                     - if:
-                        - "{{ completed }}"
+                        - '{{ wait.completed }}'
                       then:
                         - stop:
                     - delay:
-                        milliseconds: "{{ buffer_delay }}"
+                        milliseconds: '{{ buffer_delay }}'
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
@@ -158,12 +170,12 @@ action:
                 device_id: !input pico
                 domain: lutron_caseta
                 type: release
-                subtype: "off"
+                subtype: 'off'
             timeout:
               milliseconds: !input hold_time
             continue_on_timeout: true
           - if:
-              - "{{ wait.completed }}"
+              - '{{ wait.completed }}'
             then:
               - action: light.turn_off
                 target:
@@ -175,7 +187,7 @@ action:
                   sequence:
                     - action: light.turn_on
                       data:
-                        brightness_step_pct: "{{ step_pct * -1 }}"
+                        brightness_step_pct: '{{ step_pct * -1 }}'
                       target:
                         entity_id: !input entity
                       continue_on_error: true
@@ -184,16 +196,16 @@ action:
                           device_id: !input pico
                           domain: lutron_caseta
                           type: release
-                          subtype: "off"
+                          subtype: 'off'
                       timeout:
                         milliseconds: !input step_delay
                       continue_on_timeout: true
                     - if:
-                        - "{{ wait.completed }}"
+                        - '{{ wait.completed }}'
                       then:
                         - stop:
                     - delay:
-                        milliseconds: "{{ buffer_delay }}"
+                        milliseconds: '{{ buffer_delay }}'
                   until:
                     - condition: numeric_state
                       entity_id: !input entity
