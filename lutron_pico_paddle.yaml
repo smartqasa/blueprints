@@ -129,6 +129,11 @@ action:
                     - '{{ wait.completed }}'
                   then:
                     - stop:
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  above: 254
       - conditions:
           - condition: trigger
             id: off_pressed
@@ -170,5 +175,10 @@ action:
                     - '{{ wait.completed }}'
                   then:
                     - stop:
+              until:
+                - condition: numeric_state
+                  entity_id: !input entity
+                  attribute: brightness
+                  below: 1
 
 mode: restart
